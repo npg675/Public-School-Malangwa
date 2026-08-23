@@ -18,10 +18,10 @@ $__page = $page ?? 'home';
 <meta property="og:type" content="website">
 <meta property="og:url" content="<?= e_attr(base_url()) ?>">
 <meta property="og:image" content="<?= e_attr(base_url('assets/img/og-image.jpg')) ?>">
-<meta name="theme-color" content="#123B6D">
+<meta name="theme-color" content="#001e40">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e_attr(base_url('assets/css/style.css')) ?>">
 <link rel="icon" href="<?= e_attr(base_url('assets/img/favicon.png')) ?>">
 <script type="application/ld+json">
