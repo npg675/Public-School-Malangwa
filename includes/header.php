@@ -90,6 +90,7 @@ $__page = $page ?? 'home';
           <a href="<?= e_attr(base_url('academic-calendar.php')) ?>"><?= t('Academic Calendar','शैक्षिक पात्रो') ?></a>
           <a href="<?= e_attr(base_url('citizen-charter.php')) ?>"><?= t('Citizen Charter','नागरिक वडापत्र') ?></a>
           <a href="<?= e_attr(base_url('scholarships.php')) ?>"><?= t('Scholarships','छात्रवृत्ति') ?></a>
+          <a href="<?= e_attr(base_url('faq.php')) ?>"><?= t('FAQ','जिज्ञासा') ?></a>
           <a href="<?= e_attr(base_url('links.php')) ?>"><?= t('Useful Links','उपयोगी लिङ्क') ?></a>
         </div>
       </div>

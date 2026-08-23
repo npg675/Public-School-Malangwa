@@ -83,13 +83,15 @@ function get_pinned_notice(): ?array {
 
 function sample_notices(int $limit): array {
     $samples = [
-        ['id'=>1,'title_en'=>'Admission Open for ECD – Grade 12 (2082 BS)','title_np'=>'भर्ना खुला — ईसीडी देखि कक्षा १२ (२०८२)','slug'=>'admission-open-2082','reference_number'=>'SPS/Notice/2082-01','category'=>'Admission','cat_en'=>'Admission','cat_np'=>'भर्ना','published_at'=>'2026-04-15 10:00:00','is_pinned'=>1,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'Admission forms available at school office. Contact office for fees and documents.','summary_np'=>'भर्ना फारम विद्यालय कार्यालयमा उपलब्ध छ।'],
-        ['id'=>2,'title_en'=>'SEE Routine 2082 Published','title_np'=>'एसईई तालिका २०८२ प्रकाशित','slug'=>'see-routine-2082','reference_number'=>'SPS/Exam/2082-04','category'=>'Examination','cat_en'=>'Examination','cat_np'=>'परीक्षा','published_at'=>'2026-03-28 09:00:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'SEE examination routine for Grade 10. Download PDF.','summary_np'=>'कक्षा १० को एसईई परीक्षा तालिका।'],
-        ['id'=>3,'title_en'=>'Vacancy: Secondary Level Science Teacher','title_np'=>'रिक्त पद: माध्यमिक तह विज्ञान शिक्षक','slug'=>'vacancy-science-teacher','reference_number'=>'SPS/Vacancy/2082-03','category'=>'Vacancy','cat_en'=>'Vacancy','cat_np'=>'रिक्त','published_at'=>'2026-03-10 11:00:00','is_pinned'=>0,'is_urgent'=>1,'attachment_type'=>'pdf','summary_en'=>'Applications invited for secondary science teacher. Deadline within 15 days.','summary_np'=>'माध्यमिक विज्ञान शिक्षक पदका लागि दरखास्त आह्वान।'],
-        ['id'=>4,'title_en'=>'Scholarship Notice for Grade 11','title_np'=>'कक्षा ११ छात्रवृत्ति सूचना','slug'=>'scholarship-grade-11','reference_number'=>'SPS/Scholarship/2082-02','category'=>'Scholarship','cat_en'=>'Scholarship','cat_np'=>'छात्रवृत्ति','published_at'=>'2026-02-20 10:30:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'Scholarship quota for disadvantaged students. See notice for eligibility.','summary_np'=>'विपन्न विद्यार्थीका लागि छात्रवृत्ति कोटा।'],
-        ['id'=>5,'title_en'=>'Holiday Notice – Holi','title_np'=>'बिदा सूचना — होली','slug'=>'holiday-holi-2082','reference_number'=>'SPS/Holiday/2082-05','category'=>'Holiday','cat_en'=>'Holiday','cat_np'=>'बिदा','published_at'=>'2026-03-01 08:00:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>null,'summary_en'=>'School will remain closed on Holi. Classes resume next working day.','summary_np'=>'होलीका दिन विद्यालय बन्द रहनेछ।'],
+        ['id'=>1,'title_en'=>'Admission Open for ECD – Grade 12 (2082 BS)','title_np'=>'भर्ना खुला — ईसीडी देखि कक्षा १२ (२०८२)','slug'=>'admission-open-2082','reference_number'=>'SPS/Notice/2082-01','category'=>'Admission','cat_en'=>'Admission','cat_np'=>'भर्ना','cat_slug'=>'admission','published_at'=>'2026-04-15 10:00:00','is_pinned'=>1,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'Admission forms available at school office. Contact office for fees and documents.','summary_np'=>'भर्ना फारम विद्यालय कार्यालयमा उपलब्ध छ।'],
+        ['id'=>2,'title_en'=>'SEE Routine 2082 Published','title_np'=>'एसईई तालिका २०८२ प्रकाशित','slug'=>'see-routine-2082','reference_number'=>'SPS/Exam/2082-04','category'=>'Examination','cat_en'=>'Examination','cat_np'=>'परीक्षा','cat_slug'=>'examination','published_at'=>'2026-03-28 09:00:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'SEE examination routine for Grade 10. Download PDF.','summary_np'=>'कक्षा १० को एसईई परीक्षा तालिका।'],
+        ['id'=>3,'title_en'=>'Vacancy: Secondary Level Science Teacher','title_np'=>'रिक्त पद: माध्यमिक तह विज्ञान शिक्षक','slug'=>'vacancy-science-teacher','reference_number'=>'SPS/Vacancy/2082-03','category'=>'Vacancy','cat_en'=>'Vacancy','cat_np'=>'रिक्त','cat_slug'=>'vacancy','published_at'=>'2026-03-10 11:00:00','is_pinned'=>0,'is_urgent'=>1,'attachment_type'=>'pdf','summary_en'=>'Applications invited for secondary science teacher. Deadline within 15 days.','summary_np'=>'माध्यमिक विज्ञान शिक्षक पदका लागि दरखास्त आह्वान।'],
+        ['id'=>4,'title_en'=>'Scholarship Notice for Grade 11','title_np'=>'कक्षा ११ छात्रवृत्ति सूचना','slug'=>'scholarship-grade-11','reference_number'=>'SPS/Scholarship/2082-02','category'=>'Scholarship','cat_en'=>'Scholarship','cat_np'=>'छात्रवृत्ति','cat_slug'=>'scholarship','published_at'=>'2026-02-20 10:30:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>'pdf','summary_en'=>'Scholarship quota for disadvantaged students. See notice for eligibility.','summary_np'=>'विपन्न विद्यार्थीका लागि छात्रवृत्ति कोटा।'],
+        ['id'=>5,'title_en'=>'Holiday Notice – Holi','title_np'=>'बिदा सूचना — होली','slug'=>'holiday-holi-2082','reference_number'=>'SPS/Holiday/2082-05','category'=>'Holiday','cat_en'=>'Holiday','cat_np'=>'बिदा','cat_slug'=>'holiday','published_at'=>'2026-03-01 08:00:00','is_pinned'=>0,'is_urgent'=>0,'attachment_type'=>null,'summary_en'=>'School will remain closed on Holi. Classes resume next working day.','summary_np'=>'होलीका दिन विद्यालय बन्द रहनेछ।'],
     ];
-    return array_slice($samples, 0, $limit);
+    $out = array_slice($samples, 0, $limit);
+    foreach ($out as &$s) { $s['is_sample'] = 1; }
+    return $out;
 }
 
 function get_events(int $limit = 3): array {
@@ -122,13 +124,26 @@ function get_downloads(int $limit = 6): array {
         } catch (Throwable $e) {}
     }
     return [
-        ['title_en'=>'Admission Form 2082','title_np'=>'भर्ना फारम २०८२','category'=>'Forms','cat_en'=>'Forms','published_at'=>'2026-04-01','file_size'=>'420 KB','file_type'=>'PDF'],
-        ['title_en'=>'Academic Calendar 2082','title_np'=>'शैक्षिक पात्रो २०८२','category'=>'Academic Calendar','cat_en'=>'Academic Calendar','published_at'=>'2026-04-05','file_size'=>'1.2 MB','file_type'=>'PDF'],
-        ['title_en'=>'Exam Routine – Grade 10 SEE','title_np'=>'परीक्षा तालिका — कक्षा १०','category'=>'Routine','cat_en'=>'Routine','published_at'=>'2026-03-28','file_size'=>'680 KB','file_type'=>'PDF'],
-        ['title_en'=>'Citizen Charter (नागरिक वडापत्र)','title_np'=>'नागरिक वडापत्र','category'=>'Citizen Charter','cat_en'=>'Citizen Charter','published_at'=>'2026-03-15','file_size'=>'890 KB','file_type'=>'PDF'],
-        ['title_en'=>'Book List 2082','title_np'=>'पाठ्यपुस्तक सूची २०८२','category'=>'Curriculum','cat_en'=>'Curriculum','published_at'=>'2026-04-02','file_size'=>'540 KB','file_type'=>'PDF'],
-        ['title_en'=>'Scholarship Notice 2082','title_np'=>'छात्रवृत्ति सूचना २०८२','category'=>'Scholarships','cat_en'=>'Scholarships','published_at'=>'2026-02-20','file_size'=>'310 KB','file_type'=>'PDF'],
+        ['title_en'=>'Admission Form 2082 (Sample)','title_np'=>'भर्ना फारम २०८२','category'=>'Forms','cat_en'=>'Forms','published_at'=>'2026-04-01','file_size'=>'420 KB','file_type'=>'PDF','is_sample'=>1],
+        ['title_en'=>'Academic Calendar 2082 (Sample)','title_np'=>'शैक्षिक पात्रो २०८२','category'=>'Academic Calendar','cat_en'=>'Academic Calendar','published_at'=>'2026-04-05','file_size'=>'1.2 MB','file_type'=>'PDF','is_sample'=>1],
+        ['title_en'=>'Exam Routine – Grade 10 SEE (Sample)','title_np'=>'परीक्षा तालिका — कक्षा १०','category'=>'Routine','cat_en'=>'Routine','published_at'=>'2026-03-28','file_size'=>'680 KB','file_type'=>'PDF','is_sample'=>1],
+        ['title_en'=>'Citizen Charter (नागरिक वडापत्र) (Sample)','title_np'=>'नागरिक वडापत्र','category'=>'Citizen Charter','cat_en'=>'Citizen Charter','published_at'=>'2026-03-15','file_size'=>'890 KB','file_type'=>'PDF','is_sample'=>1],
+        ['title_en'=>'Book List 2082 (Sample)','title_np'=>'पाठ्यपुस्तक सूची २०८२','category'=>'Curriculum','cat_en'=>'Curriculum','published_at'=>'2026-04-02','file_size'=>'540 KB','file_type'=>'PDF','is_sample'=>1],
+        ['title_en'=>'Scholarship Notice 2082 (Sample)','title_np'=>'छात्रवृत्ति सूचना २०८२','category'=>'Scholarships','cat_en'=>'Scholarships','published_at'=>'2026-02-20','file_size'=>'310 KB','file_type'=>'PDF','is_sample'=>1],
     ];
+}
+
+function get_news(int $limit = 6): array {
+    $pdo = db();
+    if ($pdo && db_has_table('news')) {
+        try {
+            $stmt = $pdo->prepare("SELECT n.*, c.name_en AS cat_en, c.name_np AS cat_np FROM news n LEFT JOIN news_categories c ON c.id=n.category_id WHERE n.status='published' ORDER BY n.published_at DESC LIMIT :lim");
+            $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Throwable $e) {}
+    }
+    return [];
 }
 
 function get_gallery_albums(int $limit = 6): array {

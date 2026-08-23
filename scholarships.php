@@ -1,12 +1,47 @@
-<?php $page='scholarships'; $title='Scholarships — Shree Public Secondary School'; require_once __DIR__.'/includes/header.php'; ?>
-<section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Scholarships</span><h1 style="color:#fff;margin:14px 0 10px">Scholarships</h1><p class="lead" style="color:#C7D7F0">Verified scholarship notices — eligibility, quota and application details from school office.</p></div></section>
+<?php $page='scholarships'; $title='Scholarships — Verified Notices | Shree Public Secondary School'; $description='Scholarship notices for Shree Public Secondary School, Malangwa-2 — eligibility, quota, application documents and deadlines from verified school and government notices.'; require_once __DIR__.'/includes/header.php'; $scholarshipNotices = array_filter(get_notices(8), function($n){ $c=strtolower($n['category']??$n['cat_en']??''); return $c==='scholarship'; }); ?>
+<section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Scholarships</span><h1 style="color:#fff;margin:14px 0 10px">Scholarships</h1><p class="lead" style="color:#C7D7F0;max-width:680px">Verified scholarship notices — eligibility, quota, required documents and deadline — published only from the school office. No list is invented. This page pulls live notices from the Notice Board (category: Scholarship).</p></div></section>
 <nav class="wrap" style="padding:14px 20px"><div class="breadcrumbs"><a href="<?= e_attr(base_url()) ?>">Home</a><span class="sep">/</span><span>Scholarships</span></div></nav>
-<section class="section" style="padding-top:20px;background:#fff;border-top:1px solid var(--border)">
+<section class="section" style="padding-top:28px;background:#fff;border-top:1px solid var(--border)">
   <div class="wrap">
-    <div class="empty"><svg class="ic"><use href="#i-award"/></svg><h4>Scholarship notices will be published here</h4><p>Admin → Resources → Scholarships. Attach PDF with quota and criteria. No invented lists.</p></div>
-    <div style="margin-top:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr">
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px"><h4>Quota</h4><p style="color:var(--muted);font-size:.88rem;margin-top:4px"><em>TBC — added when notice issued.</em></p></div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px"><h4>How to apply</h4><p style="color:var(--muted);font-size:.88rem;margin-top:4px">See attached notice for documents and deadline. Contact office for guidance.</p></div>
+    <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px">
+      <svg class="ic" style="color:var(--primary);width:20px;height:20px;margin-top:2px;flex:none"><use href="#i-info"/></svg>
+      <div style="font-size:.88rem;color:var(--muted);line-height:1.7"><strong style="color:var(--text)">How scholarships appear here:</strong> When the school or the Government of Nepal issues a scholarship notice applicable to this school, it is published on the <a href="<?= e_attr(base_url('notices.php?category=scholarship')) ?>" style="color:var(--primary);font-weight:700">Notice Board → Scholarship</a> with eligibility, quota and deadline, and surfaced here automatically. Scholarship forms (if any) appear in <a href="<?= e_attr(base_url('downloads.php')) ?>" style="color:var(--primary);font-weight:700">Downloads → Scholarships</a>.</div>
+    </div>
+
+    <?php if(empty($scholarshipNotices)): ?>
+      <div class="empty"><svg class="ic"><use href="#i-award"/></svg><h4>No scholarship notice at the moment</h4><p>When a scholarship is announced it will appear here with full details. Check the Notice Board (Scholarship) or contact the school office for the current year.</p><div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a href="<?= e_attr(base_url('notices.php?category=scholarship')) ?>" class="btn btn-soft">View Scholarship Notices</a><a href="<?= e_attr(base_url('contact.php')) ?>" class="btn btn-ghost">Contact office</a></div></div>
+    <?php else: ?>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <?php foreach($scholarshipNotices as $n): $d=strtotime($n['published_at']); $ttl=(current_lang()==='np'&&!empty($n['title_np']))?$n['title_np']:$n['title_en']; ?>
+        <article class="notice-card <?= !empty($n['is_urgent'])?'urgent':'' ?>">
+          <div class="notice-date"><span class="d"><?= date('d',$d) ?></span><span class="m"><?= date('M Y',$d) ?></span></div>
+          <div class="notice-body">
+            <h4><a href="<?= e_attr(base_url('notice.php?slug='.$n['slug'])) ?>"><?= e($ttl) ?></a></h4>
+            <?php if(!empty($n['summary_en'])): ?><p><?= e($n['summary_en']) ?></p><?php endif; ?>
+            <div class="notice-meta">
+              <span class="tag <?= !empty($n['is_urgent'])?'urgent':'' ?>">Scholarship</span>
+              <?php if(!empty($n['is_sample'])): ?><span class="tag" style="background:var(--gold-50);border-color:#FDE68A;color:#6B4F00">Sample</span><?php endif; ?>
+              <?php if(!empty($n['reference_number'])): ?><span>Ref: <?= e($n['reference_number']) ?></span><?php endif; ?>
+              <a href="<?= e_attr(base_url('notice.php?slug='.$n['slug'])) ?>" style="margin-left:auto;font-weight:700;color:var(--primary)">View notice →</a>
+              <?php if(!empty($n['attachment_type'])): ?><a href="<?= e_attr(base_url('notice.php?slug='.$n['slug'])) ?>" class="btn btn-soft" style="padding:6px 10px;font-size:.78rem"><svg class="ic"><use href="#i-doc"/></svg> PDF</a><?php endif; ?>
+            </div>
+          </div>
+        </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+
+    <div style="margin-top:18px;display:grid;gap:12px;grid-template-columns:1fr 1fr">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px"><h4 style="font-size:.92rem">Quota &amp; eligibility</h4><p style="color:var(--muted);font-size:.88rem;margin-top:4px;line-height:1.6">Quota, eligibility criteria and reservation details are specified in each notice — not summarised as a generic list. Refer to the attached PDF in the notice for authoritative details.</p></div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px"><h4 style="font-size:.92rem">How to apply</h4><p style="color:var(--muted);font-size:.88rem;margin-top:4px;line-height:1.6">See the attached notice for required documents, application form and deadline. If a downloadable form exists, it is linked from <a href="<?= e_attr(base_url('downloads.php')) ?>" style="color:var(--primary);font-weight:700">Downloads → Scholarships</a>. Contact the office for guidance before the deadline.</p></div>
+    </div>
+
+    <div class="verify-banner"><svg class="ic"><use href="#i-info"/></svg><span>Managed via CMS — Admin → Resources → Scholarships and Notice Board (category: Scholarship). Attach the official PDF with quota and criteria; do not add unverified scholarship lists.</span></div>
+
+    <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
+      <a href="<?= e_attr(base_url('notices.php?category=scholarship')) ?>" class="btn btn-primary">Scholarship Notices →</a>
+      <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-soft">Downloads</a>
+      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-ghost">Admissions</a>
     </div>
   </div>
 </section>

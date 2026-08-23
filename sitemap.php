@@ -2,7 +2,7 @@
 require_once __DIR__ . '/config/config.php';
 header('Content-Type: application/xml; charset=utf-8');
 $base = rtrim(base_url(), '/');
-$pages = ['','about.php','academics.php','admissions.php','notices.php','news.php','events.php','results.php','downloads.php','publications.php','citizen-charter.php','scholarships.php','gallery.php','contact.php'];
+$pages = ['','about.php','academics.php','science.php','management.php','admissions.php','notices.php','news.php','events.php','results.php','downloads.php','publications.php','citizen-charter.php','scholarships.php','academic-calendar.php','links.php','gallery.php','contact.php','faq.php'];
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
