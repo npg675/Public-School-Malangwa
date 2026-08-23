@@ -1,0 +1,71 @@
+# Shree Public Secondary School — Apache
+Options -Indexes
+RewriteEngine On
+
+# Force HTTPS (uncomment on production)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Clean URLs — map /about to /about.php etc.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^about/?$ about.php [L]
+RewriteRule ^academics/?$ academics.php [L]
+RewriteRule ^admissions/?$ admissions.php [L]
+RewriteRule ^notices/?$ notices.php [L]
+RewriteRule ^notice/([A-Za-z0-9-]+)/?$ notice.php?slug=$1 [L]
+RewriteRule ^news/?$ news.php [L]
+RewriteRule ^events/?$ events.php [L]
+RewriteRule ^results/?$ results.php [L]
+RewriteRule ^downloads/?$ downloads.php [L]
+RewriteRule ^publications/?$ publications.php [L]
+RewriteRule ^citizen-charter/?$ citizen-charter.php [L]
+RewriteRule ^scholarships/?$ scholarships.php [L]
+RewriteRule ^gallery/?$ gallery.php [L]
+RewriteRule ^contact/?$ contact.php [L]
+RewriteRule ^search/?$ search.php [L]
+
+# Security headers
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set X-XSS-Protection "0"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+# Caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "(\.env|\.sql|\.log)$">
+  Require all denied
+</FilesMatch>
+
+# Block executable uploads
+<FilesMatch "\.(php|phtml|php3|php4|php5|phps|pl|py|jsp|asp|sh|cgi)$">
+  <If "%{REQUEST_URI} =~ m#^/uploads/#">
+    Require all denied
+  </If>
+</FilesMatch>
+
+# Error pages
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php
+
+# PHP settings
+php_value upload_max_filesize 8M
+php_value post_max_size 10M
+php_value max_execution_time 60

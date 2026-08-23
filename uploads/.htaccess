@@ -1,0 +1,4 @@
+Deny from all
+<FilesMatch '\.(jpg|jpeg|png|webp|pdf|docx|xlsx)$'>
+  Require all granted
+</FilesMatch>
