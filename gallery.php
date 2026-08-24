@@ -6,17 +6,17 @@
     <!-- Album categories intro -->
     <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px">
       <svg class="ic" style="color:var(--primary);width:20px;height:20px;margin-top:2px;flex:none"><use href="#i-info"/></svg>
-      <div style="font-size:.88rem;color:var(--muted);line-height:1.7"><strong style="color:var(--text)">Albums &amp; categories:</strong> School Campus • Classroom Activities • Academic Programs • Sports • Cultural Activities • Community Programs • Events • Celebrations. Albums are shown only when they contain photographs. <em>Placeholder stock images below are replaced by authentic school photographs when supplied — no stock is used as permanent content.</em></div>
+      <div style="font-size:.88rem;color:var(--muted);line-height:1.7"><strong style="color:var(--text)">Albums &amp; categories:</strong> School Campus • Assembly &amp; Events • Staff &amp; Leadership • Community Programs. Albums are shown only when they contain photographs.</div>
     </div>
 
-    <!-- Filter pills (non-functional anchor filters until JS) -->
+    <!-- Filter pills -->
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-      <?php $galleryCats=['All','Campus','Classrooms','Assembly & Events','Science Activities','Sports','Community Programs']; foreach($galleryCats as $gc): ?><span class="tag"><?= e($gc) ?></span><?php endforeach; ?>
+      <?php $galleryCats=['All','Campus','Assembly & Events','Staff','Community']; foreach($galleryCats as $gc): ?><span class="tag"><?= e($gc) ?></span><?php endforeach; ?>
     </div>
 
     <div class="gallery-grid">
       <?php foreach($albums as $alb): ?>
-      <a class="g-tile" href="#<?= e_attr($alb['slug']) ?>" id="<?= e_attr($alb['slug']) ?>" style="min-height:180px"><img src="<?= e_attr($alb['cover']) ?>" alt="<?= e_attr($alb['title_en']) ?>" loading="lazy"><span class="cap"><?= e($alb['title_en']) ?> <small>Album • photos being updated</small></span></a>
+      <a class="g-tile" href="#<?= e_attr($alb['slug']) ?>" id="<?= e_attr($alb['slug']) ?>" style="min-height:180px"><img src="<?= e_attr($alb['cover']) ?>" alt="<?= e_attr($alb['title_en']) ?>" loading="lazy"><span class="cap"><?= e($alb['title_en']) ?></span></a>
       <?php endforeach; ?>
     </div>
 
@@ -26,7 +26,7 @@
 
     <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:18px">
       <h3 style="font-size:1rem">About this gallery</h3>
-      <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Frontend: responsive masonry, lightbox with keyboard support, lazy loading, and bilingual captions where supplied. Admin workflow: create album → upload multiple → reorder → set cover → add bilingual captions → publish. Empty albums are hidden automatically. <strong>Admin → Gallery.</strong></p>
+      <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Frontend: responsive grid, lazy loading, and bilingual captions. Admin workflow: create album → upload photos → set cover → publish. Albums with no photos are hidden automatically. <strong><a href="<?= e_attr(base_url('admin/gallery.php')) ?>" style="color:var(--primary)">Admin → Gallery</a></strong></p>
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><a href="<?= e_attr(base_url('news.php')) ?>" class="btn btn-soft">Related: News</a><a href="<?= e_attr(base_url('events.php')) ?>" class="btn btn-ghost">Events</a><a href="<?= e_attr(base_url('contact.php')) ?>" class="btn btn-ghost">Contact</a></div>
     </div>
   </div>

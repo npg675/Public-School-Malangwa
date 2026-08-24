@@ -1,0 +1,9 @@
+.env
+uploads/about/*
+uploads/gallery/*
+uploads/hero/*
+uploads/news/*
+!uploads/.gitkeep
+!uploads/.htaccess
+*.sql
+tests/

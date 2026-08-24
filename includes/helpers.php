@@ -147,13 +147,27 @@ function get_news(int $limit = 6): array {
 }
 
 function get_gallery_albums(int $limit = 6): array {
+    $pdo = db();
+    if ($pdo && db_has_table('gallery_albums')) {
+        try {
+            $stmt = $pdo->prepare("SELECT slug, title_en, title_np, cover_image, description_en FROM gallery_albums WHERE status='published' ORDER BY sort_order, title_en LIMIT :lim");
+            $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            if ($rows) {
+                foreach ($rows as &$r) {
+                    $r['cover'] = $r['cover_image'] ? base_url($r['cover_image']) : '';
+                }
+                return $rows;
+            }
+        } catch (Throwable $e) {}
+    }
+    // Fallback: real school photos
     return [
-        ['slug'=>'campus','title_en'=>'Campus','title_np'=>'विद्यालय परिसर','cover'=>'https://images.pexels.com/photos/35385546/pexels-photo-35385546.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>8],
-        ['slug'=>'classroom','title_en'=>'Classrooms','title_np'=>'कक्षाकोठा','cover'=>'https://images.pexels.com/photos/31155018/pexels-photo-31155018.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>12],
-        ['slug'=>'assembly','title_en'=>'Assembly & Events','title_np'=>'सभा र कार्यक्रम','cover'=>'https://images.pexels.com/photos/9872962/pexels-photo-9872962.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>15],
-        ['slug'=>'science','title_en'=>'Science Activities','title_np'=>'विज्ञान क्रियाकलाप','cover'=>'https://images.pexels.com/photos/6208728/pexels-photo-6208728.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>6],
-        ['slug'=>'sports','title_en'=>'Sports','title_np'=>'खेलकुद','cover'=>'https://images.pexels.com/photos/36871459/pexels-photo-36871459.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>9],
-        ['slug'=>'community','title_en'=>'Community Programs','title_np'=>'समुदाय कार्यक्रम','cover'=>'https://images.pexels.com/photos/5905929/pexels-photo-5905929.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop','count'=>5],
+        ['slug'=>'campus','title_en'=>'Campus','title_np'=>'विद्यालय परिसर','cover'=>base_url('uploads/gallery/campus/courtyard-students-formation.jpg'),'count'=>6],
+        ['slug'=>'assembly','title_en'=>'Assembly & Events','title_np'=>'सभा र कार्यक्रम','cover'=>base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg'),'count'=>3],
+        ['slug'=>'staff','title_en'=>'Staff & Leadership','title_np'=>'कर्मचारी र नेतृत्व','cover'=>base_url('uploads/gallery/staff/leadership-team-photo.jpg'),'count'=>1],
+        ['slug'=>'community','title_en'=>'Community Programs','title_np'=>'समुदाय कार्यक्रम','cover'=>base_url('uploads/gallery/community/complaint-box-life-nepal.jpg'),'count'=>1],
     ];
 }
 
