@@ -64,6 +64,10 @@ function base_url(string $path = ''): string {
         $script = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
         if ($script !== '/' && $script !== '\\') $base .= $script;
     }
+    // Upgrade to HTTPS if current request is HTTPS (fix mixed content)
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && str_starts_with($base, 'http://')) {
+        $base = 'https://' . substr($base, 7);
+    }
     return $base . '/' . ltrim($path, '/');
 }
 
