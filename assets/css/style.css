@@ -221,8 +221,8 @@ img{max-width:100%;display:block}
 
 /* Quick panel — 6 links tactile cards */
 .quick{margin-top:-18px;position:relative;z-index:5}
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.qa-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);transition:transform .16s,box-shadow .16s,border-color .16s}
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.qa-card{display:flex;align-items:center;gap:14px;min-width:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);transition:transform .16s,box-shadow .16s,border-color .16s}
 .qa-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--heritage-gold)}
 .qa-icon{width:44px;height:44px;border-radius:var(--radius);flex:none;display:grid;place-items:center;background:var(--primary);color:#fff}
 .qa-card:nth-child(2) .qa-icon{background:var(--surface-tint)}
@@ -357,8 +357,8 @@ img{max-width:100%;display:block}
 .dl-actions .btn{padding:8px 14px;font-size:.8rem;min-height:36px}
 
 /* Govt links */
-.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.gov-link{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;font-weight:600;font-size:.88rem;transition:border-color .14s,box-shadow .14s;min-height:44px;box-shadow:var(--shadow-sm)}
+.gov-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gov-link{display:flex;align-items:center;gap:12px;min-width:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;font-weight:600;font-size:.88rem;transition:border-color .14s,box-shadow .14s;min-height:44px;box-shadow:var(--shadow-sm)}
 .gov-link:hover{border-color:var(--surface-tint);box-shadow:var(--shadow-md)}
 .gov-link .ext{margin-left:auto;color:var(--muted-2);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase}
 
@@ -484,7 +484,7 @@ body{padding-bottom:64px}
 
 /* Responsive — 12 col desktop / 4 col mobile · footer: 1 → 2 → 4 */
 @media(min-width:560px){
-  .quick-grid{grid-template-columns:1fr 1fr 1fr}
+  .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .stats-grid{grid-template-columns:repeat(4,1fr)}
   .stat{border-bottom:0}
   .stat:nth-child(2n){border-right:1px solid var(--border)}
@@ -511,7 +511,7 @@ body{padding-bottom:64px}
   .hero{padding:52px 0 56px}
   .hero-inner{grid-template-columns:1.05fr .95fr;gap:48px}
   .hero-art{display:block}
-  .quick-grid{grid-template-columns:repeat(6,1fr)}
+  .quick-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
   .about-grid{grid-template-columns:1.05fr .95fr;gap:48px}
   .principal-grid{grid-template-columns:360px 1fr;gap:40px}
   .acad-grid{grid-template-columns:repeat(3,1fr)}
