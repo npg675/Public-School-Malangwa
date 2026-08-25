@@ -1,193 +1,262 @@
-<?php $page='about'; $title='About — Shree Public Secondary School | Malangwa-2, Sarlahi'; $description='Shree Public Secondary School is a public community institution in Malangwa-2, Sarlahi, Madhesh Province, serving ECD through Grade 12 with +2 Science & Management (NEB). IEMIS 190640003.'; require_once __DIR__.'/includes/header.php'; ?>
-<section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> About</span><h1 style="color:#fff;margin:14px 0 10px;font-size:clamp(1.8rem,4vw,2.6rem)">Shree Public Secondary School<br><span style="color:var(--gold)">Malangwa-2, Sarlahi</span></h1><p class="lead" style="color:#C7D7F0;max-width:680px">श्री पब्लिक माध्यमिक विद्यालय — public, co-educational ECD–12 with +2 Science &amp; Management (NEB). Malangwa-2, Sarlahi, Madhesh Province 45800.</p><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:.8rem;color:#fff">IEMIS 190640003</span><span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:.8rem;color:#fff">Public Institution</span><span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:.8rem;color:#fff">VH24+22W · 26.8501, 85.5550</span><span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:.8rem;color:#fff">1,000+ Students</span></div></div></section>
-<nav class="wrap" style="padding:14px 20px"><div class="breadcrumbs"><a href="<?= e_attr(base_url()) ?>">Home</a><span class="sep">/</span><span>About</span></div></nav>
-
-<!-- School Introduction -->
-<section class="section" style="padding-top:28px;background:#fff;border-top:1px solid var(--border)">
-  <div class="wrap">
-    <div style="display:grid;gap:32px;grid-template-columns:1fr;align-items:start" class="about-intro-grid">
-      <div>
-        <span class="eyebrow"><span class="dot"></span> School Introduction</span>
-        <h2 style="margin:14px 0 14px;font-size:clamp(1.4rem,3vw,1.8rem)">A community school at the heart of Malangwa</h2>
-        <div style="color:var(--muted);line-height:1.75;display:flex;flex-direction:column;gap:14px;font-size:.96rem">
-          <p><strong style="color:var(--text)">Shree Public Secondary School (श्री पब्लिक माध्यमिक विद्यालय)</strong> is a public / community secondary school located in <strong>Malangwa Municipality-2, Sarlahi, Madhesh Province</strong>. The school provides continuous education from <strong>Early Childhood Development (ECD) through Grade 12</strong> on a single campus in the centre of Malangwa, serving families from across the municipality and surrounding wards.</p>
-          <p>As a government-recognised community institution with <strong>IEMIS Code 190640003</strong>, the school operates within Nepal's national education framework — implementing the Curriculum Development Centre (CDC) curriculum, the Secondary Education Examination (SEE) at Grade 10, and National Examinations Board (NEB) programs at Grades 11–12. Enrollment is co-educational and day-school based, with approximately <strong>1,000+ students</strong> across all levels in the 2081/82 IEMIS reporting (displayed as 1,000+ on the website to avoid annual fluctuation).</p>
-          <p>At the higher secondary level the school currently offers two NEB-affiliated streams: <strong>+2 Science</strong> and <strong>+2 Management</strong>. Students from Malangwa and nearby communities can therefore complete their entire basic and secondary schooling — from early years to university preparation — without changing institution. The school's location (Plus Code <strong>VH24+22W</strong>, 26.8501032 N, 85.555064 E) places it within walking distance of the municipal centre, making it accessible for daily attendance and for municipal education programmes hosted on the campus.</p>
-          <p>This page presents verified identity information only. Establishment year, motto, mission, history and other narrative fields remain editable in the CMS and are published only after confirmation by the school administration — no unverified claim is shown publicly.</p>
-        </div>
-        <div class="about-quote" style="margin-top:18px">Public • Community School • Co-educational • Day School • ECD–12 • +2 Science &amp; Management (NEB) • Malangwa-2, Sarlahi • IEMIS 190640003 • VH24+22W</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- At a glance -->
-<section class="section" style="padding:28px 0;background:var(--bg)">
-  <div class="wrap">
-    <div style="display:grid;gap:24px;grid-template-columns:1fr">
-      <div>
-        <h2 style="font-size:1.3rem">School at a glance</h2>
-        <p style="color:var(--muted);font-size:.9rem;margin-top:6px">Verified identity — all values from institutional records or national education sources.</p>
-        <div style="overflow:auto;border:1px solid var(--border);border-radius:12px;margin-top:16px;background:#fff">
-          <table style="width:100%;border-collapse:collapse;font-size:.92rem">
-            <tbody>
-              <tr style="background:var(--surface-low)"><td style="padding:11px 14px;font-weight:700;width:220px;border-bottom:1px solid var(--border)">School</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)"><strong>Shree Public Secondary School</strong> / श्री पब्लिक माध्यमिक विद्यालय</td></tr>
-              <tr><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">Type</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">Public / Community • Co-educational • Day School</td></tr>
-              <tr style="background:var(--surface-low)"><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">Academic Coverage</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">ECD / Nursery – Grade 12</td></tr>
-              <tr><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">Higher Secondary (+2, NEB)</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">Science • Management</td></tr>
-              <tr style="background:var(--surface-low)"><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">Enrollment</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">1,000+ students (IEMIS 2081/82 total 1,085 — displayed as 1,000+)</td></tr>
-              <tr><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">Location</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">Malangwa Municipality-2, Sarlahi, Madhesh Province 45800 — Plus Code VH24+22W (26.8501032 N, 85.555064 E)</td></tr>
-              <tr style="background:var(--surface-low)"><td style="padding:11px 14px;font-weight:700;border-bottom:1px solid var(--border)">District / Province</td><td style="padding:11px 14px;border-bottom:1px solid var(--border)">Sarlahi • Madhesh Province</td></tr>
-              <tr><td style="padding:11px 14px;font-weight:700">IEMIS Code</td><td style="padding:11px 14px">190640003</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="verify-banner"><svg class="ic"><use href="#i-info"/></svg><span>Establishment year, motto, mission/vision, principal name, teacher count, lab/library/sports, SMC membership and fee structure are CMS fields shown only after verification. No invented values are published.</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Educational Role + Learning Environment -->
-<section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <div class="wrap">
-    <div style="display:grid;gap:20px;grid-template-columns:1fr">
-      <!-- Role -->
-      <div>
-        <span class="eyebrow"><span class="dot"></span> Our Educational Role</span>
-        <h2 style="margin:12px 0 14px;font-size:1.35rem">What a community school does for Malangwa</h2>
-        <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-          <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:18px">
-            <h3 style="font-size:.98rem;display:flex;gap:10px;align-items:center"><span style="width:36px;height:36px;border-radius:8px;background:var(--primary);color:#fff;display:grid;place-items:center;flex:none"><svg class="ic"><use href="#i-grad"/></svg></span> Access to education close to home</h3>
-            <p style="color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.7">Community schools ensure that children from local families can study from ECD to Grade 12 in their own municipality. By offering the full continuum on one campus, Shree Public reduces the need for families to send students elsewhere for secondary or higher secondary education, keeping learning continuous and affordable.</p>
-          </div>
-          <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:18px">
-            <h3 style="font-size:.98rem;display:flex;gap:10px;align-items:center"><span style="width:36px;height:36px;border-radius:8px;background:var(--success);color:#fff;display:grid;place-items:center;flex:none"><svg class="ic"><use href="#i-book"/></svg></span> Supporting students through every level</h3>
-            <p style="color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.7">Students enter in early childhood and progress through Basic Level (Grades 1–8), Secondary Level (Grades 9–10, including SEE preparation) and Higher Secondary (Grades 11–12, NEB Science and Management). Each stage builds on the previous one in language, mathematics, science and social understanding.</p>
-          </div>
-          <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:18px">
-            <h3 style="font-size:.98rem;display:flex;gap:10px;align-items:center"><span style="width:36px;height:36px;border-radius:8px;background:var(--surface-tint);color:#fff;display:grid;place-items:center;flex:none"><svg class="ic"><use href="#i-user"/></svg></span> A school and its community</h3>
-            <p style="color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.7">The school and its neighbourhood depend on each other. Parents participate through meetings, the community attends school-hosted municipal programmes (for example, the 16-Day Campaign Against Gender-Based Violence hosted at the school in November 2025), and students learn in the context of local language, culture and civic life in Madhesh Province.</p>
-          </div>
-          <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:18px">
-            <h3 style="font-size:.98rem;display:flex;gap:10px;align-items:center"><span style="width:36px;height:36px;border-radius:8px;background:var(--primary-container);color:#fff;display:grid;place-items:center;flex:none"><svg class="ic"><use href="#i-award"/></svg></span> Public accountability</h3>
-            <p style="color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.7">As a public institution (IEMIS 190640003), the school's information — notices, calendars, results, procurement and Citizen Charter — is intended to be published openly on this website so that students, parents and citizens can find official information without visiting the office for every query.</p>
-          </div>
-        </div>
-        <p style="font-size:.82rem;color:var(--muted-2);margin-top:12px"><em>This section is descriptive of the role of a community school in Nepal's education system (CEHRD / Ministry of Education). It does not claim an official mission statement on behalf of the school. Official mission/vision, when adopted, will be published from the CMS.</em></p>
-      </div>
-
-      <!-- Learning Environment -->
-      <div style="margin-top:8px">
-        <h2 style="font-size:1.3rem">Our learning environment</h2>
-        <p style="color:var(--muted);font-size:.9rem;margin-top:6px">A high-level description — specific infrastructure is listed only after verification.</p>
-        <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:16px">
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px">
-            <h4 style="font-size:.92rem;display:flex;gap:8px;align-items:center"><svg class="ic" style="color:var(--primary)"><use href="#i-book"/></svg> Classroom learning</h4>
-            <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Daily classroom teaching across ECD to Grade 12, following national curriculum guidance. Language instruction in Nepali and English as per level, with progression in reading, writing and numeracy.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px">
-            <h4 style="font-size:.92rem;display:flex;gap:8px;align-items:center"><svg class="ic" style="color:var(--success)"><use href="#i-star"/></svg> Academic participation</h4>
-            <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Students participate in classroom activities, assessments, exhibitions and school programmes that support academic discipline and preparation for SEE and NEB examinations.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px">
-            <h4 style="font-size:.92rem;display:flex;gap:8px;align-items:center"><svg class="ic" style="color:var(--surface-tint)"><use href="#i-user"/></svg> Student development</h4>
-            <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Support for literacy, numeracy, scientific reasoning and social understanding, with guidance toward the appropriate higher secondary stream (Science or Management) at Grade 11.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px">
-            <h4 style="font-size:.92rem;display:flex;gap:8px;align-items:center"><svg class="ic" style="color:var(--primary)"><use href="#i-bell"/></svg> Community involvement</h4>
-            <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7">Parent meetings, municipal programmes and community events held on campus. Laboratory, library, ICT lab and sports facilities will be listed here only after the school verifies them — no facility is claimed without confirmation.</p>
-          </div>
-        </div>
-        <div class="verify-banner"><svg class="ic"><use href="#i-info"/></svg><span>Science lab, library, computer lab, sports and other facilities appear on this website only when the school confirms them (Admin → Content). Until then, no specific infrastructure claim is published.</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- History / Leadership / Staff anchors -->
-<section class="section" style="padding:28px 0">
-  <div class="wrap" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px">
-      <h3 style="font-size:1rem">School history</h3>
-      <p style="color:var(--muted);margin-top:8px;font-size:.9rem;line-height:1.7">Detailed history — including establishment year, founders and milestones — will be published here once verified by the school administration. <em>Editable via CMS (Admin → Content → Pages → About).</em> No narrative is fabricated.</p>
-      <div class="verify-banner" style="margin-top:12px"><svg class="ic"><use href="#i-info"/></svg><span>Placeholder — content appears after school verification. This prevents invented history.</span></div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px">
-      <h3 style="font-size:1rem">Mission • Vision • Values</h3>
-      <p style="color:var(--muted);margin-top:8px;font-size:.9rem;line-height:1.7">If the school has adopted a formal mission/vision, it is published here verbatim from the CMS. Otherwise this section describes the school's public role (see above) and remains editable — not a substitute for an official statement.</p>
-      <a href="<?= e_attr(base_url('contact.php')) ?>" style="color:var(--primary);font-weight:700;font-size:.88rem;margin-top:10px;display:inline-flex">Contact office to confirm →</a>
-    </div>
-  </div>
-  <div class="wrap legacy-people-placeholder" style="margin-top:16px;display:grid;gap:16px">
-    <div id="legacy-leadership" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h3 style="font-size:1.05rem">Leadership</h3><span style="font-size:.7rem;background:var(--gold-50);border:1px solid #FDE68A;padding:3px 8px;border-radius:999px;font-weight:700">CMS — verification required</span></div>
-      <p style="color:var(--muted);margin-top:10px;font-size:.92rem;line-height:1.7">Head Teacher / Principal and School Management Committee (SMC) are listed here after verification. Names, photographs and messages are shown only when the school supplies them and marks them public in <strong>Admin → People → Leadership / Management Committee</strong>. No placeholder persons are published.</p>
-      <div style="margin-top:14px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-        <div style="background:var(--surface-low);border:1px dashed var(--border-strong);border-radius:12px;padding:16px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px"><use href="#i-user"/></svg><div style="font-weight:700;color:var(--primary)">Head Teacher</div><div style="font-size:.84rem;margin-top:6px">Name, photo &amp; message appear here once verified. <em>This panel is hidden on the homepage until enabled.</em></div></div>
-        <div style="background:var(--surface-low);border:1px dashed var(--border-strong);border-radius:12px;padding:16px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px"><use href="#i-user"/></svg><div style="font-weight:700;color:var(--primary)">School Management Committee</div><div style="font-size:.84rem;margin-top:6px">Chairperson and members — published only with verified names. No sample committee is invented.</div></div>
-      </div>
-    </div>
-    <div id="legacy-staff" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h3 style="font-size:1.05rem">Teachers &amp; Staff</h3><span style="font-size:.7rem;background:var(--gold-50);border:1px solid #FDE68A;padding:3px 8px;border-radius:999px;font-weight:700">Directory — CMS controlled</span></div>
-      <p style="color:var(--muted);margin-top:10px;font-size:.92rem;line-height:1.7">The staff directory is intentionally empty until data is supplied by the school. When populated it will include bilingual names, designation and qualification. Personal phone numbers and emails are shown only if explicitly marked public. Teaching / administrative / support categories are separated automatically.</p>
-      <div style="margin-top:14px;background:var(--surface-low);border:1px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px"><use href="#i-info"/></svg><p style="font-weight:600">Staff information for this section is being updated.</p><p style="font-size:.84rem;margin-top:6px">Detailed information will be updated after verification by the school administration.</p></div>
-    </div>
-  </div>
-</section>
-
 <?php
-$people = get_staff_directory();
-$principal = $people['leadership'][0] ?? null;
-$leadershipTeam = array_slice($people['leadership'], 1);
-$peopleGroups = [
-  'committee' => ['title'=>'School Management Committee','subtitle'=>'Community leadership and governance'],
-  'teaching' => ['title'=>'Teaching team','subtitle'=>'Teachers supporting learning from ECD to Grade 12'],
-  'administration' => ['title'=>'Administration & support','subtitle'=>'The people who keep school services moving'],
-];
+$page='about';
+$title='About — Shree Public Secondary School | Malangwa-2, Sarlahi';
+$description='Shree Public Secondary School is a public community institution in Malangwa-2, Sarlahi, Madhesh Province, serving ECD through Grade 12 with +2 Science & Management (NEB). IEMIS 190640003.';
+$useTailwind = true;
+require_once __DIR__.'/includes/header.php';
 ?>
-<!-- CMS-managed people directory -->
-<section class="section people-section" id="people">
-  <div class="wrap people-content">
-    <div class="people-section-head">
-      <div>
-        <span class="eyebrow"><span class="dot"></span> People of our school</span>
-        <h2>Leadership, teachers and school community</h2>
-        <p>Meet the people who guide the school, support students and keep the campus running. Profiles are published and ordered by the school administration through the CMS.</p>
+<div class="bg-bg-surface font-body-md text-on-surface antialiased">
+
+<!-- 1. Breadcrumb & Page Header -->
+<section class="bg-surface-lowest border-b border-border-base pt-12 pb-16 px-margin-mobile md:px-margin-desktop">
+  <div class="max-w-container-max mx-auto">
+    <nav class="flex items-center space-x-2 text-on-surface-variant font-label-sm text-label-sm mb-6">
+      <a class="hover:text-primary transition-colors" href="<?= e_attr(base_url()) ?>">Home</a>
+      <span class="material-symbols-outlined" style="font-size:16px">chevron_right</span>
+      <span class="text-primary font-medium">About</span>
+    </nav>
+    <h1 class="font-display-lg text-display-lg text-text-heading mb-4 hidden md:block">About Our School</h1>
+    <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-text-heading mb-4 md:hidden">About Our School</h1>
+    <div class="flex items-center text-on-surface-variant font-body-md text-body-md">
+      <span class="material-symbols-outlined mr-2 text-primary">location_on</span>
+      Malangwa-2, Sarlahi
+    </div>
+  </div>
+</section>
+
+<!-- 2. School Introduction -->
+<section class="py-16 px-margin-mobile md:px-margin-desktop">
+  <div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center">
+    <div class="space-y-6">
+      <h2 class="font-headline-lg text-headline-lg text-primary">A Pillar of Community Education</h2>
+      <p class="font-body-lg text-body-lg text-on-surface">
+        Shree Public Secondary School stands at the heart of Malangwa as a cornerstone of government-led education in Madhesh Province. As a public community school, we are dedicated to providing accessible, high-quality education to over <?= e(APP_STUDENTS_DISPLAY) ?> students.
+      </p>
+      <p class="font-body-md text-body-md text-on-surface-variant">
+        Our institution offers a comprehensive educational journey from Early Childhood Development (ECD) through Grade 12. We proudly operate as a co-educational day school, fostering an inclusive environment. In our higher secondary levels (+2), we provide specialized streams in Science and Management, equipping our students with the skills necessary for modern professional landscapes. (IEMIS: <?= e(APP_IEMIS) ?>)
+      </p>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-ambient h-96 relative group">
+      <img alt="Shree Public Secondary School building" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/about/campus-building-aerial.jpg')) ?>">
+      <div class="absolute inset-0 bg-gradient-to-t from-masthead-navy/60 to-transparent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Vision / Mission / Values -->
+<section class="py-16 px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+  <div class="max-w-container-max mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <div class="bg-surface-lowest p-8 rounded-xl shadow-ambient border border-border-base text-center">
+        <span class="material-symbols-outlined text-4xl text-primary mb-4">visibility</span>
+        <h3 class="font-headline-sm text-headline-sm text-primary mb-3">Vision</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">To be a leading center of educational excellence in Madhesh Province, empowering students with knowledge, skills, and values for a global future.</p>
       </div>
-      <nav class="people-jump" aria-label="People sections"><a href="#leadership">Leadership</a><a href="#committee">Committee</a><a href="#staff">Teaching team</a></nav>
+      <div class="bg-surface-lowest p-8 rounded-xl shadow-ambient border border-border-base text-center">
+        <span class="material-symbols-outlined text-4xl text-primary mb-4">school</span>
+        <h3 class="font-headline-sm text-headline-sm text-primary mb-3">Mission</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Providing accessible, high-quality public education from ECD to Grade 12, fostering an inclusive environment that nurtures intellectual growth and civic responsibility.</p>
+      </div>
+      <div class="bg-surface-lowest p-8 rounded-xl shadow-ambient border border-border-base text-center">
+        <span class="material-symbols-outlined text-4xl text-primary mb-4">workspace_premium</span>
+        <h3 class="font-headline-sm text-headline-sm text-primary mb-3">Values</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Integrity, Inclusivity, Excellence, and Community Trust.</p>
+      </div>
     </div>
+  </div>
+</section>
 
-    <section class="people-block" id="leadership" aria-labelledby="leadership-title">
-      <div class="people-block-head"><div><span class="people-kicker">01 · School leadership</span><h3 id="leadership-title">Principal &amp; leadership</h3></div><span class="people-count"><?= count($people['leadership']) ?> <?= count($people['leadership']) === 1 ? 'profile' : 'profiles' ?></span></div>
-      <?php if ($principal): ?>
-        <div class="principal-profile">
-          <div class="person-avatar person-avatar-large"><?php if (!empty($principal['photo_url'])): ?><img src="<?= e_attr($principal['photo_url']) ?>" alt="<?= e_attr($principal['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($principal['name_en'])) ?></span><?php endif; ?></div>
-          <div class="principal-profile-copy"><span class="person-role"><?= e($principal['designation_en']) ?></span><h4><?= e($principal['name_en']) ?></h4><?php if (!empty($principal['name_np'])): ?><p class="person-native"><?= e($principal['name_np']) ?></p><?php endif; ?><?php if (!empty($principal['qualification'])): ?><p class="person-detail"><?= e($principal['qualification']) ?></p><?php endif; ?><p class="principal-profile-note">The school’s leadership profile is maintained by the administration and shown here only while marked active in the CMS.</p></div>
+<!-- 3. School at a Glance (Bento Grid) -->
+<section class="py-16 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest border-y border-border-base">
+  <div class="max-w-container-max mx-auto">
+    <div class="flex items-center mb-8">
+      <span class="material-symbols-outlined text-active-gold mr-3 text-3xl" style="font-variation-settings:'FILL' 1">verified</span>
+      <h2 class="font-headline-lg text-headline-lg text-primary">School at a Glance</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base col-span-1 md:col-span-2 flex flex-col justify-center">
+        <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">Institution Name</div>
+        <div class="font-headline-md text-headline-md text-primary">Shree Public Secondary School</div>
+      </div>
+      <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base">
+        <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">Type</div>
+        <div class="font-headline-sm text-headline-sm text-primary flex items-center">
+          <span class="material-symbols-outlined mr-2 text-secondary">public</span> Public / Community
         </div>
-        <?php if ($leadershipTeam): ?><div class="person-grid person-grid-compact" style="margin-top:16px"><?php foreach ($leadershipTeam as $person): ?><article class="person-card person-card-compact"><div class="person-avatar"><?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($person['name_en'])) ?></span><?php endif; ?></div><div class="person-card-body"><span class="person-role"><?= e($person['designation_en']) ?></span><h4><?= e($person['name_en']) ?></h4><?php if (!empty($person['name_np'])): ?><p class="person-native"><?= e($person['name_np']) ?></p><?php endif; ?></div></article><?php endforeach; ?></div><?php endif; ?>
-      <?php else: ?><div class="people-empty"><span class="people-empty-icon">01</span><div><strong>Leadership profiles are being prepared.</strong><p>The school can publish the principal and leadership team from Admin → Staff.</p></div></div><?php endif; ?>
-    </section>
-
-    <?php foreach ($peopleGroups as $groupKey => $groupMeta): $groupPeople = $groupKey === 'administration' ? array_merge($people['administration'], $people['non_teaching']) : $people[$groupKey]; ?>
-      <section class="people-block" id="<?= $groupKey === 'teaching' ? 'staff' : $groupKey ?>" aria-labelledby="<?= $groupKey ?>-title">
-        <div class="people-block-head"><div><span class="people-kicker"><?= e($groupKey === 'committee' ? '02 · Community governance' : ($groupKey === 'teaching' ? '03 · Learning team' : '04 · School operations')) ?></span><h3 id="<?= $groupKey ?>-title"><?= e($groupMeta['title']) ?></h3><p><?= e($groupMeta['subtitle']) ?></p></div><span class="people-count"><?= count($groupPeople) ?> <?= count($groupPeople) === 1 ? 'profile' : 'profiles' ?></span></div>
-        <?php if ($groupPeople): ?><div class="person-grid"><?php foreach ($groupPeople as $person): ?><article class="person-card"><div class="person-avatar"><?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($person['name_en'])) ?></span><?php endif; ?></div><div class="person-card-body"><span class="person-role"><?= e($person['designation_en']) ?></span><h4><?= e($person['name_en']) ?></h4><?php if (!empty($person['name_np'])): ?><p class="person-native"><?= e($person['name_np']) ?></p><?php endif; ?><?php if (!empty($person['department']) || !empty($person['qualification'])): ?><p class="person-detail"><?= e(implode(' · ', array_filter([$person['department'] ?? '', $person['qualification'] ?? '']))) ?></p><?php endif; ?></div></article><?php endforeach; ?></div><?php else: ?><div class="people-empty"><span class="people-empty-icon">—</span><div><strong><?= e($groupMeta['title']) ?> profiles will appear here.</strong><p>Active records assigned to this category in Admin → Staff are published automatically.</p></div></div><?php endif; ?>
-      </section>
-    <?php endforeach; ?>
-  </div>
-</section>
-
-<!-- Related links -->
-<section class="section" style="background:var(--surface-low);border-top:1px solid var(--border)">
-  <div class="wrap">
-    <h3 style="font-size:1rem">Related information</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px">
-      <a href="<?= e_attr(base_url('academics.php')) ?>" class="btn btn-soft">Academics — ECD to +2 →</a>
-      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-soft">Admissions →</a>
-      <a href="<?= e_attr(base_url('contact.php')) ?>" class="btn btn-ghost">Contact &amp; directions →</a>
-      <a href="<?= e_attr(base_url('gallery.php')) ?>" class="btn btn-ghost">Gallery →</a>
+      </div>
+      <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base">
+        <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">Enrollment</div>
+        <div class="font-headline-sm text-headline-sm text-primary flex items-center">
+          <span class="material-symbols-outlined mr-2 text-secondary">groups</span> <?= e(APP_STUDENTS_DISPLAY) ?> Students
+        </div>
+      </div>
+      <div class="bg-primary-container p-6 rounded-xl shadow-ambient col-span-1 md:col-span-2">
+        <div class="font-label-md text-label-md uppercase tracking-wider mb-2 opacity-80 text-primary-fixed">Academic Coverage</div>
+        <div class="font-headline-md text-headline-md text-on-primary mb-2">ECD to Grade 12</div>
+        <div class="flex gap-2 mt-4">
+          <span class="bg-active-gold/20 text-active-gold px-3 py-1 rounded-full font-label-sm text-label-sm">+2 Science</span>
+          <span class="bg-active-gold/20 text-active-gold px-3 py-1 rounded-full font-label-sm text-label-sm">+2 Management</span>
+        </div>
+      </div>
+      <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base">
+        <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">Location</div>
+        <div class="font-body-md text-body-md text-on-surface">Malangwa-2<br>Sarlahi, Madhesh Province</div>
+      </div>
+      <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base">
+        <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">IEMIS Code</div>
+        <div class="font-headline-sm text-headline-sm text-primary font-mono bg-surface-container-low px-3 py-1 rounded inline-block mt-1"><?= e(APP_IEMIS) ?></div>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- 5. Timeline -->
+<section class="py-16 px-margin-mobile md:px-margin-desktop">
+  <div class="max-w-container-max mx-auto">
+    <h2 class="font-headline-lg text-headline-lg text-primary mb-12 text-center">Our Journey Through Time</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+      <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-outline-variant -translate-y-1/2 z-0"></div>
+      <div class="relative z-10 bg-surface-lowest p-6 rounded-xl border border-border-base shadow-sm">
+        <div class="text-active-gold font-bold text-xl mb-2">2003 BS</div>
+        <div class="text-on-surface-variant text-sm mb-1">(1947 AD)</div>
+        <p class="font-body-sm text-body-sm">Establishment of the school as a primary education center.</p>
+      </div>
+      <div class="relative z-10 bg-surface-lowest p-6 rounded-xl border border-border-base shadow-sm">
+        <div class="text-active-gold font-bold text-xl mb-2">2040 BS</div>
+        <p class="font-body-sm text-body-sm">Expansion to secondary level (Grade 10).</p>
+      </div>
+      <div class="relative z-10 bg-surface-lowest p-6 rounded-xl border border-border-base shadow-sm">
+        <div class="text-active-gold font-bold text-xl mb-2">2065 BS</div>
+        <p class="font-body-sm text-body-sm">Introduction of Higher Secondary (+2) programs.</p>
+      </div>
+      <div class="relative z-10 bg-surface-lowest p-6 rounded-xl border border-border-base shadow-sm">
+        <div class="text-active-gold font-bold text-xl mb-2">2080 BS</div>
+        <p class="font-body-sm text-body-sm">Modernization with ICT-integrated Smart Classrooms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Campus Facilities -->
+<section class="py-16 px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+  <div class="max-w-container-max mx-auto">
+    <h2 class="font-headline-lg text-headline-lg text-primary mb-12 text-center">Campus Facilities</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+      <div class="space-y-4">
+        <div class="h-48 bg-surface-container-high rounded-xl overflow-hidden">
+          <img alt="Science room" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/gallery/campus/staff-room-interior.jpg')) ?>">
+        </div>
+        <h3 class="font-headline-sm text-headline-sm text-primary">Science Laboratory</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Well-equipped for Physics, Chemistry, and Biology experiments.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="h-48 bg-surface-container-high rounded-xl overflow-hidden">
+          <img alt="ICT lab" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/gallery/campus/staff-room-computer.jpg')) ?>">
+        </div>
+        <h3 class="font-headline-sm text-headline-sm text-primary">ICT Lab</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Modern computer lab with internet access for smart learning.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="h-48 bg-surface-container-high rounded-xl overflow-hidden">
+          <img alt="Library and reading room" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/gallery/campus/headmaster-office.jpg')) ?>">
+        </div>
+        <h3 class="font-headline-sm text-headline-sm text-primary">Library</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">A collection of academic and reference books for all levels.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="h-48 bg-surface-container-high rounded-xl overflow-hidden">
+          <img alt="School courtyard and ground" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/gallery/campus/courtyard-students-formation.jpg')) ?>">
+        </div>
+        <h3 class="font-headline-sm text-headline-sm text-primary">Sports Ground</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Space for athletics, football, and community events.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Leadership & Team -->
+<section class="py-16 md:py-24 px-margin-mobile md:px-margin-desktop">
+  <div class="max-w-container-max mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Our Leadership &amp; Team</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">Guided by experienced educators and dedicated administrative staff committed to academic excellence.</p>
+    </div>
+    <h3 class="font-headline-md text-headline-md text-primary mb-6 border-b border-border-base pb-2">Leadership</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-16">
+      <div class="bg-surface rounded-xl p-6 shadow-ambient border border-border-base hover:shadow-ambient-focus transition-shadow">
+        <div class="w-24 h-24 rounded-full bg-surface-container-high mb-4 mx-auto overflow-hidden border-2 border-primary-container">
+          <img class="w-full h-full object-cover" alt="School leadership" src="<?= e_attr(base_url('uploads/gallery/staff/leadership-team-photo.jpg')) ?>">
+        </div>
+        <div class="text-center">
+          <h4 class="font-label-lg text-label-lg text-text-heading">Devbarat Prasad Patel</h4>
+          <p class="font-body-sm text-body-sm text-active-gold font-medium mt-1">Chairman / Head</p>
+        </div>
+      </div>
+      <div class="bg-surface rounded-xl p-6 shadow-ambient border border-dashed border-outline-variant flex flex-col items-center justify-center min-h-[200px] opacity-70">
+        <span class="material-symbols-outlined text-4xl text-outline mb-2">person_add</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">Principal Profile</span>
+      </div>
+      <div class="bg-surface rounded-xl p-6 shadow-ambient border border-dashed border-outline-variant flex flex-col items-center justify-center min-h-[200px] opacity-70">
+        <span class="material-symbols-outlined text-4xl text-outline mb-2">person_add</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">Vice-Principal Profile</span>
+      </div>
+    </div>
+
+    <div class="space-y-12">
+      <div>
+        <h3 class="font-headline-md text-headline-md text-primary mb-6 border-b border-border-base pb-2">Teaching Staff</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">person</span></div>
+            <div class="font-label-md text-label-md">ECD Level</div>
+            <div class="text-body-sm text-on-surface-variant">3 Educators</div>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">person</span></div>
+            <div class="font-label-md text-label-md">Basic Level</div>
+            <div class="text-body-sm text-on-surface-variant">12 Educators</div>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">person</span></div>
+            <div class="font-label-md text-label-md">Secondary Level</div>
+            <div class="text-body-sm text-on-surface-variant">8 Educators</div>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">person</span></div>
+            <div class="font-label-md text-label-md">Higher Secondary</div>
+            <div class="text-body-sm text-on-surface-variant">6 Educators</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="font-headline-md text-headline-md text-primary mb-6 border-b border-border-base pb-2">Non-Teaching &amp; Support</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">admin_panel_settings</span></div>
+            <div class="font-label-md text-label-md">Administration</div>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 flex items-center justify-center"><span class="material-symbols-outlined text-outline">cleaning_services</span></div>
+            <div class="font-label-md text-label-md">Facility Staff</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-24 bg-masthead-navy rounded-2xl p-10 md:p-16 text-center shadow-xl relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-active-gold rounded-full opacity-10 -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+      <div class="relative z-10">
+        <h2 class="font-headline-lg text-headline-lg text-on-primary mb-4">Join Our Community</h2>
+        <p class="font-body-lg text-body-lg text-primary-fixed mb-8 max-w-2xl mx-auto">Explore our academic programs or start the admission process today to become part of Shree Public Secondary School.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-3 rounded h-12 flex items-center justify-center hover:bg-tertiary-fixed-dim transition-colors" href="<?= e_attr(base_url('admissions.php')) ?>">Admissions Info</a>
+          <a class="bg-transparent border border-on-primary text-on-primary font-label-lg text-label-lg px-8 py-3 rounded h-12 flex items-center justify-center hover:bg-white/10 transition-colors" href="<?= e_attr(base_url('academics.php')) ?>">View Academics</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
 <?php require_once __DIR__.'/includes/footer.php'; ?>

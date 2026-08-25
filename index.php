@@ -1,332 +1,314 @@
 <?php
 $page = 'home';
-$title = 'Shree Public Secondary School · Malangwa-2, Sarlahi | श्री पब्लिक माध्यमिक विद्यालय';
-$description = 'Shree Public Secondary School — public community school ECD to Grade 12, +2 Science & Management (NEB). Malangwa-2, Sarlahi, Madhesh Province. IEMIS 190640003.';
+$title = 'Shree Public Secondary School — Malangwa-2, Sarlahi | श्री पब्लिक माध्यमिक विद्यालय';
+$description = 'Shree Public Secondary School — government community school in Malangwa-2, Sarlahi, Madhesh Province. ECD to Grade 12 with +2 Science & Management (NEB). IEMIS 190640003.';
+$useTailwind = true;
+require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/header.php';
-$notices = get_notices(5);
-$events = get_events(3);
-$downloads = get_downloads(6);
-$albums = get_gallery_albums(6);
-$newsItems = get_news(3);
+
+$homeNotices = get_notices(5);
+$homeEvents  = get_events(3);
+$homeDownloads = get_downloads(6);
+
+$catChip = function (?string $slug): string {
+    return match ($slug) {
+        'admission'   => 'bg-secondary-container text-on-secondary-container',
+        'examination' => 'bg-[#ffdad6] text-[#93000a]',
+        'vacancy'     => 'bg-primary-fixed text-on-primary-fixed',
+        'scholarship' => 'bg-secondary-fixed text-on-secondary-fixed',
+        'holiday'     => 'bg-tertiary-fixed text-tertiary-container',
+        default       => 'bg-surface-variant text-on-surface-variant',
+    };
+};
+$dlIcon = function (?string $type): string {
+    $t = strtoupper($type ?? '');
+    if ($t === 'PDF') return 'picture_as_pdf';
+    if ($t === 'ZIP') return 'folder_zip';
+    if ($t === 'XLSX' || $t === 'XLS') return 'table_chart';
+    if ($t === 'DOCX' || $t === 'DOC') return 'description';
+    return 'draft';
+};
 ?>
-<!-- 9.4 Hero -->
-<section class="hero">
-  <div class="hero-grid" aria-hidden="true"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-copy">
-      <span class="hero-badge"><span class="dot"></span> Community School • Malangwa-2, Sarlahi</span>
-      <h1>Shree Public<br>Secondary School <span class="accent">— Malangwa-2</span></h1>
-      <p class="np">श्री पब्लिक माध्यमिक विद्यालय</p>
-      <p class="lead">Providing public education from <strong>Early Childhood Development through Grade 12</strong> in the heart of Malangwa. <strong>1,000+ students</strong> • ECD–12 • +2 Science &amp; Management (NEB).</p>
-      <div class="hero-actions">
-        <a href="<?= e_attr(base_url('academics.php')) ?>" class="btn btn-gold">Explore Academics <svg class="ic"><use href="#i-arrow"/></svg></a>
-        <a href="<?= e_attr(base_url('notices.php')) ?>" class="btn" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22)">Latest Notices</a>
-        <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-ghost" style="background:#fff">Admission Information</a>
-      </div>
-      <div class="hero-trust">
-        <div class="trust-item"><div class="num">1,000+</div><div class="lbl">Students (ECD–12)</div></div>
-        <div class="trust-item"><div class="num">ECD–12</div><div class="lbl">Day School • Co-ed</div></div>
-        <div class="trust-item"><div class="num">IEMIS 190640003</div><div class="lbl">Public Institution</div></div>
-      </div>
-    </div>
-    <div class="hero-art">
-      <div class="art-card">
-        <img src="<?= e_attr(base_url('uploads/hero/hero-courtyard-assembly.jpg')) ?>" alt="Shree Public Secondary School — courtyard assembly with students and teachers, Malangwa-2" width="940" height="720" loading="eager" fetchpriority="high">
-      </div>
-      <div class="art-chip chip-a"><svg class="ic"><use href="#i-grad"/></svg><span>1,000+ Students<small>ECD to Grade 12</small></span></div>
-      <div class="art-chip chip-b"><svg class="ic"><use href="#i-book"/></svg><span>+2 Science &amp; Management<small>NEB affiliated</small></span></div>
-      <div class="art-chip chip-c"><svg class="ic"><use href="#i-pin"/></svg><span>Malangwa-2, Sarlahi<small>VH24+22W · 26.8501, 85.5550</small></span></div>
-    </div>
-  </div>
-</section>
+<div class="bg-bg-surface font-body-md text-on-surface antialiased">
 
-<!-- 9.5 Quick Action Panel — 6 links -->
-<section class="quick section" style="padding:18px 0 0">
-  <div class="wrap">
-    <div class="quick-grid">
-      <a class="qa-card" href="<?= e_attr(base_url('notices.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-bell"/></svg></span><span class="qa-text"><h3>Latest Notices</h3><p>Circulars &amp; announcements</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-      <a class="qa-card" href="<?= e_attr(base_url('results.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-search"/></svg></span><span class="qa-text"><h3>Exam Results</h3><p>SEE &amp; +2 results</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-      <a class="qa-card" href="<?= e_attr(base_url('admissions.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-grad"/></svg></span><span class="qa-text"><h3>Admission</h3><p>ECD to +2 inquiry</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-      <a class="qa-card" href="<?= e_attr(base_url('downloads.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-download"/></svg></span><span class="qa-text"><h3>Downloads</h3><p>Forms &amp; routines</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-      <a class="qa-card" href="<?= e_attr(base_url('academic-calendar.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-calendar"/></svg></span><span class="qa-text"><h3>Academic Calendar</h3><p>Year 2082 BS</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-      <a class="qa-card" href="<?= e_attr(base_url('contact.php')) ?>"><span class="qa-icon"><svg class="ic"><use href="#i-phone"/></svg></span><span class="qa-text"><h3>Contact School</h3><p>Visit &amp; directions</p></span><svg class="ic arrow"><use href="#i-arrow"/></svg></a>
-    </div>
+<!-- Hero Section -->
+<section class="relative bg-primary overflow-hidden">
+  <div class="absolute inset-0 opacity-40">
+    <img alt="Shree Public Secondary School campus" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
+    <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
   </div>
-</section>
-
-<!-- 9.6 School At A Glance -->
-<section class="stats">
-  <div class="wrap">
-    <div class="stats-grid">
-      <div class="stat"><div class="num">1,000+</div><div class="lbl">Students</div><div class="sub">ECD–12 • Co-ed</div></div>
-      <div class="stat"><div class="num">ECD–12</div><div class="lbl">Education</div><div class="sub">Day School</div></div>
-      <div class="stat"><div class="num">2</div><div class="lbl">+2 Streams</div><div class="sub">Science • Management</div></div>
-      <div class="stat"><div class="num">190640003</div><div class="lbl">IEMIS Code</div><div class="sub">Public Institution</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- 9.7 About Preview -->
-<section class="section">
-  <div class="wrap">
-    <div class="about-grid">
-      <div class="about-copy">
-        <span class="eyebrow"><span class="dot"></span> About Our School</span>
-        <h2 style="margin:12px 0 14px">Education rooted in our community</h2>
-        <p><strong>Shree Public Secondary School</strong> is a public / community institution in <strong>Malangwa Municipality-2, Sarlahi</strong>, Madhesh Province, serving students from <strong>ECD through Grade 12</strong>. Located in the heart of Malangwa (Plus Code VH24+22W), the school plays a central role in local public education — most families in the municipality can complete the full school journey, from early childhood to higher secondary, close to home.</p>
-        <p>As a government-recognised community school (IEMIS 190640003), it implements the national curriculum of the Curriculum Development Centre, prepares students for the Secondary Education Examination (SEE) at Grade 10, and offers <strong>+2 Science</strong> and <strong>+2 Management</strong> under the National Examinations Board at Grades 11–12. Around 1,000+ students study across all levels on one campus.</p>
-        <p>The school also serves as a venue for municipal and community programmes and publishes its official information — notices, calendars, results and documents — openly through this website.</p>
-        <div class="about-quote">Public • Community School • Malangwa-2 • ECD–12 • +2 Science &amp; Management • IEMIS 190640003</div>
-        <a href="<?= e_attr(base_url('about.php')) ?>" class="btn btn-primary">Discover Our School <svg class="ic"><use href="#i-arrow"/></svg></a>
+  <div class="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="text-white space-y-6">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-active-gold animate-pulse"></span>
+        <span class="font-label-md text-label-md text-active-gold">Admissions Open 2082</span>
       </div>
-      <div class="about-media">
-        <img src="<?= e_attr(base_url('uploads/about/campus-building-aerial.jpg')) ?>" alt="Shree Public Secondary School — campus building aerial view, Malangwa-2" loading="lazy" width="800" height="600">
-        <div class="about-media-cap">Campus view — Shree Public Secondary School, Malangwa-2, Sarlahi</div>
+      <h1 class="font-display-lg text-display-lg text-white leading-tight max-md:text-4xl">Shree Public Secondary School — <span class="text-active-gold">Malangwa-2</span></h1>
+      <p class="font-body-lg text-body-lg text-surface-container-highest max-w-xl">
+        Providing public education from Early Childhood Development through Grade 12 in the heart of Malangwa. <?= e(APP_STUDENTS_DISPLAY) ?> students • ECD–12 • +2 Science &amp; Management (NEB).
+      </p>
+      <div class="flex flex-wrap gap-4 pt-4">
+        <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] shadow-lg shadow-active-gold/20 inline-flex items-center">Apply for Admission</a>
+        <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-transparent border-2 border-white text-white font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-white/10 transition-all min-h-[44px] inline-flex items-center">Explore Programs</a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 lg:ml-auto">
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+        <span class="font-headline-lg text-headline-lg text-active-gold"><?= e(APP_STUDENTS_DISPLAY) ?></span>
+        <span class="font-label-md text-label-md text-white mt-1">Students</span>
+      </div>
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+        <span class="font-headline-lg text-headline-lg text-active-gold">45+</span>
+        <span class="font-label-md text-label-md text-white mt-1">Qualified Teachers</span>
+      </div>
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+        <span class="font-headline-lg text-headline-lg text-active-gold">1947</span>
+        <span class="font-label-md text-label-md text-white mt-1">Established</span>
+      </div>
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+        <span class="font-headline-lg text-headline-lg text-active-gold">98%</span>
+        <span class="font-label-md text-label-md text-white mt-1">Pass Rate</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 9.8 Principal / Head Teacher Message — rendered only when verified & enabled in CMS -->
-<?php $showPrincipal = setting('show_principal','0') === '1'; ?>
-<?php if ($showPrincipal): ?><section class="principal section">
-  <div class="wrap">
-    <div class="principal-grid">
-      <div class="principal-photo"><img src="<?= e_attr(setting('principal_photo','')) ?>" alt="Head Teacher" loading="lazy" onerror="this.parentElement.classList.add('principal-photo-placeholder');this.remove()"></div>
-      <div class="principal-copy">
-        <div class="role">Message from the Head Teacher</div>
-        <h3><?= e(setting('principal_name','Head Teacher')) ?></h3>
-        <div class="principal-msg"><?= nl2br(e(setting('principal_message_en',''))) ?></div>
-        <a href="<?= e_attr(base_url('about.php#leadership')) ?>" class="btn btn-soft" style="margin-top:16px">Read Full Message →</a>
+<!-- About Section -->
+<section class="py-16 md:py-24 bg-surface max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+  <div class="max-w-3xl mx-auto text-center space-y-6">
+    <h2 class="font-headline-lg text-headline-lg text-primary">About Our School</h2>
+    <p class="font-body-lg text-body-lg text-on-surface-variant">
+      Shree Public Secondary School is a government-recognised community educational institution situated in the heart of Malangwa Municipality-2, Sarlahi District, Madhesh Province. Registered under IEMIS Code <?= e(APP_IEMIS) ?>, our school plays a central role in providing accessible education to the local community. We offer formal education from Early Childhood Development (ECD) up to Grade 12, following the National Examination Board (NEB) curriculum.
+    </p>
+  </div>
+</section>
+
+<!-- Quick Access Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-8 relative z-10">
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('citizen-charter.php')) ?>">
+      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">description</span></div>
+      <h3 class="font-label-lg text-label-lg text-text-heading">Citizen Charter</h3>
+    </a>
+    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('notices.php')) ?>">
+      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">campaign</span></div>
+      <h3 class="font-label-lg text-label-lg text-text-heading">Notices</h3>
+    </a>
+    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('results.php')) ?>">
+      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">assignment_turned_in</span></div>
+      <h3 class="font-label-lg text-label-lg text-text-heading">Result Search</h3>
+    </a>
+    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('downloads.php')) ?>">
+      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">download</span></div>
+      <h3 class="font-label-lg text-label-lg text-text-heading">Downloads</h3>
+    </a>
+    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform col-span-2 md:col-span-1" href="<?= e_attr(base_url('academic-calendar.php')) ?>">
+      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">calendar_month</span></div>
+      <h3 class="font-label-lg text-label-lg text-text-heading">Calendar</h3>
+    </a>
+  </div>
+</section>
+
+<!-- Notices & Events -->
+<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-7 space-y-6">
+    <div class="flex justify-between items-end border-b-2 border-border-base pb-4">
+      <div>
+        <h2 class="font-headline-lg text-headline-lg text-primary">Notice Board</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant">Latest updates from the administration</p>
       </div>
+      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('notices.php')) ?>">View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
     </div>
-  </div>
-</section>
-<?php endif; ?>
-
-<!-- 9.9 Academic Programs -->
-<section class="section">
-  <div class="wrap">
-    <div class="section-head center">
-      <span class="eyebrow"><span class="dot"></span> Learning Pathways</span>
-      <h2>From early childhood to higher secondary — one continuum</h2>
-      <p>Four stages leading to +2 Science and Management under NEB.</p>
-    </div>
-    <div class="acad-grid">
-      <article class="acad-card"><span class="acad-tag">ECD</span><div class="acad-photo"><img src="<?= e_attr(base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>" alt="ECD children at Shree Public Secondary School" loading="lazy"></div><div class="acad-top"><span class="acad-icon"><svg class="ic"><use href="#i-star"/></svg></span><div><h3>Early Childhood</h3><p class="acad-level">ECD / Nursery</p></div></div><p>Play-based foundation for our youngest learners — the entry point to basic education.</p><a href="<?= e_attr(base_url('academics.php#ecd')) ?>" class="btn btn-soft" style="margin-top:12px">Learn more</a></article>
-      <article class="acad-card"><span class="acad-tag">Basic</span><div class="acad-photo"><img src="<?= e_attr(base_url('uploads/gallery/campus/courtyard-students-formation.jpg')) ?>" alt="Primary students at Shree Public Secondary School" loading="lazy"></div><div class="acad-top"><span class="acad-icon alt"><svg class="ic"><use href="#i-book"/></svg></span><div><h3>Basic Level</h3><p class="acad-level">Grades 1–8</p></div></div><p>Foundational literacy, numeracy and community-rooted learning across eight grades.</p><a href="<?= e_attr(base_url('academics.php#basic')) ?>" class="btn btn-soft" style="margin-top:12px">Learn more</a></article>
-      <article class="acad-card"><span class="acad-tag">Secondary</span><div class="acad-photo"><img src="<?= e_attr(base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg')) ?>" alt="Secondary students at Shree Public Secondary School" loading="lazy"></div><div class="acad-top"><span class="acad-icon"><svg class="ic"><use href="#i-grad"/></svg></span><div><h3>Secondary</h3><p class="acad-level">Grades 9–10</p></div></div><p>Preparation for the Secondary Education Examination (SEE) and next-step pathways.</p><a href="<?= e_attr(base_url('academics.php#secondary')) ?>" class="btn btn-soft" style="margin-top:12px">Learn more</a></article>
-      <article class="acad-card"><span class="acad-tag">+2 NEB</span><div class="acad-photo"><img src="<?= e_attr(base_url('uploads/hero/hero-main-gate-jubilee.jpg')) ?>" alt="Higher secondary at Shree Public Secondary School" loading="lazy"></div><div class="acad-top"><span class="acad-icon gold"><svg class="ic"><use href="#i-flask"/></svg></span><div><h3>Higher Secondary</h3><p class="acad-level">Grades 11–12</p></div></div><p><strong>Science</strong> • <strong>Management</strong> — National Examinations Board programs.</p><a href="<?= e_attr(base_url('science.php')) ?>" class="btn btn-soft" style="margin-top:12px;margin-right:8px">+2 Science →</a><a href="<?= e_attr(base_url('management.php')) ?>" class="btn btn-ghost" style="margin-top:12px">+2 Management →</a></article>
-    </div>
-  </div>
-</section>
-
-<!-- 9.10 Notice & Information Centre -->
-<section class="notice-centre section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow"><span class="dot"></span> Official Information</span>
-      <h2>Notice &amp; Information Centre</h2>
-      <p>The functional heart of the homepage — latest official notices plus important links.</p>
-    </div>
-    <div class="notice-layout">
-      <div class="notice-main">
-        <h3>Latest Notices <span class="count"><?= count($notices) ?></span></h3>
-        <?php if (empty($notices)): ?>
-          <div class="empty"><svg class="ic"><use href="#i-info"/></svg><h4>No notices published yet</h4><p>Official notices will appear here as soon as the school office publishes them.</p></div>
-        <?php else: foreach ($notices as $n): $isUrgent = !empty($n['is_urgent']); $isPinned = !empty($n['is_pinned']); $cat = $n['cat_en'] ?? $n['category'] ?? 'General'; $title = (current_lang()==='np' && !empty($n['title_np'])) ? $n['title_np'] : $n['title_en']; $summary = (current_lang()==='np' && !empty($n['summary_np'])) ? $n['summary_np'] : ($n['summary_en'] ?? ''); $date = strtotime($n['published_at']); ?>
-          <article class="notice-card <?= $isPinned?'pinned':'' ?>">
-            <div class="notice-date"><span class="d"><?= date('d',$date) ?></span><span class="m"><?= date('M',$date) ?></span></div>
-            <div class="notice-body">
-              <h4><a href="<?= e_attr(base_url('notice.php?slug='.$n['slug'])) ?>"><?= e($title) ?></a></h4>
-              <?php if($summary): ?><p><?= e($summary) ?></p><?php endif; ?>
-              <div class="notice-meta">
-                <span class="tag <?= $isUrgent?'urgent':'' ?>"><?= $isUrgent?'Urgent • ':'' ?><?= e($cat) ?></span>
-                <?php if(!empty($n['is_sample'])): ?><span class="tag" style="background:var(--gold-50);border-color:#FDE68A;color:#6B4F00">Sample</span><?php endif; ?>
-                <?php if($isPinned): ?><span class="tag pinned">Pinned</span><?php endif; ?>
-                <?php if(!empty($n['reference_number'])): ?><span style="color:var(--muted)">Ref: <?= e($n['reference_number']) ?></span><?php endif; ?>
-                <?php if(!empty($n['attachment_type'])): ?><span style="display:inline-flex;align-items:center;gap:4px;color:var(--muted)"><svg class="ic" style="width:14px;height:14px"><use href="#i-doc"/></svg> <?= strtoupper(e($n['attachment_type'])) ?></span><?php endif; ?>
-                <a href="<?= e_attr(base_url('notice.php?slug='.$n['slug'])) ?>" style="margin-left:auto;font-weight:700;color:var(--primary)">View →</a>
-              </div>
-            </div>
-          </article>
+    <div class="bg-surface-lowest rounded-xl soft-shadow border border-border-base overflow-hidden">
+      <ul class="divide-y divide-border-base">
+        <?php if (empty($homeNotices)): ?>
+        <li class="p-8 text-center text-on-surface-variant font-body-md">No notices published yet. Check back soon.</li>
+        <?php else: foreach ($homeNotices as $n):
+          $ts = strtotime($n['published_at'] ?? 'now');
+        ?>
+        <li class="p-5 hover:bg-surface-container-low transition-colors flex gap-4 items-start">
+          <div class="<?= !empty($n['is_pinned']) ? 'bg-primary-container text-white' : 'bg-surface-dim text-primary' ?> rounded-lg p-2 text-center min-w-[70px] shrink-0">
+            <span class="block font-label-sm text-[10px] uppercase"><?= e(date('M', $ts)) ?></span>
+            <span class="block font-headline-md text-headline-md"><?= e(date('j', $ts)) ?></span>
+          </div>
+          <div class="flex-1">
+            <span class="inline-block font-label-sm text-[11px] px-2 py-0.5 rounded-full mb-2 <?= $catChip($n['cat_slug'] ?? null) ?>"><?= e($n['cat_en'] ?? 'General') ?></span>
+            <h3 class="font-label-lg text-label-lg text-text-heading leading-tight mb-1"><a class="hover:text-secondary" href="<?= e_attr(base_url('notice.php?slug=' . urlencode($n['slug']))) ?>"><?= e($n['title_en']) ?></a></h3>
+          </div>
+        </li>
         <?php endforeach; endif; ?>
-        <a href="<?= e_attr(base_url('notices.php')) ?>" class="btn btn-primary" style="margin-top:12px">View Complete Notice Board <svg class="ic"><use href="#i-arrow"/></svg></a>
-      </div>
-      <div class="notice-side">
-        <h3>Important Links</h3>
-        <div class="side-links">
-          <a class="side-link" href="<?= e_attr(base_url('citizen-charter.php')) ?>"><svg class="ic"><use href="#i-doc"/></svg> Citizen Charter <span style="margin-left:auto;color:var(--muted-2)">→</span></a>
-          <a class="side-link" href="<?= e_attr(base_url('downloads.php')) ?>"><svg class="ic"><use href="#i-download"/></svg> Downloads Centre</a>
-          <a class="side-link" href="<?= e_attr(base_url('results.php')) ?>"><svg class="ic"><use href="#i-search"/></svg> Result Search</a>
-          <a class="side-link" href="<?= e_attr(base_url('academic-calendar.php')) ?>"><svg class="ic"><use href="#i-calendar"/></svg> Academic Calendar</a>
-          <a class="side-link" href="<?= e_attr(base_url('scholarships.php')) ?>"><svg class="ic"><use href="#i-award"/></svg> Scholarships</a>
-          <a class="side-link" href="<?= e_attr(base_url('links.php')) ?>"><svg class="ic"><use href="#i-book"/></svg> Government Links</a>
-        </div>
-        <div class="verify-banner" style="margin-top:16px"><svg class="ic"><use href="#i-info"/></svg><span>Notices support Nepali titles, pinned/urgent flags, expiry dates and PDF attachments — managed in Admin → Notices.</span></div>
-      </div>
+      </ul>
     </div>
   </div>
-</section>
-
-<!-- 9.11 Latest News & Events -->
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow"><span class="dot"></span> News &amp; Events</span>
-      <h2>Campus life, separate from official notices</h2>
-      <p>News celebrates activity; notices carry official information — they are not mixed.</p>
-    </div>
-    <div class="news-grid">
+  <div class="lg:col-span-5 space-y-6">
+    <div class="flex justify-between items-end border-b-2 border-border-base pb-4">
       <div>
-        <h3 style="font-size:1rem;margin-bottom:12px">Latest News</h3>
-        <?php if (empty($newsItems)): ?>
-          <div class="empty" style="margin-bottom:12px"><svg class="ic"><use href="#i-pen"/></svg><h4>No news published yet</h4><p>Reports of completed school activities — academic, community, sports and cultural — will appear here once published by the school.</p></div>
-          <a href="<?= e_attr(base_url('news.php')) ?>" class="btn btn-soft">About the News section →</a>
-        <?php else: ?>
-        <div style="display:grid;gap:14px">
-          <?php foreach ($newsItems as $nw): $cat = $nw['cat_en'] ?? 'News'; $ttl = (current_lang()==='np' && !empty($nw['title_np'])) ? $nw['title_np'] : $nw['title_en']; $excerpt = (current_lang()==='np' && !empty($nw['excerpt_np'])) ? $nw['excerpt_np'] : ($nw['excerpt_en'] ?? ''); $d=strtotime($nw['published_at']); ?>
-          <article class="news-card" style="display:flex;gap:0;flex-direction:row">
-            <?php if(!empty($nw['cover_image'])): ?><div class="news-thumb" style="width:160px;flex:none;height:auto;min-height:120px"><img src="<?= e_attr(base_url('uploads/'.ltrim($nw['cover_image'],'/'))) ?>" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div><?php endif; ?>
-            <div class="news-body" style="flex:1">
-              <div class="news-meta"><span><?= e($cat) ?></span><span>•</span><span><?= e(date('M j, Y',$d)) ?></span></div>
-              <h3><?= e($ttl) ?></h3>
-              <?php if($excerpt): ?><p><?= e($excerpt) ?></p><?php endif; ?>
-              <a href="<?= e_attr(base_url('news.php')) ?>" style="font-weight:700;color:var(--primary);font-size:.84rem;margin-top:8px;display:inline-flex">Read more →</a>
-            </div>
-          </article>
-          <?php endforeach; ?>
+        <h2 class="font-headline-lg text-headline-lg text-primary">Upcoming Events</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant">Mark your calendar</p>
+      </div>
+      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('events.php')) ?>">All Events <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+    </div>
+    <div class="grid grid-cols-1 gap-4">
+      <?php if (empty($homeEvents)): ?>
+      <div class="bg-primary-container rounded-xl p-6 text-white soft-shadow font-body-md">No upcoming events right now.</div>
+      <?php else: foreach ($homeEvents as $ev): ?>
+      <a href="<?= e_attr(base_url('events.php')) ?>" class="bg-primary-container rounded-xl p-5 text-white flex flex-col justify-between soft-shadow hover:bg-masthead-navy transition-colors">
+        <div>
+          <span class="material-symbols-outlined text-active-gold mb-2 text-[32px]">event</span>
+          <h4 class="font-label-lg text-label-lg leading-tight"><?= e($ev['title_en'] ?? '') ?></h4>
+          <p class="font-body-sm text-body-sm text-primary-fixed mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_month</span> <?= e(date('M j, Y', strtotime($ev['event_date']))) ?></p>
+          <?php if (!empty($ev['location_en'])): ?><p class="font-body-sm text-body-sm text-primary-fixed mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> <?= e($ev['location_en']) ?></p><?php endif; ?>
         </div>
-        <a href="<?= e_attr(base_url('news.php')) ?>" class="btn btn-soft" style="margin-top:14px">View All News</a>
-        <?php endif; ?>
-      </div>
-      <div>
-        <h3 style="font-size:1rem;margin-bottom:12px">Upcoming Events</h3>
-        <div class="event-list">
-          <?php foreach ($events as $ev): $d=strtotime($ev['event_date']); ?>
-          <article class="event-card">
-            <div class="event-date"><span class="d"><?= date('d',$d) ?></span><span class="m"><?= date('M',$d) ?></span></div>
-            <div class="event-body"><h4><?= e(current_lang()==='np' && !empty($ev['title_np']) ? $ev['title_np'] : $ev['title_en']) ?></h4><p><?= e($ev['location_en'] ?? '') ?><?php if(!empty($ev['event_time'])): ?> • <?= e($ev['event_time']) ?><?php endif; ?></p><p style="margin-top:4px"><?= e($ev['summary_en'] ?? '') ?></p></div>
-          </article>
-          <?php endforeach; ?>
-          <?php if(empty($events)): ?><div class="empty"><h4>No upcoming events</h4><p>Events, trainings and celebrations will be published here.</p></div><?php endif; ?>
+      </a>
+      <?php endforeach; endif; ?>
+    </div>
+  </div>
+</section>
+
+<!-- Academic Programs -->
+<section class="bg-surface py-16 md:py-24 border-y border-border-base">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Learning Pathways</h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant">Comprehensive educational pathways designed to nurture potential at every stage of development.</p>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6">
+      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
+        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">child_care</span></div>
+        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">ECD</h3>
+        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Early Childhood</div>
+      </a>
+      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
+        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">menu_book</span></div>
+        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">Basic Level</h3>
+        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Grades 1-8</div>
+      </a>
+      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
+        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">school</span></div>
+        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">Secondary Level</h3>
+        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Grades 9-10</div>
+      </a>
+      <a href="<?= e_attr(base_url('science.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border-2 border-primary-container relative group block">
+        <div class="w-12 h-12 bg-primary-container rounded-xl flex items-center justify-center mb-4 text-white group-hover:bg-masthead-navy transition-colors"><span class="material-symbols-outlined text-[24px]">science</span></div>
+        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">+2 NEB</h3>
+        <div class="flex gap-2 mb-3 flex-wrap">
+          <div class="bg-primary-fixed text-on-primary-fixed font-label-sm inline-block px-3 py-1 rounded-full">Science</div>
+          <a href="<?= e_attr(base_url('management.php')) ?>" class="bg-primary-fixed text-on-primary-fixed font-label-sm inline-block px-3 py-1 rounded-full hover:bg-secondary-fixed">Management</a>
         </div>
-        <a href="<?= e_attr(base_url('events.php')) ?>" class="btn btn-ghost" style="margin-top:14px;width:100%">View Events Calendar</a>
-      </div>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- 9.12 Why Our School / Educational Commitment -->
-<section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <div class="wrap">
-    <div class="section-head center">
-      <span class="eyebrow"><span class="dot"></span> Educational Commitment</span>
-      <h2>What we stand for — verified, not advertised</h2>
-      <p>Each commitment below is CMS-controlled. Facilities appear only after verification.</p>
+<!-- Why Choose Us -->
+<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Educational Commitment</h2>
+    <p class="font-body-lg text-body-lg text-on-surface-variant">Verified, not advertised.</p>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="flex gap-4 p-4 items-center">
+      <span class="material-symbols-outlined text-active-gold text-[32px]">volunteer_activism</span>
+      <h4 class="font-label-lg text-label-lg text-text-heading">National Curriculum</h4>
     </div>
-    <div class="commit-grid">
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>Inclusive Public Education</h4><p>A community school serving all families in Malangwa-2 — co-educational, day school, ECD to Grade 12.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>National Curriculum</h4><p>Teaching follows the CDC national curriculum, with SEE at Grade 10 and NEB examinations at +2.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>Two NEB Streams</h4><p>+2 Science and +2 Management — higher secondary without leaving the community.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>One Campus, Full Journey</h4><p>Students progress from early childhood to Grade 12 on a single campus in central Malangwa.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>Community Engagement</h4><p>Venue for municipal and community programmes — e.g., 16-Day Campaign venue, Nov 2025.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-check"/></svg><div><h4>Open Information</h4><p>Notices, calendars, results and documents published openly on this website for students, parents and citizens.</p></div></div>
-      <div class="commit-item"><svg class="ic"><use href="#i-award"/></svg><div><h4>Student Support</h4><p>Scholarship notices and guidance — see the Scholarships page for verified announcements.</p></div></div>
-      <div class="commit-item pending"><svg class="ic"><use href="#i-star"/></svg><div><h4>Facilities Directory</h4><p>Lab, library and sports details are listed only after verification by the school administration.</p></div></div>
+    <div class="flex gap-4 p-4 items-center">
+      <span class="material-symbols-outlined text-active-gold text-[32px]">workspace_premium</span>
+      <h4 class="font-label-lg text-label-lg text-text-heading">Two NEB Streams</h4>
+    </div>
+    <div class="flex gap-4 p-4 items-center">
+      <span class="material-symbols-outlined text-active-gold text-[32px]">biotech</span>
+      <h4 class="font-label-lg text-label-lg text-text-heading">Community Focus</h4>
+    </div>
+    <div class="flex gap-4 p-4 items-center">
+      <span class="material-symbols-outlined text-active-gold text-[32px]">handshake</span>
+      <h4 class="font-label-lg text-label-lg text-text-heading">Government Oversight</h4>
     </div>
   </div>
 </section>
 
-<!-- 9.13 Photo Story / Gallery -->
-<section class="section">
-  <div class="wrap">
-    <div class="section-head center">
-      <span class="eyebrow"><span class="dot"></span> Life at School</span>
-      <h2>Life at Shree Public Secondary School</h2>
-      <p>Authentic moments — placeholders until original school photographs are supplied.</p>
+<!-- Resources/Downloads -->
+<section class="bg-surface-container-low py-16 md:py-24 border-y border-border-base">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <div class="flex justify-between items-end border-b-2 border-border-base pb-4 mb-8">
+      <h2 class="font-headline-lg text-headline-lg text-primary">Resources &amp; Downloads</h2>
+      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('downloads.php')) ?>">View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
     </div>
-    <div class="gallery-grid">
-      <?php $first = array_shift($albums); if($first): ?>
-      <a class="g-tile span2" href="<?= e_attr(base_url('gallery.php#'.$first['slug'])) ?>"><img src="<?= e_attr($first['cover']) ?>" alt="<?= e_attr($first['title_en']) ?>" loading="lazy"><span class="cap"><?= e($first['title_en']) ?> <small>Album • photos being updated</small></span></a>
-      <?php endif; ?>
-      <?php foreach ($albums as $alb): ?>
-      <a class="g-tile" href="<?= e_attr(base_url('gallery.php#'.$alb['slug'])) ?>"><img src="<?= e_attr($alb['cover']) ?>" alt="<?= e_attr($alb['title_en']) ?>" loading="lazy"><span class="cap"><?= e($alb['title_en']) ?> <small>Album</small></span></a>
-      <?php endforeach; ?>
-    </div>
-    <div style="text-align:center;margin-top:18px"><a href="<?= e_attr(base_url('gallery.php')) ?>" class="btn btn-primary">Explore Gallery <svg class="ic"><use href="#i-arrow"/></svg></a></div>
-  </div>
-</section>
-
-<!-- 9.14 Downloads & Resources -->
-<section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow"><span class="dot"></span> Resources</span>
-      <h2>Downloads &amp; Resources</h2>
-      <p>Forms, routines, calendars and official documents — one place, always current.</p>
-    </div>
-    <div class="download-list">
-      <?php foreach ($downloads as $dl): ?>
-      <div class="dl-row">
-        <span class="dl-icon"><svg class="ic"><use href="#i-doc"/></svg></span>
-        <div class="dl-body"><h4><?= e(current_lang()==='np' && !empty($dl['title_np']) ? $dl['title_np'] : $dl['title_en']) ?></h4><div class="dl-meta"><span><?= e($dl['cat_en'] ?? $dl['category'] ?? 'Document') ?></span><span>•</span><span><?= e($dl['published_at']) ?></span><span>•</span><span><?= e($dl['file_size'] ?? '') ?> <?= e($dl['file_type'] ?? 'PDF') ?></span><?php if(!empty($dl['is_sample'])): ?><span style="background:var(--gold-50);border:1px solid #FDE68A;color:#6B4F00;padding:2px 8px;border-radius:999px;font-weight:700">Sample</span><?php endif; ?></div></div>
-        <div class="dl-actions"><a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-soft">View</a><a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-ghost">Download</a></div>
-      </div>
-      <?php endforeach; ?>
-      <?php if(empty($downloads)): ?><div class="empty"><h4>No documents yet</h4><p>Academic calendar, routines and forms will be published here.</p></div><?php endif; ?>
-    </div>
-    <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-primary" style="margin-top:16px">Browse All Downloads</a>
-  </div>
-</section>
-
-<!-- 9.15 Government & Educational Links -->
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow"><span class="dot"></span> Official Resources</span>
-      <h2>Government &amp; Educational Links</h2>
-      <p>External portals — open in new tabs, clearly marked.</p>
-    </div>
-    <div class="gov-grid">
-      <a class="gov-link" href="https://moest.gov.np" target="_blank" rel="noopener">Ministry of Education, Science &amp; Technology <span class="ext">external ↗</span></a>
-      <a class="gov-link" href="https://cehrd.gov.np" target="_blank" rel="noopener">CEHRD <span class="ext">external ↗</span></a>
-      <a class="gov-link" href="https://neb.gov.np" target="_blank" rel="noopener">National Examinations Board <span class="ext">external ↗</span></a>
-      <a class="gov-link" href="https://cdc.gov.np" target="_blank" rel="noopener">Curriculum Development Centre <span class="ext">external ↗</span></a>
-      <a class="gov-link" href="https://see.gov.np" target="_blank" rel="noopener">SEE <span class="ext">external ↗</span></a>
-      <a class="gov-link" href="https://malangwamun.gov.np" target="_blank" rel="noopener">Malangwa Municipality <span class="ext">external ↗</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- 9.16 Contact & Map -->
-<section class="section" style="background:#fff;border-top:1px solid var(--border)">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow"><span class="dot"></span> Visit Us</span>
-      <h2>Visit Our School</h2>
-      <p>Malangwa-2, Sarlahi — with map and directions.</p>
-    </div>
-    <div class="contact-grid">
-      <div class="map-wrap">
-        <iframe src="https://www.google.com/maps?q=<?= e_attr(APP_MAP_QUERY) ?>&z=16&output=embed&hl=en" title="Map — Shree Public Secondary School, Malangwa-2 (VH24+22W)" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-        <a class="map-fab" href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> Get Directions — VH24+22W</a>
-      </div>
-      <div class="contact-info">
-        <div class="contact-cards">
-          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-pin"/></svg></span><div><h4>Address</h4><p>Shree Public Secondary School<br>Malangwa-2, Sarlahi<br>Madhesh Province 45800, Nepal<br><span style="font-size:.82rem;color:var(--primary)">VH24+22W · 26.8501032, 85.555064</span></p></div></div>
-          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-phone"/></svg></span><div><h4>Call</h4><?php if(APP_PHONE): ?><a class="tel" href="tel:<?= e_attr(APP_PHONE) ?>"><?= e(APP_PHONE) ?></a><?php else: ?><p><em style="color:var(--muted)">Phone — to be verified by school. Contact form below.</em></p><?php endif; ?><p style="font-size:.82rem;margin-top:6px">Office hours: <?= APP_OFFICE_HOURS ? e(APP_OFFICE_HOURS) : '<em>to be confirmed</em>' ?></p></div></div>
-          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-mail"/></svg></span><div><h4>Email</h4><p><?= APP_EMAIL ? e(APP_EMAIL) : '<em>to be confirmed — not published until verified</em>' ?></p></div></div>
-          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-clock"/></svg></span><div><h4>IEMIS Code</h4><p><strong>190640003</strong> — Public Educational Institution</p></div></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <?php if (empty($homeDownloads)): ?>
+      <div class="bg-surface-lowest p-5 rounded-xl border border-border-base font-body-md text-on-surface-variant">Documents will be published soon.</div>
+      <?php else: foreach ($homeDownloads as $d): ?>
+      <a href="<?= e_attr(!empty($d['file_path']) ? base_url($d['file_path']) : base_url('downloads.php')) ?>" class="bg-surface-lowest p-5 rounded-xl border border-border-base flex items-start gap-4 hover:border-primary-container transition-colors" <?= !empty($d['file_path']) ? 'download' : '' ?>>
+        <span class="material-symbols-outlined text-secondary text-[32px]"><?= $dlIcon($d['file_type'] ?? null) ?></span>
+        <div>
+          <h4 class="font-label-lg text-label-lg text-text-heading"><?= e($d['title_en'] ?? '') ?></h4>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1"><?= e($d['file_size'] ?? '') ?><?= !empty($d['file_size']) ? ' • ' : '' ?>Updated <?= e(date('Y-m-d', strtotime($d['published_at'] ?? 'now'))) ?></p>
         </div>
-        <div class="c-actions">
-          <?php if(APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>" class="btn btn-primary">Call School</a><?php endif; ?>
-          <a href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
-          <a href="<?= e_attr(base_url('contact.php')) ?>" class="btn btn-soft">Message School</a>
-        </div>
+      </a>
+      <?php endforeach; endif; ?>
+    </div>
+  </div>
+</section>
+
+<!-- Head Teacher Quote -->
+<section class="bg-primary-container text-white py-16">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+      <div class="w-32 h-32 md:w-48 md:h-48 shrink-0 relative">
+        <div class="absolute inset-0 bg-active-gold rounded-full translate-x-2 translate-y-2"></div>
+        <img alt="Head Teacher" class="w-full h-full object-cover rounded-full relative z-10 border-4 border-primary-container" src="<?= e_attr(base_url('uploads/gallery/staff/leadership-team-photo.jpg')) ?>">
+      </div>
+      <div class="text-center md:text-left flex-1">
+        <span class="material-symbols-outlined text-active-gold text-[48px] opacity-50 mb-4 block">format_quote</span>
+        <p class="font-headline-sm text-headline-sm font-normal italic mb-6 leading-relaxed">
+          "Our mission is to provide an inclusive, high-quality education that empowers students from all backgrounds to become responsible citizens and future leaders. We invite you to be a part of our growing community."
+        </p>
+        <h4 class="font-label-lg text-label-lg text-white">Devbarat Prasad Patel</h4>
+        <p class="font-body-sm text-body-sm text-primary-fixed">Head Teacher, Shree Public Secondary School</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Gallery (Masonry Grid) -->
+<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+  <div class="flex justify-between items-end mb-8">
+    <h2 class="font-headline-lg text-headline-lg text-primary">Campus Life</h2>
+    <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('gallery.php')) ?>">View Gallery <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
+    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="col-span-2 row-span-2 rounded-xl overflow-hidden soft-shadow relative group">
+      <img alt="School building and entrance" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>">
+      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <span class="text-white font-label-lg border-2 border-white px-4 py-2 rounded-lg">Campus &amp; Classrooms</span>
+      </div>
+    </a>
+    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="rounded-xl overflow-hidden soft-shadow group relative">
+      <img alt="ICT lab" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/staff-room-computer.jpg')) ?>">
+    </a>
+    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="rounded-xl overflow-hidden soft-shadow group relative">
+      <img alt="School assembly" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg')) ?>">
+    </a>
+    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="col-span-2 rounded-xl overflow-hidden soft-shadow group relative">
+      <img alt="Students assembly in courtyard" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/courtyard-students-formation.jpg')) ?>">
+    </a>
+  </div>
+</section>
+
+<!-- CTA Banner -->
+<section class="bg-masthead-navy py-12 md:py-16">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+    <div>
+      <h2 class="font-headline-lg text-headline-lg text-white mb-2">Admissions Now Open for 2082</h2>
+      <p class="font-body-lg text-body-lg text-primary-fixed">Secure a bright future. Join Shree Public Secondary School today.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row items-center gap-4">
+      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] whitespace-nowrap inline-flex items-center">Start Admission Inquiry</a>
+      <?php if (APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>" class="text-white flex items-center gap-2 font-label-md hover:text-active-gold transition-colors">
+        <span class="material-symbols-outlined">call</span> <?= e(APP_PHONE) ?>
+      </a><?php endif; ?>
+    </div>
+  </div>
+</section>
+
+</div>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

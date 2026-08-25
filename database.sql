@@ -47,10 +47,10 @@ INSERT INTO site_settings (`key`,`value`) VALUES
 ('coords_lat','26.8501032'),
 ('coords_lng','85.555064'),
 ('plus_code','VH24+22W'),
-('show_principal','0'),
-('principal_name',''),
-('principal_message_en',''),
-('principal_message_np','')
+('show_principal','1'),
+('principal_name','Devbarat Prasad Patel'),
+('principal_message_en','Our mission is to provide an inclusive, high-quality education that empowers students from all backgrounds to become responsible citizens and future leaders. We invite you to be a part of our growing community.'),
+('principal_message_np','हाम्रो लक्ष्य सबै पृष्ठभूमिका विद्यार्थीहरूलाई जिम्मेवार नागरिक र भविष्यका नेता बन्न सशक्त बनाउँदै समावेशी, गुणस्तरीय शिक्षा प्रदान गर्नु हो।')
 ON DUPLICATE KEY UPDATE `value`=VALUES(`value`);
 
 -- Pages
@@ -296,6 +296,7 @@ CREATE TABLE IF NOT EXISTS gallery_images (
   sort_order INT DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE CASCADE,
+  UNIQUE KEY uniq_album_image (album_id, image_path),
   INDEX idx_gallery_album (album_id, sort_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -385,8 +386,84 @@ CREATE TABLE IF NOT EXISTS activity_logs (
 
 SET FOREIGN_KEY_CHECKS=1;
 
+-- ============================================================
+-- CONTENT SEEDS (match the Stitch-designed frontend)
+-- Safe to re-run: INSERT IGNORE on unique slugs / NOT EXISTS guards
+-- ============================================================
+
 -- Default admin (password: Admin@123 — change immediately)
 -- password_hash('Admin@123', PASSWORD_DEFAULT)
 INSERT INTO users (name,email,password_hash,role_id) VALUES
 ('Super Admin','admin@shreepublic.edu.np','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1)
 ON DUPLICATE KEY UPDATE email=VALUES(email);
+
+-- ---- Notices (homepage Notice Board) ----
+INSERT IGNORE INTO notices (title_en, title_np, slug, reference_number, category_id, description_en, published_at, is_pinned, is_urgent, status) VALUES
+('New Admission Open for Academic Session 2082 (ECD to Grade 9)','शैक्षिक सत्र २०८२ को लागि भर्ना खुला (बालविकास देखि कक्षा ९)','admission-open-2082','SPS/Notice/2082-01',(SELECT id FROM notice_categories WHERE slug='admission'),'Admission forms are available at the school office during office hours (Sun–Fri, 10:00 AM – 4:00 PM). Limited seats per level. Bring birth certificate, transfer certificate and previous marksheet.', NOW() - INTERVAL 3 DAY, 1, 0, 'published'),
+('SEE Examination Routine 2082 Published','एस.ई.ई. परीक्षा कार्यक्रम २०८२ प्रकाशित','see-routine-2082','SPS/Exam/2082-04',(SELECT id FROM notice_categories WHERE slug='examination'),'The SEE examination routine for Grade 10 students has been published. Students may collect the routine PDF from the Downloads section or the school notice board.', NOW() - INTERVAL 12 DAY, 0, 0, 'published'),
+('Vacancy Announcement: Secondary Level Science Teacher (Contract)','सूचना: माध्यमिक तह विज्ञान शिक्षक (करार)','vacancy-science-teacher-2082','SPS/Vacancy/2082-03',(SELECT id FROM notice_categories WHERE slug='vacancy'),'Applications are invited from qualified candidates for Secondary Level Science Teacher (contract basis). Deadline: within 15 days of this notice. Apply at the school office.', NOW() - INTERVAL 20 DAY, 0, 1, 'published'),
+('Grade 11 Scholarship Application Deadline Extended','कक्षा ११ छात्रवृत्ति आवेदन म्याद थप','scholarship-grade11-extended','SPS/Schol/2082-02',(SELECT id FROM notice_categories WHERE slug='scholarship'),'The application deadline for Grade 11 scholarships (merit and quota-based) has been extended by one week. Eligible students should submit documents to the school office.', NOW() - INTERVAL 30 DAY, 0, 0, 'published'),
+('School Closure Notice for Holi Festival','फागु पूर्णिमा (होली) को बिदा सम्बन्धी सूचना','holiday-holi-2082','SPS/Gen/2082-06',(SELECT id FROM notice_categories WHERE slug='holiday'),'The school will remain closed on the occasion of Fagu Purnima (Holi). Regular classes resume the following day.', NOW() - INTERVAL 45 DAY, 0, 0, 'published');
+
+-- ---- Upcoming Events (homepage Events column) ----
+INSERT IGNORE INTO events (title_en, title_np, slug, description_en, location_en, event_date, event_time, status) VALUES
+('16 Days of Activism against Gender-Based Violence Campaign','लैंगिक हिंसाविरुद्ध १६ दिने अभियान','16-days-activism','Inaugurated with Malangwa Municipality, INSEC and local community groups. Awareness rallies and poster competitions by students.','Shree Public Secondary School, Malangwa-2', CURDATE() + INTERVAL 10 DAY, '11:00 AM', 'published'),
+('Annual Sports Meet 2082','वार्षिक खेलकुद २०८२','annual-sports-meet-2082','Track and field events for all levels — ECD to Grade 12. Parents and community members are warmly invited.','School Playground, Malangwa-2', CURDATE() + INTERVAL 25 DAY, '9:00 AM', 'published'),
+('School Level Science Exhibition','विद्यालय स्तरीय विज्ञान प्रदर्शनी','science-exhibition-2082','Students present working models from Physics, Chemistry and Biology. Best projects advance to the district level competition.','Science Block, Malangwa-2', CURDATE() + INTERVAL 40 DAY, '10:00 AM', 'published');
+
+-- ---- News ----
+INSERT IGNORE INTO news (title_en, title_np, slug, category_id, excerpt_en, content_en, cover_image, published_at, status) VALUES
+('Students Secure First Position in District Science Fair','जिल्ला विज्ञान महोत्सवमा प्रथम','news-district-science-win',(SELECT id FROM news_categories WHERE slug='academic'),'Our Grade 10 team presented an innovative water filtration model and won first place at the Sarlahi district science fair.','Our Grade 10 students represented the school at the Sarlahi district level science fair and secured the first position with an innovative low-cost water filtration model. The team was felicitated at the school assembly. Congratulations to the students and supervising teachers!','uploads/gallery/campus/staff-room-computer.jpg', NOW() - INTERVAL 7 DAY, 'published'),
+('Community Tree Plantation Drive Completed','सामुदायिक वृक्षरोपण सम्पन्न','news-tree-plantation',(SELECT id FROM news_categories WHERE slug='community'),'Eco-club members and local volunteers planted 200+ saplings around the school premises with Malangwa Municipality support.','With support from Malangwa Municipality, our eco-club members, teachers and local volunteers completed a tree plantation drive around the school boundary, planting over 200 saplings of local species. The school thanks all community members who participated.','uploads/gallery/community/complaint-box-life-nepal.jpg', NOW() - INTERVAL 18 DAY, 'published');
+
+-- ---- Downloads (homepage Resources & Downloads) ----
+-- NOTE: upload the actual PDF files to uploads/downloads/ via Admin > Downloads, or update file_path.
+INSERT IGNORE INTO downloads (title_en, title_np, category_id, file_path, file_size, file_type, published_at, status) VALUES
+('Student Admission Form 2082','भर्ना फारम २०८२',(SELECT id FROM download_categories WHERE slug='forms'),'uploads/downloads/admission-form-2082.pdf',1228800,'PDF', NOW() - INTERVAL 5 DAY, 'published'),
+('Academic Calendar 2082','शैक्षिक पात्रो २०८२',(SELECT id FROM download_categories WHERE slug='academic-calendar'),'uploads/downloads/academic-calendar-2082.pdf',460800,'PDF', NOW() - INTERVAL 8 DAY, 'published'),
+('Scholarship Guidelines 2082','छात्रवृत्ति निर्देशिका २०८२',(SELECT id FROM download_categories WHERE slug='scholarships'),'uploads/downloads/scholarship-guidelines-2082.pdf',2202009,'PDF', NOW() - INTERVAL 15 DAY, 'published'),
+('Code of Conduct for Students','विद्यार्थी आचारसंहिता',(SELECT id FROM download_categories WHERE slug='policies'),'uploads/downloads/code-of-conduct.pdf',819200,'PDF', NOW() - INTERVAL 30 DAY, 'published'),
+('School Prospectus 2082','विद्यालय परिचय पुस्तिका',(SELECT id FROM download_categories WHERE slug='publications'),'uploads/downloads/school-prospectus-2082.pdf',5662310,'PDF', NOW() - INTERVAL 40 DAY, 'published'),
+('Citizen Charter (नागरिक वडापत्र)','नागरिक वडापत्र',(SELECT id FROM download_categories WHERE slug='citizen-charter'),'uploads/downloads/citizen-charter.pdf',1887436,'PDF', NOW() - INTERVAL 50 DAY, 'published');
+
+-- ---- Gallery Albums (uses real uploaded photos in /uploads/gallery) ----
+INSERT IGNORE INTO gallery_albums (slug, title_en, title_np, description_en, cover_image, sort_order, status) VALUES
+('campus-school','School & Campus','विद्यालय तथा परिसर','Classrooms, buildings, offices and everyday life inside the school campus.','uploads/gallery/campus/front-building-entrance.jpg',1,'published'),
+('assembly-events','Assembly & Events','प्रार्थना सभा तथा कार्यक्रम','Morning assemblies, announcements and school-wide gatherings.','uploads/gallery/assembly/teacher-addressing-assembly.jpg',2,'published'),
+('staff-leadership','Staff & Leadership','शिक्षक तथा नेतृत्व','Our teaching staff, leadership team and management committee.','uploads/gallery/staff/leadership-team-photo.jpg',3,'published'),
+('community-programs','Community Programs','सामुदायिक कार्यक्रम','Programs run with parents, local wards and Malangwa Municipality.','uploads/gallery/community/complaint-box-life-nepal.jpg',4,'published');
+
+INSERT INTO gallery_images (album_id, image_path, caption_en, sort_order)
+SELECT a.id, t.image_path, t.caption_en, t.sort_order
+FROM gallery_albums a
+JOIN (
+  SELECT 'campus-school' AS album_slug, 'uploads/gallery/campus/front-building-entrance.jpg' AS image_path, 'School main building and entrance' AS caption_en, 1 AS sort_order
+  UNION ALL SELECT 'campus-school','uploads/gallery/campus/school-sign-closeup.jpg','School name board at the gate',2
+  UNION ALL SELECT 'campus-school','uploads/gallery/campus/headmaster-office.jpg','Head teacher office',3
+  UNION ALL SELECT 'campus-school','uploads/gallery/campus/staff-room-interior.jpg','Staff room',4
+  UNION ALL SELECT 'campus-school','uploads/gallery/campus/staff-room-computer.jpg','ICT corner with computers',5
+  UNION ALL SELECT 'campus-school','uploads/gallery/campus/courtyard-students-formation.jpg','Students in courtyard formation',6
+  UNION ALL SELECT 'campus-school','uploads/hero/hero-main-gate-jubilee.jpg','Main gate',7
+  UNION ALL SELECT 'campus-school','uploads/hero/hero-courtyard-assembly.jpg','Courtyard assembly',8
+  UNION ALL SELECT 'campus-school','uploads/about/campus-assembly-building.jpg','Assembly in front of the building',9
+  UNION ALL SELECT 'campus-school','uploads/about/campus-building-aerial.jpg','School building view',10
+  UNION ALL SELECT 'assembly-events','uploads/gallery/assembly/teacher-addressing-assembly.jpg','Teacher addressing the morning assembly',1
+  UNION ALL SELECT 'assembly-events','uploads/gallery/assembly/staff-meeting-courtyard.jpg','Staff meeting in the courtyard',2
+  UNION ALL SELECT 'staff-leadership','uploads/gallery/staff/leadership-team-photo.jpg','School leadership team',1
+  UNION ALL SELECT 'community-programs','uploads/gallery/community/complaint-box-life-nepal.jpg','Community program at school',1
+) t ON a.slug = t.album_slug
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images gi WHERE gi.album_id = a.id AND gi.image_path = t.image_path);
+
+-- ---- Staff (leadership shown on About page) ----
+INSERT IGNORE INTO staff (photo, name_en, name_np, designation_en, designation_np, department, category_id, display_order, is_active) VALUES
+('uploads/gallery/staff/leadership-team-photo.jpg','Devbarat Prasad Patel','देववरत प्रसाद पटेल','Chairman / Head Teacher','अध्यक्ष / प्रधानाध्यापक','Leadership',(SELECT id FROM staff_categories WHERE slug='leadership'),1,1),
+(NULL,'—','—','Principal','प्रधानाध्यापक','Leadership',(SELECT id FROM staff_categories WHERE slug='leadership'),2,1),
+(NULL,'—','—','Vice-Principal','उपप्रधानाध्यापक','Leadership',(SELECT id FROM staff_categories WHERE slug='leadership'),3,1);
+
+-- ---- Static Pages (Admin > Pages module) ----
+INSERT IGNORE INTO pages (slug, title_en, title_np, content_en, content_np, meta_description, status) VALUES
+('about','About Our School','हाम्रो विद्यालयबारे','<h2>Welcome to Shree Public Secondary School</h2><p>Shree Public Secondary School is a government community school located in Malangwa-2, Sarlahi, Madhesh Province, Nepal. The school provides quality education from Early Childhood Development (ECD) through Grade 12, including +2 programs in Science and Management affiliated with the National Examination Board (NEB).</p><h3>Our Mission</h3><p>To provide accessible, equitable and quality education to every child of our community regardless of background.</p><h3>Our Vision</h3><p>To be a model community school in Madhesh Province known for academic excellence, discipline and social responsibility.</p>','<h2>श्री पब्लिक माध्यमिक विद्यालयमा स्वागत छ</h2><p>श्री पब्लिक माध्यमिक विद्यालय मधेश प्रदेश, सर्लाही जिल्लाको मलंगवा–२ मा अवस्थित एक सरकारी सामुदायिक विद्यालय हो।</p>','Shree Public Secondary School — public community school in Malangwa-2, Sarlahi. ECD to Grade 12, +2 Science & Management (NEB). IEMIS 190640003.','published'),
+('admissions','Admissions','भर्ना','<h2>Admission Open — ECD to Grade 12 &amp; +2</h2><p>Parents and guardians may visit the school office during office hours (Sunday–Friday, 10:00 AM – 4:00 PM) to collect and submit the application form.</p><h3>Documents Required</h3><ul><li>Birth certificate (copy)</li><li>Transfer certificate (if transferring)</li><li>Previous marksheet/grade sheet</li><li>Passport-size photographs (2 copies)</li><li>Citizenship copy (for +2 applicants)</li></ul>','<h2>भर्ना खुला छ</h2><p>अभिभावकहरूले कार्यालय समयमा विद्यालय कार्यालयमा सम्पर्क गर्नुहोला।</p>','Admission information for Shree Public Secondary School Malangwa-2 — ECD to Grade 12, +2 Science & Management (NEB).','published'),
+('citizen-charter','Citizen Charter','नागरिक वडापत्र','<h2>Citizen Charter (नागरिक वडापत्र)</h2><p>This charter outlines the services provided by the school, required documents and service delivery time commitments.</p><ul><li>Admission enrollment — same day during office hours</li><li>Transfer certificate — within 2 working days</li><li>Character certificate — within 2 working days</li><li>Marksheet verification — within 3 working days</li></ul>','<h2>नागरिक वडापत्र</h2><p>यो वडापत्रमा विद्यालयले प्रदान गर्ने सेवाहरू र सेवा प्रदान गर्ने समय उल्लेख छ।</p>','Citizen Charter of Shree Public Secondary School, Malangwa-2 — services, documents, time and fees.','published'),
+('faq','Frequently Asked Questions','जिज्ञासा','<h2>Frequently Asked Questions</h2><h3>Where is the school located?</h3><p>VH24+22W, Malangwa-2, Sarlahi, Madhesh Province, Nepal (postal code 45800).</p><h3>Which programs does the school offer?</h3><p>ECD through Grade 12, plus +2 Science and +2 Management streams affiliated with NEB.</p><h3>What are the office hours?</h3><p>Sunday to Friday, 10:00 AM to 4:00 PM. Closed on Saturday.</p>','<h2>जिज्ञासाहरू</h2><h3>विद्यालय कहाँ अवस्थित छ?</h3><p>मलंगवा–२, सर्लाही, मधेश प्रदेश।</p>','Frequently asked questions about Shree Public Secondary School, Malangwa-2.','published'),
+('publications','Publications','प्रकाशनहरू','<h2>Publications &amp; Reports</h2><p>Official publications of the school are made available for public transparency: annual reports, school improvement plans and financial summaries. Printed copies are available at the school office.</p>','<h2>प्रकाशनहरू</h2><p>विद्यालयका आधिकारिक प्रकाशनहरू सार्वजनिक पारदर्शिताका लागि उपलब्ध गराइएको छ।</p>','Publications from Shree Public Secondary School — annual reports, prospectus, transparency documents.','published');
