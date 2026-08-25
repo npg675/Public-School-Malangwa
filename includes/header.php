@@ -137,7 +137,7 @@ $__page = $page ?? 'home';
         </div>
       </div>
     </nav>
-    <a class="nav-login" href="<?= e_attr(base_url('contact.php')) ?>"><svg class="ic"><use href="#i-user"/></svg> Contact</a>
+    <a class="nav-login" href="<?= e_attr(base_url('contact.php')) ?>">Contact</a>
   </div>
 </nav>
 
