@@ -1,4 +1,5 @@
-<?php $page='admissions'; $title='Admissions — ECD to +2 | Shree Public Secondary School, Malangwa-2'; $description='Admission information for Shree Public Secondary School Malangwa-2 — ECD to Grade 12, +2 Science & Management (NEB). Levels, general process, documents guidance and inquiry.'; require_once __DIR__.'/includes/header.php'; 
+<?php $page='admissions'; $title='Admissions — ECD to +2 | Shree Public Secondary School, Malangwa-2'; $description='Admission information for Shree Public Secondary School Malangwa-2 — ECD to Grade 12, +2 Science & Management (NEB). Levels, general process, documents guidance and inquiry.'; require_once __DIR__.'/includes/helpers.php'; require_once __DIR__.'/includes/header.php'; 
+$admPage = get_page_content('admissions');
 $admissionNotices = array_filter(get_notices(50, 'admission'));
 if (empty($admissionNotices)) { $allAdm = array_filter(get_notices(8), function($n){ return strtolower($n['category']??$n['cat_en']??'')==='admission'; }); $admissionNotices = $allAdm; }
 if ($_SERVER['REQUEST_METHOD']==='POST') {
@@ -23,9 +24,13 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <!-- Admission Overview + Steps -->
 <section class="section" style="padding-top:28px;background:#fff;border-top:1px solid var(--border)">
   <div class="wrap">
-    <span class="eyebrow"><span class="dot"></span> Admission Overview</span>
-    <h2 style="margin:12px 0 10px;font-size:1.35rem">How admission works</h2>
+    <span class="eyebrow"><span class="dot"></span> <?= e(t('Admission Overview','भर्ना अवलोकन')) ?></span>
+    <h2 style="margin:12px 0 10px;font-size:1.35rem"><?= e(t('How admission works','भर्ना प्रक्रिया कसरी चल्छ')) ?></h2>
+    <?php if ($admPage && trim(page_val($admPage,'content')) !== ''): ?>
+      <div style="color:var(--muted);line-height:1.7;max-width:780px;font-size:.94rem"><?= page_val($admPage,'content') ?></div>
+    <?php else: ?>
     <p style="color:var(--muted);line-height:1.7;max-width:780px;font-size:.94rem">Admission availability at Shree Public depends on the <strong style="color:var(--text)">academic year, grade and number of seats</strong> as determined each year by the school administration. For current dates, fees and document requirements — especially for Grade 11 (+2 Science / Management) — always refer to the <a href="<?= e_attr(base_url('notices.php?category=admission')) ?>" style="color:var(--primary);font-weight:700">latest admission notice</a> or contact the school directly at Malangwa-2. The information below is <strong>general guidance only</strong> and does not replace an official notice from the school office. No fee amount or deadline is published on this website until verified.</p>
+    <?php endif; ?>
 
     <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:18px">
       <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:18px"><div style="font-weight:800;font-size:1.6rem;color:var(--primary-100)">01</div><h3 style="font-size:1rem;margin-top:4px">Explore</h3><p style="color:var(--muted);font-size:.88rem;margin-top:4px;line-height:1.6">Learn the levels — ECD, Basic (1–8), Secondary (9–10) and +2 Science/Management — and where the school is located (VH24+22W).</p></div>

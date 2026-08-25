@@ -129,6 +129,7 @@ tr:hover td{background:#FAFBFE}
     <a href="<?= e_attr(base_url('admin/news.php')) ?>" class="<?= $adminPage==='news'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News</a>
     <a href="<?= e_attr(base_url('admin/events.php')) ?>" class="<?= $adminPage==='events'?'active':'' ?>"><span class="material-symbols-outlined">event</span>Events</a>
     <a href="<?= e_attr(base_url('admin/pages.php')) ?>" class="<?= $adminPage==='pages'?'active':'' ?>"><span class="material-symbols-outlined">description</span>Pages</a>
+    <a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span>Content Blocks</a>
     <div class="nav-sep">Media</div>
     <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a>
     <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span>Downloads</a>

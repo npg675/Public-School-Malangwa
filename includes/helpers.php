@@ -112,11 +112,15 @@ function get_events(int $limit = 3): array {
     ];
 }
 
-function get_downloads(int $limit = 6): array {
+function get_downloads(int $limit = 6, ?string $category = null): array {
     $pdo = db();
     if ($pdo && db_has_table('downloads')) {
         try {
-            $stmt = $pdo->prepare("SELECT d.*, c.name_en as cat_en FROM downloads d LEFT JOIN download_categories c ON c.id=d.category_id WHERE d.status='published' ORDER BY d.published_at DESC LIMIT :lim");
+            $sql = "SELECT d.*, c.name_en as cat_en, c.slug as cat_slug FROM downloads d LEFT JOIN download_categories c ON c.id=d.category_id WHERE d.status='published' ORDER BY d.published_at DESC LIMIT :lim";
+            $params = [];
+            if ($category) { $sql = str_replace('WHERE d.status', 'WHERE c.slug = :cat AND d.status', $sql); $params[':cat'] = $category; }
+            $stmt = $pdo->prepare($sql);
+            foreach ($params as $k=>$v) $stmt->bindValue($k,$v);
             $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
             $stmt->execute();
             $rows = $stmt->fetchAll();
@@ -168,6 +172,75 @@ function get_gallery_albums(int $limit = 6): array {
         ['slug'=>'assembly','title_en'=>'Assembly & Events','title_np'=>'सभा र कार्यक्रम','cover'=>base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg'),'count'=>3],
         ['slug'=>'staff','title_en'=>'Staff & Leadership','title_np'=>'कर्मचारी र नेतृत्व','cover'=>base_url('uploads/gallery/staff/leadership-team-photo.jpg'),'count'=>1],
         ['slug'=>'community','title_en'=>'Community Programs','title_np'=>'समुदाय कार्यक्रम','cover'=>base_url('uploads/gallery/community/complaint-box-life-nepal.jpg'),'count'=>1],
+    ];
+}
+
+require_once __DIR__ . '/content-seeds.php';
+
+function get_blocks(string $page, ?string $section = null): array {
+    $pdo = db();
+    if ($pdo && db_has_table('content_blocks')) {
+        try {
+            $sql = 'SELECT * FROM content_blocks WHERE is_active = 1 AND page_slug = :page';
+            $params = [':page' => $page];
+            if ($section !== null) { $sql .= ' AND section_key = :sec'; $params[':sec'] = $section; }
+            $sql .= ' ORDER BY sort_order, id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $rows = $stmt->fetchAll();
+            if ($rows || $section !== null) return $section !== null ? $rows : [];
+            // when section is null and table empty, fall through to seed fallback
+            if ($rows) return $rows;
+        } catch (Throwable $e) {}
+    }
+    $out = [];
+    foreach (cms_seed_blocks() as $b) {
+        if ($b['page_slug'] === $page && ($section === null || $b['section_key'] === $section)) $out[] = $b;
+    }
+    usort($out, fn($a,$b) => [$a['section_key'],(int)$a['sort_order']] <=> [$b['section_key'],(int)$b['sort_order']]);
+    return $out;
+}
+
+function block_val(array $b, string $field): string {
+    $lang = current_lang();
+    $v = (string)($b[$field . '_' . $lang] ?? '');
+    if ($v === '') $v = (string)($b[$field . '_en'] ?? '');
+    return $v;
+}
+
+function get_page_content(string $slug): ?array {
+    $pdo = db();
+    if ($pdo && db_has_table('pages')) {
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = ? AND status='published' LIMIT 1");
+            $stmt->execute([$slug]);
+            $row = $stmt->fetch();
+            if ($row) return $row;
+        } catch (Throwable $e) {}
+    }
+    return null;
+}
+
+function page_val(?array $row, string $field): string {
+    if (!$row) return '';
+    $lang = current_lang();
+    $v = (string)($row[$field . '_' . $lang] ?? '');
+    if ($v === '') $v = (string)($row[$field . '_en'] ?? '');
+    return $v;
+}
+
+function get_programs(): array {
+    $pdo = db();
+    if ($pdo && db_has_table('academic_programs')) {
+        try {
+            $rows = $pdo->query('SELECT * FROM academic_programs WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+            if ($rows) return $rows;
+        } catch (Throwable $e) {}
+    }
+    return [
+        ['slug'=>'ecd','title_en'=>'ECD / Nursery','title_np'=>'ईसीडी / नर्सरी','level'=>'ecd','stream'=>null,'description_en'=>'<p>Play-based start to formal schooling.</p>','description_np'=>'<p>खेलमा आधारित प्रारम्भिक शिक्षा।</p>'],
+        ['slug'=>'grades-9-10','title_en'=>'Grades 9–10 (SEE)','title_np'=>'कक्षा ९–१० (एसईई)','level'=>'secondary_9_10','stream'=>null,'description_en'=>'<p>SEE pathway.</p>','description_np'=>'<p>एसईई मार्ग।</p>'],
+        ['slug'=>'plus2-science','title_en'=>'+2 Science','title_np'=>'+२ विज्ञान','level'=>'higher_secondary','stream'=>'Science','description_en'=>'<p>NEB science stream.</p>','description_np'=>'<p>एनईबी विज्ञान स्ट्रिम।</p>'],
     ];
 }
 

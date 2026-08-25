@@ -10,6 +10,16 @@ $homeNotices = get_notices(5);
 $homeEvents  = get_events(3);
 $homeDownloads = get_downloads(6);
 
+$blocks   = get_blocks('home');
+$sec      = function(string $k) use ($blocks): array { return array_values(array_filter($blocks, fn($b) => $b['section_key'] === $k)); };
+$first    = function(string $k) use ($sec): ?array { return $sec($k)[0] ?? null; };
+$hero     = $first('hero'); $intro = $first('intro'); $cta = $first('cta_banner');
+$programs = get_programs();
+$galleryAlbums = get_gallery_albums(4);
+$showQuote = setting('show_principal','1') === '1' && setting('principal_name') !== '';
+$principalPhoto = setting('principal_photo','uploads/gallery/staff/leadership-team-photo.jpg');
+$principalMsg = setting('principal_message_' . current_lang(), '');
+if ($principalMsg === '') $principalMsg = setting('principal_message_en','');
 $catChip = function (?string $slug): string {
     return match ($slug) {
         'admission'   => 'bg-secondary-container text-on-secondary-container',
@@ -34,18 +44,18 @@ $dlIcon = function (?string $type): string {
 <!-- Hero Section -->
 <section class="relative bg-primary overflow-hidden">
   <div class="absolute inset-0 opacity-40">
-    <img alt="Shree Public Secondary School campus" class="w-full h-full object-cover" src="<?= e_attr(base_url('uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
+    <img alt="Shree Public Secondary School campus" class="w-full h-full object-cover" src="<?= e_attr(base_url($hero['image_url'] ?? 'uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
     <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
   </div>
   <div class="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
     <div class="text-white space-y-6">
       <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full">
         <span class="w-2 h-2 rounded-full bg-active-gold animate-pulse"></span>
-        <span class="font-label-md text-label-md text-active-gold">Admissions Open 2082</span>
+        <span class="font-label-md text-label-md text-active-gold"><?= e($hero ? block_val($hero,'subtitle') : 'Admissions Open 2082') ?></span>
       </div>
-      <h1 class="font-display-lg text-display-lg text-white leading-tight max-md:text-4xl">Shree Public Secondary School — <span class="text-active-gold">Malangwa-2</span></h1>
+      <h1 class="font-display-lg text-display-lg text-white leading-tight max-md:text-4xl"><?= e($hero ? block_val($hero,'title') : 'Shree Public Secondary School — Malangwa-2') ?></h1>
       <p class="font-body-lg text-body-lg text-surface-container-highest max-w-xl">
-        Providing public education from Early Childhood Development through Grade 12 in the heart of Malangwa. <?= e(APP_STUDENTS_DISPLAY) ?> students • ECD–12 • +2 Science &amp; Management (NEB).
+        <?= e($hero ? block_val($hero,'body') : 'Providing public education from Early Childhood Development through Grade 12 in the heart of Malangwa. ECD–12 • +2 Science & Management (NEB).') ?>
       </p>
       <div class="flex flex-wrap gap-4 pt-4">
         <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] shadow-lg shadow-active-gold/20 inline-flex items-center">Apply for Admission</a>
@@ -53,22 +63,12 @@ $dlIcon = function (?string $type): string {
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 lg:ml-auto">
+      <?php foreach ($sec('stat') as $st): ?>
       <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <span class="font-headline-lg text-headline-lg text-active-gold"><?= e(APP_STUDENTS_DISPLAY) ?></span>
-        <span class="font-label-md text-label-md text-white mt-1">Students</span>
+        <span class="font-headline-lg text-headline-lg text-active-gold"><?= e(block_val($st,'title')) ?></span>
+        <span class="font-label-md text-label-md text-white mt-1"><?= e(block_val($st,'body')) ?></span>
       </div>
-      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <span class="font-headline-lg text-headline-lg text-active-gold">45+</span>
-        <span class="font-label-md text-label-md text-white mt-1">Qualified Teachers</span>
-      </div>
-      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <span class="font-headline-lg text-headline-lg text-active-gold">1947</span>
-        <span class="font-label-md text-label-md text-white mt-1">Established</span>
-      </div>
-      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <span class="font-headline-lg text-headline-lg text-active-gold">98%</span>
-        <span class="font-label-md text-label-md text-white mt-1">Pass Rate</span>
-      </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -76,9 +76,9 @@ $dlIcon = function (?string $type): string {
 <!-- About Section -->
 <section class="py-16 md:py-24 bg-surface max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
   <div class="max-w-3xl mx-auto text-center space-y-6">
-    <h2 class="font-headline-lg text-headline-lg text-primary">About Our School</h2>
+    <h2 class="font-headline-lg text-headline-lg text-primary"><?= e($intro ? block_val($intro,'title') : 'About Our School') ?></h2>
     <p class="font-body-lg text-body-lg text-on-surface-variant">
-      Shree Public Secondary School is a government-recognised community educational institution situated in the heart of Malangwa Municipality-2, Sarlahi District, Madhesh Province. Registered under IEMIS Code <?= e(APP_IEMIS) ?>, our school plays a central role in providing accessible education to the local community. We offer formal education from Early Childhood Development (ECD) up to Grade 12, following the National Examination Board (NEB) curriculum.
+      <?= e($intro ? block_val($intro,'body') : 'Shree Public Secondary School is a government-recognised community educational institution situated in the heart of Malangwa Municipality-2, Sarlahi District, Madhesh Province. Registered under IEMIS Code '.APP_IEMIS.', our school plays a central role in providing accessible education to the local community.') ?>
     </p>
   </div>
 </section>
@@ -173,29 +173,24 @@ $dlIcon = function (?string $type): string {
       <p class="font-body-lg text-body-lg text-on-surface-variant">Comprehensive educational pathways designed to nurture potential at every stage of development.</p>
     </div>
     <div class="grid md:grid-cols-4 gap-6">
-      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
-        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">child_care</span></div>
-        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">ECD</h3>
-        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Early Childhood</div>
+      <?php
+      $iconMap = ['ecd'=>'child_care','basic_1_5'=>'menu_book','basic_6_8'=>'menu_book','secondary_9_10'=>'school','higher_secondary'=>'science'];
+      $badgeMap = ['ecd'=>'Early Childhood','basic_1_5'=>'Grades 1-8','basic_6_8'=>'Grades 1-8','secondary_9_10'=>'Grades 9-10'];
+      foreach ($programs as $p):
+        $lvl = $p['level'] ?? '';
+        $icon = $iconMap[$lvl] ?? 'school';
+        if (($lvl==='higher_secondary')) { $badge = $p['stream'] ?? 'NEB'; $link = strtolower($p['stream']??'')==='science' ? base_url('science.php') : (strtolower($p['stream']??'')==='management' ? base_url('management.php') : base_url('academics.php')); }
+        else { $badge = $badgeMap[$lvl] ?? $p['level']; $link = base_url('academics.php'); }
+        $desc = mb_strimwidth(strip_tags((string)($p['description_en'] ?? '')), 0, 90, '…');
+        $title = t($p['title_en'] ?? '', $p['title_np'] ?? $p['title_en'] ?? '');
+      ?>
+      <a href="<?= e_attr($link) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
+        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]"><?= e($icon) ?></span></div>
+        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2"><?= e($title) ?></h3>
+        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3"><?= e($badge) ?></div>
+        <?php if ($desc): ?><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2"><?= e($desc) ?></p><?php endif; ?>
       </a>
-      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
-        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">menu_book</span></div>
-        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">Basic Level</h3>
-        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Grades 1-8</div>
-      </a>
-      <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
-        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]">school</span></div>
-        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">Secondary Level</h3>
-        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3">Grades 9-10</div>
-      </a>
-      <a href="<?= e_attr(base_url('science.php')) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border-2 border-primary-container relative group block">
-        <div class="w-12 h-12 bg-primary-container rounded-xl flex items-center justify-center mb-4 text-white group-hover:bg-masthead-navy transition-colors"><span class="material-symbols-outlined text-[24px]">science</span></div>
-        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2">+2 NEB</h3>
-        <div class="flex gap-2 mb-3 flex-wrap">
-          <div class="bg-primary-fixed text-on-primary-fixed font-label-sm inline-block px-3 py-1 rounded-full">Science</div>
-          <a href="<?= e_attr(base_url('management.php')) ?>" class="bg-primary-fixed text-on-primary-fixed font-label-sm inline-block px-3 py-1 rounded-full hover:bg-secondary-fixed">Management</a>
-        </div>
-      </a>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -207,22 +202,12 @@ $dlIcon = function (?string $type): string {
     <p class="font-body-lg text-body-lg text-on-surface-variant">Verified, not advertised.</p>
   </div>
   <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <?php foreach ($sec('commitment') as $c): ?>
     <div class="flex gap-4 p-4 items-center">
-      <span class="material-symbols-outlined text-active-gold text-[32px]">volunteer_activism</span>
-      <h4 class="font-label-lg text-label-lg text-text-heading">National Curriculum</h4>
+      <span class="material-symbols-outlined text-active-gold text-[32px]"><?= e($c['icon'] ?? 'verified') ?></span>
+      <h4 class="font-label-lg text-label-lg text-text-heading"><?= e(block_val($c,'title')) ?></h4>
     </div>
-    <div class="flex gap-4 p-4 items-center">
-      <span class="material-symbols-outlined text-active-gold text-[32px]">workspace_premium</span>
-      <h4 class="font-label-lg text-label-lg text-text-heading">Two NEB Streams</h4>
-    </div>
-    <div class="flex gap-4 p-4 items-center">
-      <span class="material-symbols-outlined text-active-gold text-[32px]">biotech</span>
-      <h4 class="font-label-lg text-label-lg text-text-heading">Community Focus</h4>
-    </div>
-    <div class="flex gap-4 p-4 items-center">
-      <span class="material-symbols-outlined text-active-gold text-[32px]">handshake</span>
-      <h4 class="font-label-lg text-label-lg text-text-heading">Government Oversight</h4>
-    </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
@@ -250,24 +235,26 @@ $dlIcon = function (?string $type): string {
 </section>
 
 <!-- Head Teacher Quote -->
+<?php if ($showQuote): ?>
 <section class="bg-primary-container text-white py-16">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
     <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
       <div class="w-32 h-32 md:w-48 md:h-48 shrink-0 relative">
         <div class="absolute inset-0 bg-active-gold rounded-full translate-x-2 translate-y-2"></div>
-        <img alt="Head Teacher" class="w-full h-full object-cover rounded-full relative z-10 border-4 border-primary-container" src="<?= e_attr(base_url('uploads/gallery/staff/leadership-team-photo.jpg')) ?>">
+        <img alt="Head Teacher" class="w-full h-full object-cover rounded-full relative z-10 border-4 border-primary-container" src="<?= e_attr(base_url($principalPhoto)) ?>">
       </div>
       <div class="text-center md:text-left flex-1">
         <span class="material-symbols-outlined text-active-gold text-[48px] opacity-50 mb-4 block">format_quote</span>
         <p class="font-headline-sm text-headline-sm font-normal italic mb-6 leading-relaxed">
-          "Our mission is to provide an inclusive, high-quality education that empowers students from all backgrounds to become responsible citizens and future leaders. We invite you to be a part of our growing community."
+          "<?= e($principalMsg) ?>"
         </p>
-        <h4 class="font-label-lg text-label-lg text-white">Devbarat Prasad Patel</h4>
-        <p class="font-body-sm text-body-sm text-primary-fixed">Head Teacher, Shree Public Secondary School</p>
+        <h4 class="font-label-lg text-label-lg text-white"><?= e(setting('principal_name')) ?></h4>
+        <p class="font-body-sm text-body-sm text-primary-fixed"><?= e(t('Head Teacher','प्रधानाध्यापक')) ?>, Shree Public Secondary School</p>
       </div>
     </div>
   </div>
 </section>
+<?php endif; ?>
 
 <!-- Gallery (Masonry Grid) -->
 <section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
@@ -275,31 +262,26 @@ $dlIcon = function (?string $type): string {
     <h2 class="font-headline-lg text-headline-lg text-primary">Campus Life</h2>
     <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('gallery.php')) ?>">View Gallery <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
   </div>
+  <?php if (empty($galleryAlbums)): ?>
+    <div class="bg-surface-lowest p-8 rounded-xl border border-border-base text-center font-body-md text-on-surface-variant">Photos coming soon.</div>
+  <?php else: ?>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="col-span-2 row-span-2 rounded-xl overflow-hidden soft-shadow relative group">
-      <img alt="School building and entrance" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>">
-      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-        <span class="text-white font-label-lg border-2 border-white px-4 py-2 rounded-lg">Campus &amp; Classrooms</span>
-      </div>
+    <?php foreach ($galleryAlbums as $i=>$alb): $isFirst = $i===0; ?>
+    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $isFirst?'col-span-2 row-span-2':'' ?> rounded-xl overflow-hidden soft-shadow relative group">
+      <img alt="<?= e_attr($alb['title_en'] ?? 'Gallery') ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr($alb['cover'] ?? base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>">
+      <?php if ($isFirst): ?><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span class="text-white font-label-lg border-2 border-white px-4 py-2 rounded-lg"><?= e($alb['title_en'] ?? 'Campus') ?></span></div><?php endif; ?>
     </a>
-    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="rounded-xl overflow-hidden soft-shadow group relative">
-      <img alt="ICT lab" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/staff-room-computer.jpg')) ?>">
-    </a>
-    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="rounded-xl overflow-hidden soft-shadow group relative">
-      <img alt="School assembly" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg')) ?>">
-    </a>
-    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="col-span-2 rounded-xl overflow-hidden soft-shadow group relative">
-      <img alt="Students assembly in courtyard" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/gallery/campus/courtyard-students-formation.jpg')) ?>">
-    </a>
+    <?php endforeach; ?>
   </div>
+  <?php endif; ?>
 </section>
 
 <!-- CTA Banner -->
 <section class="bg-masthead-navy py-12 md:py-16">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
     <div>
-      <h2 class="font-headline-lg text-headline-lg text-white mb-2">Admissions Now Open for 2082</h2>
-      <p class="font-body-lg text-body-lg text-primary-fixed">Secure a bright future. Join Shree Public Secondary School today.</p>
+      <h2 class="font-headline-lg text-headline-lg text-white mb-2"><?= e($cta ? block_val($cta,'title') : 'Admissions Now Open for 2082') ?></h2>
+      <p class="font-body-lg text-body-lg text-primary-fixed"><?= e($cta ? block_val($cta,'body') : 'Secure a bright future. Join Shree Public Secondary School today.') ?></p>
     </div>
     <div class="flex flex-col sm:flex-row items-center gap-4">
       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] whitespace-nowrap inline-flex items-center">Start Admission Inquiry</a>
