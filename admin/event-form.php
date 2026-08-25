@@ -27,8 +27,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     <div class="form-group"><label>Location (English)</label><input type="text" name="location_en" value="<?= e($row['location_en']??'') ?>"></div>
     <div class="form-group"><label>Location (Nepali)</label><input type="text" name="location_np" value="<?= e($row['location_np']??'') ?>"></div>
     <div class="form-group form-full"><label>Cover Image</label><input type="text" name="cover_image" value="<?= e($row['cover_image']??'') ?>" placeholder="uploads/..."></div>
-    <div class="form-group form-full"><label>Description (English)</label><textarea name="description_en" rows="5"><?= e($row['description_en']??'') ?></textarea></div>
-    <div class="form-group form-full"><label>Description (Nepali)</label><textarea name="description_np" rows="5"><?= e($row['description_np']??'') ?></textarea></div>
+    <div class="form-group form-full" style="margin-bottom:16px"><label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Description (English)</label>
+    <div class="rte" id="rte-event-en">
+        <div class="rte-toolbar">
+            <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+            <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+            <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+            <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+        </div>
+        <div class="rte-area" style="min-height:120px" contenteditable="true" data-placeholder="What happens at this event?"></div>
+        <input type="hidden" name="description_en" value="<?= e($row['description_en']??'') ?>">
+        <div class="rte-foot"><span class="rte-count"></span></div>
+    </div></div>
+    <div class="form-group form-full" style="margin-bottom:16px"><label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Description (Nepali)</label>
+    <div class="rte" id="rte-event-np">
+        <div class="rte-toolbar">
+            <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+            <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+            <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+            <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+        </div>
+        <div class="rte-area" style="min-height:120px" contenteditable="true" data-placeholder="यहाँ कार्यक्रम विवरण लेख्नुहोस्…"></div>
+        <input type="hidden" name="description_np" value="<?= e($row['description_np']??'') ?>">
+        <div class="rte-foot"><span class="rte-count"></span></div>
+    </div></div>
 </div>
 <div style="display:flex;gap:8px;margin-top:16px"><button type="submit" class="btn btn-primary"><?= $editing?'Update':'Create' ?></button><a href="<?= e_attr(base_url('admin/events.php')) ?>" class="btn">Cancel</a></div>
 </form>

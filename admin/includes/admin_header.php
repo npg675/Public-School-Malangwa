@@ -11,16 +11,19 @@ $adminTitle = $adminTitle ?? 'Admin';
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= e($adminTitle) ?> — Shree Public Secondary School</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,system-ui,sans-serif;background:#F7F9FC;color:#172033;display:flex;min-height:100vh}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;font-size:20px;line-height:1;flex:none}
 .sidebar{width:260px;background:#092A4D;color:#C7D7F0;padding:18px;flex:none;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
 .sidebar h2{color:#fff;font-size:1rem;font-weight:800}
 .sidebar small{color:#93B4D8;font-size:.78rem}
 .nav{display:flex;flex-direction:column;gap:2px}
-.nav a{color:#C7D7F0;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.84rem;display:flex;align-items:center;gap:10px;text-decoration:none;transition:background .15s}
+.nav a{color:#C7D7F0;padding:10px 12px;border-radius:8px;font-weight:600;font-size:.84rem;display:flex;align-items:center;gap:11px;text-decoration:none;transition:background .15s}
 .nav a:hover,.nav a.active{background:rgba(255,255,255,.10);color:#fff}
 .nav a.active{background:rgba(255,255,255,.14);border-left:3px solid #FFCC00;padding-left:9px}
+.nav a.active .material-symbols-outlined{color:#FFCC00}
 .nav-sep{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#5A7FA0;padding:12px 12px 4px;font-weight:700}
 .main{flex:1;padding:24px;overflow:auto;min-width:0}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px}
@@ -32,8 +35,9 @@ body{font-family:Inter,system-ui,sans-serif;background:#F7F9FC;color:#172033;dis
 .card .lbl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#667085}
 .btn{padding:10px 14px;border-radius:8px;font-weight:700;font-size:.84rem;border:1px solid #E2E8F0;background:#fff;color:#123B6D;text-decoration:none;display:inline-flex;gap:6px;align-items:center;cursor:pointer;transition:all .15s}
 .btn:hover{background:#F7F9FC;border-color:#C3C6D1}
+.btn .material-symbols-outlined{font-size:18px}
 .btn-primary{background:#123B6D;color:#fff;border-color:#123B6D}
-.btn-primary:hover{background:#092A4D}
+.btn-primary:hover{background:#092A4D;border-color:#092A4D}
 .btn-gold{background:#D29A32;color:#1F2540;border-color:#D29A32}
 .btn-danger{background:#fff;color:#C1272D;border-color:#FECACA}
 .btn-danger:hover{background:#FDECEC}
@@ -75,33 +79,71 @@ tr:hover td{background:#FAFBFE}
 .mobile-toggle{display:none;position:fixed;bottom:20px;right:20px;z-index:101;width:48px;height:48px;border-radius:50%;background:#123B6D;color:#fff;border:0;font-size:1.4rem;box-shadow:0 4px 16px rgba(0,0,0,.2);cursor:pointer}
 .checkbox-row{display:flex;align-items:center;gap:8px}
 .checkbox-row input[type=checkbox]{width:18px;height:18px;accent-color:#123B6D}
+
+/* ---- Friendly content editing (non-technical users) ---- */
+.form-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 4px 12px rgba(9,42,77,.06)}
+.form-card>h3{display:flex;align-items:center;gap:9px;font-size:1rem;margin-bottom:16px;color:#123B6D}
+.form-card>h3 .material-symbols-outlined{color:#D29A32;font-size:22px}
+.hint{font-size:.78rem;color:#667085;margin-top:6px;line-height:1.5}
+.req{color:#C1272D}
+.slug-row{display:flex;gap:8px}
+.slug-row input{flex:1}
+.status-pills{display:flex;gap:10px;flex-wrap:wrap}
+.status-pill{position:relative}
+.status-pill input{position:absolute;opacity:0;pointer-events:none}
+.status-pill span{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:1.5px solid #E2E8F0;border-radius:10px;font-weight:700;font-size:.86rem;cursor:pointer;background:#F7F9FC;color:#667085;transition:all .15s}
+.status-pill span .material-symbols-outlined{font-size:18px}
+.status-pill input:checked+span{border-color:#123B6D;background:#123B6D;color:#fff}
+.status-pill input:focus-visible+span{box-shadow:0 0 0 4px rgba(35,100,170,.15)}
+.save-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #E2E8F0;margin-top:8px;padding:14px 0 4px;display:flex;gap:10px;align-items:center;z-index:5;flex-wrap:wrap}
+.save-bar .meta{margin-left:auto;font-size:.78rem;color:#667085}
+.lang-tab{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1.5px solid #E2E8F0;border-bottom:0;border-radius:10px 10px 0 0;font-weight:700;font-size:.84rem;background:#F7F9FC;color:#667085;cursor:pointer}
+.lang-tab.active{background:#fff;color:#123B6D;border-color:#C3C6D1}
+.rte{border:1.5px solid #E2E8F0;border-radius:10px;background:#fff;overflow:hidden}
+.rte:focus-within{border-color:#2364AA;box-shadow:0 0 0 4px rgba(35,100,170,.12)}
+.rte-toolbar{display:flex;gap:2px;flex-wrap:wrap;padding:6px;background:#F7F9FC;border-bottom:1px solid #E2E8F0}
+.rte-toolbar button{min-width:34px;height:32px;padding:0 7px;border:0;background:transparent;border-radius:6px;color:#172033;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .12s}
+.rte-toolbar button:hover{background:#E8EEFF;color:#123B6D}
+.rte-toolbar .sep{width:1px;height:22px;background:#E2E8F0;margin:5px 5px}
+.rte-area{min-height:220px;max-height:460px;overflow-y:auto;padding:16px 18px;font-size:.95rem;line-height:1.75;outline:none}
+.rte-area:empty::before{content:attr(data-placeholder);color:#9AA3B2}
+.rte-area h2{font-size:1.3rem;margin:.6em 0 .3em;color:#123B6D}
+.rte-area h3{font-size:1.1rem;margin:.6em 0 .3em;color:#123B6D}
+.rte-area p{margin:0 0 .6em}
+.rte-area ul,.rte-area ol{margin:0 0 .6em 1.4em}
+.rte-area blockquote{border-left:3px solid #D29A32;padding-left:12px;color:#667085;margin:0 0 .6em}
+.rte-area a{color:#2364AA}
+.rte-foot{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-top:1px solid #E2E8F0;background:#FAFBFE}
+.rte-count{font-size:.74rem;color:#667085}
+.checkbox-chip{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:1.5px solid #E2E8F0;border-radius:10px;background:#F7F9FC;font-weight:700;font-size:.84rem;cursor:pointer}
+.checkbox-chip input{width:18px;height:18px;accent-color:#123B6D}
 </style>
 </head>
 <body>
 <aside class="sidebar" id="sidebar">
   <div><h2>श्री पब्लिक</h2><small>Website Management<br><?= e($_SESSION['user_name']??'') ?> • <?= e($adminRole) ?></small></div>
   <nav class="nav">
-    <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>">📊 Dashboard</a>
+    <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>"><span class="material-symbols-outlined">space_dashboard</span>Dashboard</a>
     <div class="nav-sep">Content</div>
-    <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>">🔔 Notices</a>
-    <a href="<?= e_attr(base_url('admin/news.php')) ?>" class="<?= $adminPage==='news'?'active':'' ?>">📰 News</a>
-    <a href="<?= e_attr(base_url('admin/events.php')) ?>" class="<?= $adminPage==='events'?'active':'' ?>">📅 Events</a>
-    <a href="<?= e_attr(base_url('admin/pages.php')) ?>" class="<?= $adminPage==='pages'?'active':'' ?>">📄 Pages</a>
+    <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span>Notices</a>
+    <a href="<?= e_attr(base_url('admin/news.php')) ?>" class="<?= $adminPage==='news'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News</a>
+    <a href="<?= e_attr(base_url('admin/events.php')) ?>" class="<?= $adminPage==='events'?'active':'' ?>"><span class="material-symbols-outlined">event</span>Events</a>
+    <a href="<?= e_attr(base_url('admin/pages.php')) ?>" class="<?= $adminPage==='pages'?'active':'' ?>"><span class="material-symbols-outlined">description</span>Pages</a>
     <div class="nav-sep">Media</div>
-    <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>">🖼️ Gallery</a>
-    <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>">📥 Downloads</a>
+    <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a>
+    <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span>Downloads</a>
     <div class="nav-sep">People</div>
-    <a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>">👥 Staff</a>
+    <a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>"><span class="material-symbols-outlined">groups</span>Staff</a>
     <div class="nav-sep">System</div>
-    <a href="<?= e_attr(base_url('admin/results.php')) ?>" class="<?= $adminPage==='results'?'active':'' ?>">📊 Results</a>
-    <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>">✉️ Messages</a>
-    <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>">⚙️ Settings</a>
-    <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users'?'active':'' ?>">🔑 Users</a>
+    <a href="<?= e_attr(base_url('admin/results.php')) ?>" class="<?= $adminPage==='results'?'active':'' ?>"><span class="material-symbols-outlined">grading</span>Results</a>
+    <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span>Messages</a>
+    <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span>Settings</a>
+    <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span>Users</a>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
-    <a href="<?= e_attr(base_url()) ?>" class="btn" style="justify-content:center" target="_blank">🌐 View Website</a>
-    <a href="<?= e_attr(base_url('admin/logout.php')) ?>" class="btn" style="justify-content:center;background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.18)">Sign out</a>
+    <a href="<?= e_attr(base_url()) ?>" class="btn" style="justify-content:center" target="_blank"><span class="material-symbols-outlined">language</span>View Website</a>
+    <a href="<?= e_attr(base_url('admin/logout.php')) ?>" class="btn" style="justify-content:center;background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.18)"><span class="material-symbols-outlined">logout</span>Sign out</a>
   </div>
 </aside>
-<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
 <main class="main">

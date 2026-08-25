@@ -103,10 +103,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="form-group"><label>Published At</label><input type="datetime-local" name="published_at" value="<?= e($row['published_at'] ? date('Y-m-d\TH:i', strtotime($row['published_at'])) : date('Y-m-d\TH:i')) ?>"></div>
         <div class="form-group"><label>Expires At</label><input type="datetime-local" name="expires_at" value="<?= e($row['expires_at'] ? date('Y-m-d\TH:i', strtotime($row['expires_at'])) : '') ?>"></div>
-        <div class="form-group form-full"><label>Summary (English)</label><input type="text" name="summary_en" value="<?= e($row['summary_en'] ?? '') ?>" maxlength="400"></div>
+        <div class="form-group form-full"><label>Summary (English)</label><input type="text" name="summary_en" value="<?= e($row['summary_en'] ?? '') ?>" maxlength="400" placeholder="One-line summary shown in lists"></div>
         <div class="form-group form-full"><label>Summary (Nepali)</label><input type="text" name="summary_np" value="<?= e($row['summary_np'] ?? '') ?>" maxlength="400"></div>
-        <div class="form-group form-full"><label>Description (English)</label><textarea name="description_en" rows="6"><?= e($row['description_en'] ?? '') ?></textarea></div>
-        <div class="form-group form-full"><label>Description (Nepali)</label><textarea name="description_np" rows="6"><?= e($row['description_np'] ?? '') ?></textarea></div>
+    </div>
+    <div class="form-group form-full" style="margin-bottom:16px">
+        <label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Details (English)</label>
+        <div class="rte" id="rte-notice-en">
+            <div class="rte-toolbar">
+                <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+                <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+                <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+                <span class="sep"></span>
+                <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+                <button type="button" data-cmd="insertOrderedList" title="Numbered list"><span class="material-symbols-outlined">format_list_numbered</span></button>
+                <span class="sep"></span>
+                <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+                <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+            </div>
+            <div class="rte-area" style="min-height:140px" contenteditable="true" data-placeholder="Write the notice details here…"></div>
+            <input type="hidden" name="description_en" value="<?= e($row['description_en'] ?? '') ?>">
+            <div class="rte-foot"><span class="rte-count"></span></div>
+        </div>
+    </div>
+    <div class="form-group form-full" style="margin-bottom:16px">
+        <label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Details (Nepali)</label>
+        <div class="rte" id="rte-notice-np">
+            <div class="rte-toolbar">
+                <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+                <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+                <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+                <span class="sep"></span>
+                <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+                <button type="button" data-cmd="insertOrderedList" title="Numbered list"><span class="material-symbols-outlined">format_list_numbered</span></button>
+                <span class="sep"></span>
+                <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+                <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+            </div>
+            <div class="rte-area" style="min-height:140px" contenteditable="true" data-placeholder="यहाँ सूचना विवरण लेख्नुहोस्…"></div>
+            <input type="hidden" name="description_np" value="<?= e($row['description_np'] ?? '') ?>">
+            <div class="rte-foot"><span class="rte-count"></span></div>
+        </div>
+    </div>
+    <div class="form-grid">
         <div class="form-group"><label>Attachment URL</label><input type="text" name="attachment" value="<?= e($row['attachment'] ?? '') ?>" placeholder="uploads/... or URL"></div>
         <div class="form-group"><label>Attachment Type</label>
             <select name="attachment_type"><option value="">— None —</option>
@@ -118,10 +156,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
         </div>
         <div class="form-group form-full">
-            <div class="checkbox-row"><input type="checkbox" name="is_pinned" id="is_pinned" <?= ($row['is_pinned'] ?? 0) ? 'checked' : '' ?>><label for="is_pinned" style="margin:0">📌 Pin to top</label></div>
-        </div>
-        <div class="form-group form-full">
-            <div class="checkbox-row"><input type="checkbox" name="is_urgent" id="is_urgent" <?= ($row['is_urgent'] ?? 0) ? 'checked' : '' ?>><label for="is_urgent" style="margin:0">🔴 Mark as urgent</label></div>
+            <label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Options</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <label class="checkbox-chip"><input type="checkbox" name="is_pinned" <?= ($row['is_pinned'] ?? 0) ? 'checked' : '' ?>><span class="material-symbols-outlined" style="font-size:18px;color:#D29A32">push_pin</span>Pin to top of Notice Board</label>
+                <label class="checkbox-chip"><input type="checkbox" name="is_urgent" <?= ($row['is_urgent'] ?? 0) ? 'checked' : '' ?>><span class="material-symbols-outlined" style="font-size:18px;color:#C1272D">priority_high</span>Mark as urgent (red highlight)</label>
+            </div>
         </div>
     </div>
     <div style="display:flex;gap:8px;margin-top:16px">

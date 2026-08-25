@@ -28,8 +28,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     <div class="form-group form-full"><label>Cover Image</label><input type="text" name="cover_image" value="<?= e($row['cover_image']??'') ?>" placeholder="uploads/news/..."><div class="upload-zone" style="margin-top:8px;padding:16px" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" style="display:none" onchange="var z=this.closest('.upload-zone');uploadFile(this.files[0],function(e,r){if(e){alert(e);return}z.querySelector('input[name=cover_image]').value=r.path;z.querySelector('input[name=cover_image]').dispatchEvent(new Event('change'))})"><small>Click or drag to upload cover image</small></div></div>
     <div class="form-group form-full"><label>Excerpt (English)</label><input type="text" name="excerpt_en" value="<?= e($row['excerpt_en']??'') ?>" maxlength="400"></div>
     <div class="form-group form-full"><label>Excerpt (Nepali)</label><input type="text" name="excerpt_np" value="<?= e($row['excerpt_np']??'') ?>" maxlength="400"></div>
-    <div class="form-group form-full"><label>Content (English)</label><textarea name="content_en" rows="8"><?= e($row['content_en']??'') ?></textarea></div>
-    <div class="form-group form-full"><label>Content (Nepali)</label><textarea name="content_np" rows="8"><?= e($row['content_np']??'') ?></textarea></div>
+    <div class="form-group form-full" style="margin-bottom:16px"><label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Content (English)</label>
+    <div class="rte" id="rte-news-en">
+        <div class="rte-toolbar">
+            <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+            <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+            <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+            <button type="button" data-cmd="insertOrderedList" title="Numbered list"><span class="material-symbols-outlined">format_list_numbered</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+            <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+        </div>
+        <div class="rte-area" style="min-height:180px" contenteditable="true" data-placeholder="Write the news story here…"></div>
+        <input type="hidden" name="content_en" value="<?= e($row['content_en']??'') ?>">
+        <div class="rte-foot"><span class="rte-count"></span></div>
+    </div></div>
+    <div class="form-group form-full" style="margin-bottom:16px"><label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Content (Nepali)</label>
+    <div class="rte" id="rte-news-np">
+        <div class="rte-toolbar">
+            <button type="button" data-cmd="formatBlock" data-val="H2" title="Section heading"><span class="material-symbols-outlined">format_h2</span></button>
+            <button type="button" data-cmd="bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
+            <button type="button" data-cmd="italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+            <button type="button" data-cmd="insertOrderedList" title="Numbered list"><span class="material-symbols-outlined">format_list_numbered</span></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="createLink" title="Add link"><span class="material-symbols-outlined">link</span></button>
+            <button type="button" data-cmd="removeFormat" title="Clear formatting"><span class="material-symbols-outlined">format_clear</span></button>
+        </div>
+        <div class="rte-area" style="min-height:180px" contenteditable="true" data-placeholder="यहाँ समाचार लेख्नुहोस्…"></div>
+        <input type="hidden" name="content_np" value="<?= e($row['content_np']??'') ?>">
+        <div class="rte-foot"><span class="rte-count"></span></div>
+    </div></div>
 </div>
 <div style="display:flex;gap:8px;margin-top:16px"><button type="submit" class="btn btn-primary"><?= $editing?'Update':'Create' ?></button><a href="<?= e_attr(base_url('admin/news.php')) ?>" class="btn">Cancel</a></div>
 </form>

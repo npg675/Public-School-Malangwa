@@ -37,7 +37,7 @@ if ($pdo && db_has_table('notices')) {
     <table>
         <thead>
             <tr>
-                <th style="width:40px">📌</th>
+                <th style="width:40px"><span class="material-symbols-outlined" style="font-size:16px">push_pin</span></th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Published</th>
@@ -50,7 +50,7 @@ if ($pdo && db_has_table('notices')) {
             <tr><td colspan="6" class="empty">No notices yet. Click "+ New Notice" to create one.</td></tr>
         <?php else: foreach ($notices as $n): ?>
             <tr>
-                <td><?= $n['is_pinned'] ? '📌' : '' ?></td>
+                <td><?= $n['is_pinned'] ? '<span class="material-symbols-outlined" style="font-size:17px;color:#D29A32">push_pin</span>' : '' ?></td>
                 <td>
                     <strong><?= e($n['title_en']) ?></strong>
                     <?php if (!empty($n['title_np'])): ?><br><small style="color:#667085"><?= e($n['title_np']) ?></small><?php endif; ?>

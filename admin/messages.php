@@ -25,7 +25,7 @@ if ($pdo && db_has_table('contact_messages')) { try { $unread = (int)$pdo->query
 <?php if (empty($items)): ?><tr><td colspan="5" class="empty">No messages yet.</td></tr>
 <?php else: foreach ($items as $m): ?>
 <tr style="<?= $m['is_read']?'':'background:#FAFBFE;font-weight:600' ?>">
-    <td><?= $m['is_read']?'':'🔴' ?></td>
+    <td><?= $m['is_read']?'':'<span class="material-symbols-outlined" style="font-size:16px;color:#C1272D">mark_email_unread</span>' ?></td>
     <td><strong><?= e($m['name']) ?></strong><br><small style="color:#667085"><?= e($m['phone']) ?><?= $m['email']?' · '.e($m['email']):'' ?></small></td>
     <td><small><?= e($m['subject']??'(no subject)') ?></small><br><small style="color:#667085;max-width:300px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><?= e(substr($m['message'],0,100)) ?></small></td>
     <td><small><?= e(date('M j, g:i A', strtotime($m['created_at']))) ?></small></td>

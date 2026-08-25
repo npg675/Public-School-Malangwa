@@ -52,7 +52,7 @@ if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELEC
         <?php else: ?>
             <ul style="font-size:.88rem;color:#667085;display:flex;flex-direction:column;gap:8px;list-style:none">
             <?php foreach ($recentNotices as $n): ?>
-                <li><?= $n['is_pinned']?'📌 ':' '?><?= e($n['title_en']) ?> — <small><?= e(date('M j, Y', strtotime($n['published_at']))) ?></small></li>
+                <li><?= $n['is_pinned']?'<span class="material-symbols-outlined" style="font-size:15px;color:#D29A32;vertical-align:-3px">push_pin</span> ':'' ?><?= e($n['title_en']) ?> — <small><?= e(date('M j, Y', strtotime($n['published_at']))) ?></small></li>
             <?php endforeach; ?>
             </ul>
         <?php endif; ?>
@@ -60,12 +60,12 @@ if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELEC
     <div class="section-box">
         <h3>Quick Actions</h3>
         <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn" style="justify-content:flex-start">🔔 Create Notice</a>
-            <a href="<?= e_attr(base_url('admin/news-form.php')) ?>" class="btn" style="justify-content:flex-start">📰 Write News</a>
-            <a href="<?= e_attr(base_url('admin/event-form.php')) ?>" class="btn" style="justify-content:flex-start">📅 Add Event</a>
-            <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn" style="justify-content:flex-start">🖼️ New Gallery Album</a>
-            <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="btn" style="justify-content:flex-start">⚙️ Site Settings</a>
-            <a href="<?= e_attr(base_url('admin/staff-form.php')) ?>" class="btn" style="justify-content:flex-start">👤 Add Staff</a>
+            <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">notifications</span>Create Notice</a>
+            <a href="<?= e_attr(base_url('admin/news-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">newspaper</span>Write News</a>
+            <a href="<?= e_attr(base_url('admin/event-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">event</span>Add Event</a>
+            <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">photo_library</span>New Gallery Album</a>
+            <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">settings</span>Site Settings</a>
+            <a href="<?= e_attr(base_url('admin/staff-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">person_add</span>Add Staff</a>
         </div>
     </div>
 </div>
