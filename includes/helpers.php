@@ -171,6 +171,67 @@ function get_gallery_albums(int $limit = 6): array {
     ];
 }
 
+/**
+ * Return active people for the public About page, grouped by the CMS hierarchy.
+ * The committee fallback also supports older installations that still classify
+ * committee members under Administration by designation.
+ */
+function get_staff_directory(): array {
+    $groups = [
+        'leadership' => [],
+        'committee' => [],
+        'teaching' => [],
+        'administration' => [],
+        'non_teaching' => [],
+    ];
+
+    $pdo = db();
+    if (!$pdo || !db_has_table('staff')) return $groups;
+
+    try {
+        $stmt = $pdo->query("SELECT s.*, c.slug AS category_slug, c.name_en AS category_name_en, c.name_np AS category_name_np
+            FROM staff s
+            LEFT JOIN staff_categories c ON c.id = s.category_id
+            WHERE s.is_active = 1
+            ORDER BY COALESCE(c.sort_order, 99), s.display_order, s.name_en");
+        $rows = $stmt->fetchAll();
+    } catch (Throwable $e) {
+        return $groups;
+    }
+
+    foreach ($rows as $person) {
+        $slug = (string)($person['category_slug'] ?? '');
+        $designation = strtolower(trim((string)($person['designation_en'] ?? '')));
+        $isCommittee = $slug === 'committee' || ($slug === 'administration' && preg_match('/committee|smc|chairperson|chairman|member/', $designation));
+
+        if ($slug === 'leadership') $group = 'leadership';
+        elseif ($isCommittee) $group = 'committee';
+        elseif ($slug === 'teaching') $group = 'teaching';
+        elseif ($slug === 'non_teaching') $group = 'non_teaching';
+        else $group = 'administration';
+
+        $person['photo_url'] = staff_photo_url($person['photo'] ?? '');
+        $groups[$group][] = $person;
+    }
+
+    return $groups;
+}
+
+function staff_photo_url(?string $photo): string {
+    $photo = trim((string)$photo);
+    if ($photo === '') return '';
+    if (preg_match('#^https?://#i', $photo)) return $photo;
+    return base_url(ltrim($photo, '/'));
+}
+
+function staff_initials(?string $name): string {
+    $parts = preg_split('/\s+/', trim((string)$name), -1, PREG_SPLIT_NO_EMPTY);
+    if (!$parts) return '?';
+    $initials = strtoupper(substr($parts[0], 0, 1));
+    if (count($parts) > 1) $initials .= strtoupper(substr($parts[count($parts) - 1], 0, 1));
+    return $initials;
+}
+
 // Security headers helper
 function send_security_headers(): void {
     header('X-Frame-Options: SAMEORIGIN');

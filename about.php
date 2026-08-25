@@ -119,8 +119,8 @@
       <a href="<?= e_attr(base_url('contact.php')) ?>" style="color:var(--primary);font-weight:700;font-size:.88rem;margin-top:10px;display:inline-flex">Contact office to confirm →</a>
     </div>
   </div>
-  <div class="wrap" style="margin-top:16px;display:grid;gap:16px">
-    <div id="leadership" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
+  <div class="wrap legacy-people-placeholder" style="margin-top:16px;display:grid;gap:16px">
+    <div id="legacy-leadership" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h3 style="font-size:1.05rem">Leadership</h3><span style="font-size:.7rem;background:var(--gold-50);border:1px solid #FDE68A;padding:3px 8px;border-radius:999px;font-weight:700">CMS — verification required</span></div>
       <p style="color:var(--muted);margin-top:10px;font-size:.92rem;line-height:1.7">Head Teacher / Principal and School Management Committee (SMC) are listed here after verification. Names, photographs and messages are shown only when the school supplies them and marks them public in <strong>Admin → People → Leadership / Management Committee</strong>. No placeholder persons are published.</p>
       <div style="margin-top:14px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
@@ -128,11 +128,53 @@
         <div style="background:var(--surface-low);border:1px dashed var(--border-strong);border-radius:12px;padding:16px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px"><use href="#i-user"/></svg><div style="font-weight:700;color:var(--primary)">School Management Committee</div><div style="font-size:.84rem;margin-top:6px">Chairperson and members — published only with verified names. No sample committee is invented.</div></div>
       </div>
     </div>
-    <div id="staff" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
+    <div id="legacy-staff" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h3 style="font-size:1.05rem">Teachers &amp; Staff</h3><span style="font-size:.7rem;background:var(--gold-50);border:1px solid #FDE68A;padding:3px 8px;border-radius:999px;font-weight:700">Directory — CMS controlled</span></div>
       <p style="color:var(--muted);margin-top:10px;font-size:.92rem;line-height:1.7">The staff directory is intentionally empty until data is supplied by the school. When populated it will include bilingual names, designation and qualification. Personal phone numbers and emails are shown only if explicitly marked public. Teaching / administrative / support categories are separated automatically.</p>
       <div style="margin-top:14px;background:var(--surface-low);border:1px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px"><use href="#i-info"/></svg><p style="font-weight:600">Staff information for this section is being updated.</p><p style="font-size:.84rem;margin-top:6px">Detailed information will be updated after verification by the school administration.</p></div>
     </div>
+  </div>
+</section>
+
+<?php
+$people = get_staff_directory();
+$principal = $people['leadership'][0] ?? null;
+$leadershipTeam = array_slice($people['leadership'], 1);
+$peopleGroups = [
+  'committee' => ['title'=>'School Management Committee','subtitle'=>'Community leadership and governance'],
+  'teaching' => ['title'=>'Teaching team','subtitle'=>'Teachers supporting learning from ECD to Grade 12'],
+  'administration' => ['title'=>'Administration & support','subtitle'=>'The people who keep school services moving'],
+];
+?>
+<!-- CMS-managed people directory -->
+<section class="section people-section" id="people">
+  <div class="wrap people-content">
+    <div class="people-section-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> People of our school</span>
+        <h2>Leadership, teachers and school community</h2>
+        <p>Meet the people who guide the school, support students and keep the campus running. Profiles are published and ordered by the school administration through the CMS.</p>
+      </div>
+      <nav class="people-jump" aria-label="People sections"><a href="#leadership">Leadership</a><a href="#committee">Committee</a><a href="#staff">Teaching team</a></nav>
+    </div>
+
+    <section class="people-block" id="leadership" aria-labelledby="leadership-title">
+      <div class="people-block-head"><div><span class="people-kicker">01 · School leadership</span><h3 id="leadership-title">Principal &amp; leadership</h3></div><span class="people-count"><?= count($people['leadership']) ?> <?= count($people['leadership']) === 1 ? 'profile' : 'profiles' ?></span></div>
+      <?php if ($principal): ?>
+        <div class="principal-profile">
+          <div class="person-avatar person-avatar-large"><?php if (!empty($principal['photo_url'])): ?><img src="<?= e_attr($principal['photo_url']) ?>" alt="<?= e_attr($principal['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($principal['name_en'])) ?></span><?php endif; ?></div>
+          <div class="principal-profile-copy"><span class="person-role"><?= e($principal['designation_en']) ?></span><h4><?= e($principal['name_en']) ?></h4><?php if (!empty($principal['name_np'])): ?><p class="person-native"><?= e($principal['name_np']) ?></p><?php endif; ?><?php if (!empty($principal['qualification'])): ?><p class="person-detail"><?= e($principal['qualification']) ?></p><?php endif; ?><p class="principal-profile-note">The school’s leadership profile is maintained by the administration and shown here only while marked active in the CMS.</p></div>
+        </div>
+        <?php if ($leadershipTeam): ?><div class="person-grid person-grid-compact" style="margin-top:16px"><?php foreach ($leadershipTeam as $person): ?><article class="person-card person-card-compact"><div class="person-avatar"><?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($person['name_en'])) ?></span><?php endif; ?></div><div class="person-card-body"><span class="person-role"><?= e($person['designation_en']) ?></span><h4><?= e($person['name_en']) ?></h4><?php if (!empty($person['name_np'])): ?><p class="person-native"><?= e($person['name_np']) ?></p><?php endif; ?></div></article><?php endforeach; ?></div><?php endif; ?>
+      <?php else: ?><div class="people-empty"><span class="people-empty-icon">01</span><div><strong>Leadership profiles are being prepared.</strong><p>The school can publish the principal and leadership team from Admin → Staff.</p></div></div><?php endif; ?>
+    </section>
+
+    <?php foreach ($peopleGroups as $groupKey => $groupMeta): $groupPeople = $groupKey === 'administration' ? array_merge($people['administration'], $people['non_teaching']) : $people[$groupKey]; ?>
+      <section class="people-block" id="<?= $groupKey === 'teaching' ? 'staff' : $groupKey ?>" aria-labelledby="<?= $groupKey ?>-title">
+        <div class="people-block-head"><div><span class="people-kicker"><?= e($groupKey === 'committee' ? '02 · Community governance' : ($groupKey === 'teaching' ? '03 · Learning team' : '04 · School operations')) ?></span><h3 id="<?= $groupKey ?>-title"><?= e($groupMeta['title']) ?></h3><p><?= e($groupMeta['subtitle']) ?></p></div><span class="people-count"><?= count($groupPeople) ?> <?= count($groupPeople) === 1 ? 'profile' : 'profiles' ?></span></div>
+        <?php if ($groupPeople): ?><div class="person-grid"><?php foreach ($groupPeople as $person): ?><article class="person-card"><div class="person-avatar"><?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>" loading="lazy"><?php else: ?><span><?= e(staff_initials($person['name_en'])) ?></span><?php endif; ?></div><div class="person-card-body"><span class="person-role"><?= e($person['designation_en']) ?></span><h4><?= e($person['name_en']) ?></h4><?php if (!empty($person['name_np'])): ?><p class="person-native"><?= e($person['name_np']) ?></p><?php endif; ?><?php if (!empty($person['department']) || !empty($person['qualification'])): ?><p class="person-detail"><?= e(implode(' · ', array_filter([$person['department'] ?? '', $person['qualification'] ?? '']))) ?></p><?php endif; ?><?php if (!empty($person['show_phone']) && !empty($person['phone'])): ?><a class="person-contact" href="tel:<?= e_attr($person['phone']) ?>">Call <?= e($person['phone']) ?></a><?php endif; ?><?php if (!empty($person['show_email']) && !empty($person['email'])): ?><a class="person-contact" href="mailto:<?= e_attr($person['email']) ?>">Email office</a><?php endif; ?></div></article><?php endforeach; ?></div><?php else: ?><div class="people-empty"><span class="people-empty-icon">—</span><div><strong><?= e($groupMeta['title']) ?> profiles will appear here.</strong><p>Active records assigned to this category in Admin → Staff are published automatically.</p></div></div><?php endif; ?>
+      </section>
+    <?php endforeach; ?>
   </div>
 </section>
 

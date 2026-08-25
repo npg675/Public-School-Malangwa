@@ -2,7 +2,14 @@
 $adminPage = 'staff'; $adminTitle = 'Staff Form';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null; $editing = isset($_GET['id']) && is_numeric($_GET['id']); $row = null; $cats = [];
-if ($pdo && db_has_table('staff_categories')) { try { $cats = $pdo->query("SELECT * FROM staff_categories ORDER BY sort_order")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('staff_categories')) {
+    try {
+        // Keep existing installations in sync with the About page hierarchy.
+        $pdo->exec("INSERT INTO staff_categories (slug,name_en,name_np,sort_order) VALUES ('committee','School Management Committee','विद्यालय व्यवस्थापन समिति',2) ON DUPLICATE KEY UPDATE name_en=VALUES(name_en), name_np=VALUES(name_np), sort_order=VALUES(sort_order)");
+        $pdo->exec("UPDATE staff_categories SET sort_order = CASE slug WHEN 'leadership' THEN 1 WHEN 'committee' THEN 2 WHEN 'administration' THEN 3 WHEN 'teaching' THEN 4 WHEN 'non_teaching' THEN 5 ELSE sort_order END WHERE slug IN ('leadership','committee','administration','teaching','non_teaching')");
+        $cats = $pdo->query("SELECT * FROM staff_categories ORDER BY sort_order, name_en")->fetchAll();
+    } catch (Throwable $e) {}
+}
 if ($editing) { $stmt = $pdo->prepare('SELECT * FROM staff WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/staff.php')); exit; } }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
     $d = ['name_en'=>trim($_POST['name_en']??''),'name_np'=>trim($_POST['name_np']??''),'designation_en'=>trim($_POST['designation_en']??''),'designation_np'=>trim($_POST['designation_np']??''),'department'=>trim($_POST['department']??''),'qualification'=>trim($_POST['qualification']??''),'phone'=>trim($_POST['phone']??''),'email'=>trim($_POST['email']??''),'show_phone'=>isset($_POST['show_phone'])?1:0,'show_email'=>isset($_POST['show_email'])?1:0,'photo'=>trim($_POST['photo']??''),'category_id'=>$_POST['category_id']?:null,'display_order'=>(int)($_POST['display_order']??0),'is_active'=>isset($_POST['is_active'])?1:0];
@@ -27,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     <div class="form-group"><label>Qualification</label><input type="text" name="qualification" value="<?= e($row['qualification']??'') ?>"></div>
     <div class="form-group"><label>Phone</label><input type="text" name="phone" value="<?= e($row['phone']??'') ?>"></div>
     <div class="form-group"><label>Email</label><input type="email" name="email" value="<?= e($row['email']??'') ?>"></div>
-    <div class="form-group"><label>Photo</label><input type="text" name="photo" value="<?= e($row['photo']??'') ?>" placeholder="uploads/..."></div>
+    <div class="form-group form-full"><label>Profile photo</label><input type="text" name="photo" value="<?= e($row['photo']??'') ?>" placeholder="uploads/staff/..." id="staffPhotoPath"><div class="upload-zone" style="margin-top:8px;padding:18px" onclick="this.querySelector('input[type=file]').click()"><input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="var z=this.closest('.upload-zone');uploadFile(this.files[0],function(e,r){if(e){alert(e);return}document.getElementById('staffPhotoPath').value=r.path;document.getElementById('staffPhotoPreview').src='<?= e_attr(base_url('')) ?>'+r.path;document.getElementById('staffPhotoPreview').style.display='block'})"><small>Click or drag to upload a JPG, PNG or WebP portrait</small><img id="staffPhotoPreview" class="preview-img" src="<?= e_attr(!empty($row['photo']) ? staff_photo_url($row['photo']) : '') ?>" alt="Current profile photo" style="<?= !empty($row['photo']) ? '' : 'display:none' ?>"></div><small style="display:block;margin-top:6px;color:#667085">Use a clear, front-facing school-approved photo. The profile appears publicly only when Active is checked.</small></div>
     <div class="form-group"><label>Display Order</label><input type="number" name="display_order" value="<?= e($row['display_order']??'0') ?>"></div>
     <div class="form-group form-full">
         <div class="checkbox-row"><input type="checkbox" name="show_phone" id="show_phone" <?=($row['show_phone']??0)?'checked':''?>><label for="show_phone" style="margin:0">Show phone on website</label></div>

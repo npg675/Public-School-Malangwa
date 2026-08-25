@@ -202,7 +202,13 @@ CREATE TABLE IF NOT EXISTS staff_categories (
   sort_order INT DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO staff_categories (slug,name_en,sort_order) VALUES ('leadership','Leadership',1),('administration','Administration',2),('teaching','Teaching Staff',3),('non_teaching','Non-Teaching Staff',4) ON DUPLICATE KEY UPDATE name_en=VALUES(name_en);
+INSERT INTO staff_categories (slug,name_en,name_np,sort_order) VALUES
+('leadership','Leadership','नेतृत्व',1),
+('committee','School Management Committee','विद्यालय व्यवस्थापन समिति',2),
+('administration','Administration','प्रशासन',3),
+('teaching','Teaching Staff','शिक्षक कर्मचारी',4),
+('non_teaching','Non-Teaching Staff','गैर-शिक्षण कर्मचारी',5)
+ON DUPLICATE KEY UPDATE name_en=VALUES(name_en), name_np=VALUES(name_np), sort_order=VALUES(sort_order);
 
 CREATE TABLE IF NOT EXISTS staff (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
