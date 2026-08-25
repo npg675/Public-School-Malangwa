@@ -107,7 +107,7 @@ img{max-width:100%;display:block}
 
 /* Utility bar — Deep Navy authority */
 .utility-bar{background:var(--inverse-surface);color:var(--inverse-on-surface);font-size:.78rem;font-weight:500;border-bottom:1px solid rgba(255,255,255,.08)}
-.utility-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:36px;flex-wrap:wrap;padding:6px 0}
+.utility-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:36px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
 .utility-left,.utility-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .gov-badge{display:inline-flex;align-items:center;gap:6px;font-weight:600;letter-spacing:.02em;color:var(--inverse-on-surface)}
 .gov-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--heritage-gold);box-shadow:0 0 0 4px rgba(255,204,0,.22)}
@@ -171,7 +171,7 @@ img{max-width:100%;display:block}
 /* Notice bar */
 .notice-bar{background:var(--primary);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
 .notice-bar.urgent{background:var(--error)}
-.notice-bar-inner{display:flex;align-items:center;gap:14px;min-height:44px;flex-wrap:wrap;padding:8px 0;font-size:.88rem}
+.notice-bar-inner{display:flex;align-items:center;gap:14px;min-height:44px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px;font-size:.88rem}
 .notice-bar-label{display:inline-flex;align-items:center;gap:6px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:6px 10px;border-radius:var(--radius-full);white-space:nowrap}
 .notice-bar.urgent .notice-bar-label{background:rgba(255,255,255,.18)}
 .notice-bar-title{font-weight:600;flex:1;min-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -179,6 +179,65 @@ img{max-width:100%;display:block}
 .notice-bar-date{opacity:.85;font-size:.82rem;white-space:nowrap}
 .notice-bar-cta{font-weight:700;white-space:nowrap;background:#fff;color:var(--primary);padding:7px 14px;border-radius:var(--radius-full);font-size:.82rem}
 .notice-bar.urgent .notice-bar-cta{color:var(--error)}
+
+/* School masthead — crest-led identity with a clear campus navigation */
+.site-header{position:relative;background:#fff;border-bottom:1px solid var(--border);backdrop-filter:none;-webkit-backdrop-filter:none}
+.utility-bar{font-size:.72rem}
+.utility-inner{min-height:32px;padding-top:4px;padding-bottom:4px}
+.masthead-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px;min-height:88px}
+.brand{gap:16px;margin-right:0}
+.brand-mark{width:62px;height:62px;padding:3px;background:#fff;border:0;box-shadow:0 5px 15px rgba(0,30,64,.14)}
+.brand-text{gap:2px}
+.brand-name{font-size:1.12rem;letter-spacing:-.03em;color:var(--primary)}
+.brand-name-np{font-size:.82rem;color:var(--surface-tint);line-height:1.25}
+.brand-sub,.masthead-note{display:none}
+.header-cta{display:flex;align-items:center}
+.header-cta .btn{white-space:nowrap;padding:10px 15px;font-size:.84rem;box-shadow:none}
+.main-nav-bar{display:block;background:var(--primary);border-top:3px solid var(--heritage-gold);box-shadow:0 5px 12px rgba(0,30,64,.12);position:sticky;top:0;z-index:35}
+.nav-inner{display:flex;align-items:stretch;min-height:50px}
+.main-nav{display:flex;align-items:stretch;flex:1;gap:0}
+.main-nav a,.nav-drop-btn{display:inline-flex;align-items:center;gap:7px;border-radius:0;border-right:1px solid rgba(255,255,255,.14);padding:0 13px;color:#EAF1FA;font-size:.82rem;font-weight:700;letter-spacing:.005em}
+.main-nav a:first-child{border-left:1px solid rgba(255,255,255,.14)}
+.main-nav a:hover,.nav-drop-btn:hover,.main-nav a:focus-visible,.nav-drop-btn:focus-visible{background:var(--primary-container);color:#fff}
+.main-nav a.active{background:var(--heritage-gold);color:var(--primary)}
+.nav-drop-btn{background:transparent}
+.nav-drop-menu{top:calc(100% + 4px);left:0;min-width:225px;border:0;border-top:3px solid var(--heritage-gold);border-radius:0 0 var(--radius-md) var(--radius-md);box-shadow:0 12px 28px rgba(0,30,64,.22);padding:7px;background:#fff}
+.nav-drop-menu a{display:flex;color:var(--primary);border:0;padding:10px 12px;border-radius:var(--radius-sm);font-size:.84rem}
+.nav-drop-menu a:hover{background:var(--surface-low);color:var(--primary)}
+.nav-login{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:0 12px;color:#C7D7F0;font-size:.72rem;font-weight:600;white-space:nowrap;border-left:1px solid rgba(255,255,255,.14)}
+.nav-login:hover{background:var(--primary-container);color:#fff}
+.mobile-brand{display:flex;align-items:center;gap:10px;color:#fff;font-family:var(--font-head);font-size:.9rem;line-height:1.15}
+.mobile-brand img{width:42px;height:42px;object-fit:contain;border-radius:50%;background:#fff;padding:2px}
+.mobile-brand strong{font-size:1.04rem}
+.notice-bar.urgent{background:var(--heritage-gold);color:var(--primary);border-bottom-color:rgba(0,30,64,.16)}
+.notice-bar.urgent .notice-bar-label{background:rgba(0,30,64,.12)}
+.notice-bar.urgent .notice-bar-cta{color:var(--primary)}
+.notice-bar-inner{min-height:34px;padding-top:4px;padding-bottom:4px;gap:10px;font-size:.78rem}
+.notice-bar-label{padding:4px 8px;font-size:.7rem}
+.notice-bar-cta{padding:5px 10px;font-size:.72rem}
+
+@media(max-width:899px){
+  .utility-inner{padding-top:5px;padding-bottom:5px;gap:8px;flex-wrap:nowrap}
+  .utility-left{display:flex;min-width:0;white-space:nowrap}
+  .utility-right{width:auto;justify-content:flex-end;gap:8px;white-space:nowrap}
+  .utility-right a{font-size:.66rem}
+  .utility-loc{font-size:.66rem}
+  .masthead-inner{grid-template-columns:1fr auto;gap:12px;min-height:74px}
+  .brand{gap:10px}
+  .brand-mark{width:52px;height:52px}
+  .brand-name{font-size:.96rem}
+  .brand-name-np{font-size:.7rem}
+  .masthead-note,.header-cta{display:none}
+  .main-nav-bar{display:none}
+  .notice-bar-inner{gap:8px}
+  .notice-bar-date{display:none}
+  .notice-bar-title{min-width:0;font-size:.72rem}
+  .notice-bar-cta{padding:5px 8px;font-size:.68rem}
+}
+
+@media(min-width:900px){
+  .nav-toggle{display:none}
+}
 
 /* Hero — Deep Navy with gold accent */
 .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--primary) 0%, var(--surface-dark) 100%);color:#fff;padding:36px 0 40px}

@@ -48,7 +48,7 @@ $__page = $page ?? 'home';
 <a class="skip-link" href="#main">Skip to content</a>
 
 <!-- Utility header -->
-<div class="utility-bar">
+<aside class="utility-bar" aria-label="School contact bar">
   <div class="wrap utility-inner">
     <div class="utility-left">
       <span class="gov-badge"><span class="dot"></span> <?= t('Government / Community School','सरकारी / सामुदायिक विद्यालय') ?></span>
@@ -57,16 +57,14 @@ $__page = $page ?? 'home';
     </div>
     <div class="utility-right">
       <?php if (APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e(APP_PHONE) ?></a><?php endif; ?>
-      <?php if (APP_EMAIL): ?><a href="mailto:<?= e_attr(APP_EMAIL) ?>"><svg class="ic"><use href="#i-mail"/></svg> <?= e(APP_EMAIL) ?></a><?php endif; ?>
-      <?php if (APP_OFFICE_HOURS): ?><span><svg class="ic"><use href="#i-clock"/></svg> <?= e(APP_OFFICE_HOURS) ?></span><?php endif; ?>
       <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
     </div>
   </div>
-</div>
+</aside>
 
 <!-- Main header -->
 <header class="site-header" id="siteHeader">
-  <div class="wrap header-inner">
+  <div class="wrap masthead-inner">
     <a class="brand" href="<?= e_attr(base_url()) ?>" aria-label="Shree Public Secondary School home">
       <span class="brand-mark" aria-hidden="true"><img src="<?= e_attr(base_url('assets/img/logo.png')) ?>" alt="Shree Public Secondary School logo" width="48" height="48" style="width:100%;height:100%;object-fit:contain;border-radius:50%" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'"><span style="display:none;width:48px;height:48px;place-items:center">श्री</span></span>
       <span class="brand-text">
@@ -75,7 +73,7 @@ $__page = $page ?? 'home';
         <span class="brand-sub">Malangwa-2, Sarlahi • <?= t('Community School','सामुदायिक विद्यालय') ?> • IEMIS <?= e(APP_IEMIS) ?></span>
       </span>
     </a>
-    <nav class="main-nav" aria-label="Primary">
+    <nav class="legacy-main-nav" aria-label="Primary">
       <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>"><?= t('Home','गृह') ?></a>
       <a href="<?= e_attr(base_url('about.php')) ?>" class="<?= $__page==='about'?'active':'' ?>"><?= t('About','बारेमा') ?></a>
       <a href="<?= e_attr(base_url('academics.php')) ?>" class="<?= $__page==='academics'?'active':'' ?>"><?= t('Academics','शैक्षिक') ?></a>
@@ -103,6 +101,45 @@ $__page = $page ?? 'home';
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
   </div>
 </header>
+
+<nav class="main-nav-bar" aria-label="Primary navigation">
+  <div class="wrap nav-inner">
+    <nav class="main-nav" aria-label="Primary">
+      <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">Our school <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <div class="nav-drop-menu">
+          <a href="<?= e_attr(base_url('about.php')) ?>">About the school</a>
+          <a href="<?= e_attr(base_url('management.php')) ?>">School management</a>
+          <a href="<?= e_attr(base_url('contact.php')) ?>">Contact &amp; location</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">Academics <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <div class="nav-drop-menu">
+          <a href="<?= e_attr(base_url('academics.php')) ?>">Programs &amp; classes</a>
+          <a href="<?= e_attr(base_url('academic-calendar.php')) ?>">Academic calendar</a>
+          <a href="<?= e_attr(base_url('results.php')) ?>">Results</a>
+        </div>
+      </div>
+      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="<?= $__page==='admissions'?'active':'' ?>">Admissions</a>
+      <a href="<?= e_attr(base_url('notices.php')) ?>" class="<?= $__page==='notices'?'active':'' ?>">Notices</a>
+      <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>">Gallery</a>
+      <div class="nav-dropdown nav-more">
+        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">More <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <div class="nav-drop-menu">
+          <a href="<?= e_attr(base_url('events.php')) ?>">Events</a>
+          <a href="<?= e_attr(base_url('downloads.php')) ?>">Downloads</a>
+          <a href="<?= e_attr(base_url('publications.php')) ?>">Publications</a>
+          <a href="<?= e_attr(base_url('scholarships.php')) ?>">Scholarships</a>
+          <a href="<?= e_attr(base_url('faq.php')) ?>">FAQ</a>
+          <a href="<?= e_attr(base_url('links.php')) ?>">Useful links</a>
+        </div>
+      </div>
+    </nav>
+    <a class="nav-login" href="<?= e_attr(base_url('contact.php')) ?>"><svg class="ic"><use href="#i-user"/></svg> Contact</a>
+  </div>
+</nav>
 
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <div class="mn-head">

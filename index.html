@@ -44,32 +44,29 @@
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
 </svg>
 
-<aside class="demo-note" id="demoNote" aria-label="Concept demo notice">
-  <span><b>Concept demo</b> — Shree Public Secondary School, Malangwa-2 · not the school's live website.</span>
-  <button id="demoDismiss" aria-label="Dismiss demo notice"><svg class="ic"><use href="#i-close"/></svg></button>
+<aside class="utility-bar" aria-label="School contact bar">
+  <div class="wrap utility-inner">
+    <div class="utility-left">
+      <span class="utility-loc"><svg class="ic"><use href="#i-pin"/></svg> Malangwa-2, Sarlahi</span>
+    </div>
+    <div class="utility-right">
+      <a href="tel:+9779844032297"><svg class="ic"><use href="#i-phone"/></svg> +977 984-4032297</a>
+      <span class="lang-toggle"><span class="active">EN</span><span class="sep">/</span><span>ने</span></span>
+    </div>
+  </div>
 </aside>
 
 <header class="site-header" id="siteHeader">
-  <div class="wrap header-inner">
+  <div class="wrap masthead-inner">
     <a class="brand" href="#home" aria-label="Shree Public Secondary School home">
-      <span class="brand-mark" aria-hidden="true">श्री</span>
-      <span>
-        <span class="brand-name">Shree Public Secondary</span>
-        <span class="brand-sub">Malangwa-2, Sarlahi · Madhesh 45800</span>
+      <span class="brand-mark" aria-hidden="true"><img src="assets/img/logo.png" alt=""></span>
+      <span class="brand-text">
+        <span class="brand-name">Shree Public Secondary School</span>
+        <span class="brand-name-np">श्री पब्लिक माध्यमिक विद्यालय</span>
       </span>
     </a>
-    <nav class="main-nav" aria-label="Primary">
-      <a href="#home">Home</a>
-      <a href="about.html">About</a>
-      <a href="academics.html">Academics</a>
-      <a href="admissions.html">Admissions</a>
-      <a href="notices.html">Notices</a>
-      <a href="notices.html">Events</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="contact.html">Contact</a>
-    </nav>
     <div class="header-cta">
-      <a href="admissions.html" class="btn btn-primary">Admission Inquiry</a>
+      <a href="admissions.html" class="btn btn-gold">Admission inquiry <svg class="ic"><use href="#i-arrow"/></svg></a>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
       <svg class="ic"><use href="#i-menu"/></svg>
@@ -77,9 +74,58 @@
   </div>
 </header>
 
+<nav class="main-nav-bar" aria-label="Primary navigation">
+  <div class="wrap nav-inner">
+    <nav class="main-nav">
+      <a class="active" href="#home">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn" type="button">Our school <span aria-hidden="true">⌄</span></button>
+        <div class="nav-drop-menu">
+          <a href="about.html">About the school</a>
+          <a href="management.php">School management</a>
+          <a href="contact.html">Contact &amp; location</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn" type="button">Academics <span aria-hidden="true">⌄</span></button>
+        <div class="nav-drop-menu">
+          <a href="academics.html">Programs &amp; classes</a>
+          <a href="academic-calendar.php">Academic calendar</a>
+          <a href="results.php">Results</a>
+        </div>
+      </div>
+      <a href="admissions.html">Admissions</a>
+      <a href="notices.html">Notices</a>
+      <a href="gallery.html">Gallery</a>
+      <div class="nav-dropdown nav-more">
+        <button class="nav-drop-btn" type="button">More <span aria-hidden="true">⌄</span></button>
+        <div class="nav-drop-menu">
+          <a href="events.php">Events</a>
+          <a href="downloads.php">Downloads</a>
+          <a href="results.php">Results</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <a class="nav-login" href="contact.html"><svg class="ic"><use href="#i-user"/></svg> Login</a>
+  </div>
+</nav>
+
+<div class="notice-bar urgent" role="status">
+  <div class="wrap notice-bar-inner">
+    <span class="notice-bar-label"><svg class="ic"><use href="#i-bell"/></svg> Latest notice</span>
+    <a class="notice-bar-title" href="notices.html">Admission updates, exam notices and school circulars are posted here.</a>
+    <span class="notice-bar-date">Updated by school office</span>
+    <a class="notice-bar-cta" href="notices.html">View notices <svg class="ic"><use href="#i-arrow"/></svg></a>
+  </div>
+</div>
+
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <div class="mn-head">
-    <span class="brand-name">Shree Public<br>Secondary School</span>
+    <span class="mobile-brand">
+      <img src="assets/img/logo.png" alt="">
+      <span><strong>Shree Public</strong><br>Secondary School</span>
+    </span>
     <button class="mn-close" id="navClose" aria-label="Close menu"><svg class="ic"><use href="#i-close"/></svg></button>
   </div>
   <div class="mn-links">
@@ -105,7 +151,7 @@
     <div class="hero-grid-bg" aria-hidden="true"></div>
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <span class="hero-badge"><span class="dot"></span> श्री पब्लिक माध्यमिक विद्यालय · Malangwa-2, Sarlahi</span>
+        <span class="hero-badge"><span class="dot"></span> Public co-educational school · ECD to Grade 12</span>
         <h1>Education <span class="accent">• Discipline •</span> Opportunity — from ECD to Grade 12.</h1>
         <p class="lead">A public, co-educational community school serving <strong>1,000+ students</strong> in Malangwa. Explore academics, +2 Science &amp; Management (NEB), notices and how to reach us.</p>
         <p class="nepali">श्री पब्लिक माध्यमिक विद्यालय, मलंगवा-२, सर्लाही — मधेश प्रदेश ४५८००</p>
@@ -644,8 +690,6 @@
   navClose.addEventListener('click', closeNav);
   mobileNav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
   window.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
-  var note = document.getElementById('demoNote');
-  document.getElementById('demoDismiss').addEventListener('click', function(){ note.classList.add('hide'); });
   var revealEls = document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
