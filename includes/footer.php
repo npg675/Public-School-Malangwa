@@ -13,6 +13,11 @@ $__footerMapQuery = $__footerLat . ',' . $__footerLng;
 $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo.png'));
 ?>
 </main>
+<section class="home-contact-bar home-shell site-contact-bar" aria-labelledby="site-contact-title">
+  <span class="home-contact-bar-icon material-symbols-outlined" aria-hidden="true">chat</span>
+  <div><strong id="site-contact-title"><?= e(t('Have a question about the school?', 'विद्यालयबारे कुनै प्रश्न छ?')) ?></strong><p><?= e(t('For admission, academic activities, certificates or other administrative enquiries, please contact the school office.', 'भर्ना, शैक्षिक गतिविधि, प्रमाणपत्र वा प्रशासनिक जानकारीका लागि विद्यालय कार्यालयमा सम्पर्क गर्नुहोस्।')) ?></p></div>
+  <div class="home-contact-bar-actions"><a class="home-button home-button-light" href="<?= e_attr(base_url('contact.php')) ?>"><?= e(t('Contact school', 'विद्यालय सम्पर्क')) ?></a><a class="home-button home-button-outline-light" href="<?= e_attr(base_url('notices.php')) ?>"><?= e(t('View notices', 'सूचना हेर्नुहोस्')) ?></a></div>
+</section>
 <footer class="site-footer">
   <div class="wrap">
     <div class="foot-grid">
@@ -110,6 +115,6 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
   <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__footerMapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= t('Directions','दिशा') ?></a>
 </div>
 
-<script src="<?= e_attr(base_url('assets/js/main.js')) ?>"></script>
+<script src="<?= e_attr(base_url('assets/js/main.js?v=20260826')) ?>"></script>
 </body>
 </html>

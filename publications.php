@@ -1,5 +1,6 @@
 <?php $page='publications'; $title='Publications — Annual Reports & Documents | Shree Public Secondary School'; $description='Publications from Shree Public Secondary School, Malangwa-2 — annual reports, prospectus, school improvement plans and transparency documents.'; require_once __DIR__.'/includes/helpers.php'; require_once __DIR__.'/includes/header.php';
 $blocks = get_blocks('publications');
+$pubPage = get_page_content('publications');
 $sec = function(string $k) use ($blocks): array { return array_values(array_filter($blocks, fn($b)=>$b['section_key']===$k)); };
 $intro = $sec('intro')[0] ?? null;
 $pubs = get_downloads(12, 'publications');
@@ -10,7 +11,13 @@ $pubs = get_downloads(12, 'publications');
   <div class="wrap">
     <div style="background:var(--surface-low);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px">
       <svg class="ic" style="color:var(--primary);width:20px;height:20px;margin-top:2px;flex:none"><use href="#i-info"/></svg>
-      <div style="font-size:.88rem;color:var(--muted);line-height:1.7"><strong style="color:var(--text)"><?= e(t('What is published:','के प्रकाशित हुन्छ:')) ?></strong> <?= e($intro ? block_val($intro,'body') : t('School annual reports, financial summaries (as approved for disclosure), School Improvement Plan (SIP) summaries, prospectus and similar institutional publications. Documents are shown with title, category, publish date and file type. No placeholder documents are linked.','विद्यालय वार्षिक प्रतिवेदन, वित्तीय सारांश (प्रकाशनका लागि स्वीकृत), विद्यालय सुधार योजना (SIP) सारांश, prospectus र यस्तै संस्थागत प्रकाशनहरू। कागजातहरू शीर्षक, श्रेणी, प्रकाशन मिति र फाइल प्रकार सहित देखाइन्छ।')) ?></div>
+      <div style="font-size:.88rem;color:var(--muted);line-height:1.7">
+        <?php if ($pubPage && trim(page_val($pubPage, 'content')) !== ''): ?>
+          <?= page_val($pubPage, 'content') ?>
+        <?php else: ?>
+          <strong style="color:var(--text)"><?= e(t('What is published:','के प्रकाशित हुन्छ:')) ?></strong> <?= e($intro ? block_val($intro,'body') : t('School annual reports, financial summaries (as approved for disclosure), School Improvement Plan (SIP) summaries, prospectus and similar institutional publications. Documents are shown with title, category, publish date and file type. No placeholder documents are linked.','विद्यालय वार्षिक प्रतिवेदन, वित्तीय सारांश (प्रकाशनका लागि स्वीकृत), विद्यालय सुधार योजना (SIP) सारांश, prospectus र यस्तै संस्थागत प्रकाशनहरू। कागजातहरू शीर्षक, श्रेणी, प्रकाशन मिति र फाइल प्रकार सहित देखाइन्छ।')) ?>
+        <?php endif; ?>
+      </div>
     </div>
 
     <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:18px">

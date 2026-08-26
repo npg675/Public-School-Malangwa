@@ -14,6 +14,14 @@ $__lng = (string)setting('coords_lng', APP_COORDS_LNG);
 $__mapQuery = $__lat . ',' . $__lng;
 $__logoPath = (string)setting('logo_path', 'assets/img/logo.png');
 $__logoUrl = stored_file_url($__logoPath);
+$__requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$__basePath = rtrim((string)(parse_url(base_url(), PHP_URL_PATH) ?: '/'), '/');
+if ($__basePath !== '' && ($__requestPath === $__basePath || str_starts_with($__requestPath, $__basePath . '/'))) {
+    $__canonicalPath = ltrim(substr($__requestPath, strlen($__basePath)), '/');
+} else {
+    $__canonicalPath = ltrim($__requestPath, '/');
+}
+$__canonicalUrl = base_url($__canonicalPath);
 ?>
 <!DOCTYPE html>
 <html lang="<?= $__isNp ? 'ne' : 'en' ?>">
@@ -22,7 +30,7 @@ $__logoUrl = stored_file_url($__logoPath);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($title ?? $__siteNameEn . ' · Malangwa-2, Sarlahi | ' . $__siteNameNp) ?></title>
 <meta name="description" content="<?= e_attr($description ?? 'Shree Public Secondary School — public community school ECD to Grade 12, +2 Science & Management (NEB). Malangwa-2, Sarlahi, Madhesh Province. IEMIS 190640003.') ?>">
-<link rel="canonical" href="<?= e_attr(base_url(ltrim($_SERVER['REQUEST_URI'] ?? '/', '/'))) ?>">
+<link rel="canonical" href="<?= e_attr($__canonicalUrl) ?>">
 <meta property="og:title" content="<?= e_attr($title ?? $__siteNameEn) ?>">
 <meta property="og:description" content="<?= e_attr($description ?? '') ?>">
 <meta property="og:type" content="website">
@@ -31,7 +39,7 @@ $__logoUrl = stored_file_url($__logoPath);
 <meta name="theme-color" content="#001e40">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e_attr(base_url('assets/css/style.css')) ?>">
 <?php if (!empty($useTailwind)) require_once __DIR__ . '/tailwind_head.php'; ?>
 <link rel="icon" href="<?= e_attr(base_url('assets/img/favicon.png')) ?>">
@@ -55,7 +63,7 @@ $__logoUrl = stored_file_url($__logoPath);
 }
 </script>
 </head>
-<body>
+<body class="page-<?= e_attr($__page) ?>">
 <a class="skip-link" href="#main">Skip to content</a>
 
 <!-- Utility header -->
@@ -116,39 +124,45 @@ $__logoUrl = stored_file_url($__logoPath);
 <nav class="main-nav-bar" aria-label="Primary navigation">
   <div class="wrap nav-inner">
     <nav class="main-nav" aria-label="Primary">
-      <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>">Home</a>
+      <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>"><?= t('Home','गृह') ?></a>
       <div class="nav-dropdown">
-        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">Our school <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <button class="nav-drop-btn <?= in_array($__page, ['about','management'], true) ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
+          <?= t('Our school','हाम्रो विद्यालय') ?> <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
         <div class="nav-drop-menu">
-          <a href="<?= e_attr(base_url('about.php')) ?>">About the school</a>
-          <a href="<?= e_attr(base_url('management.php')) ?>">School management</a>
-          <a href="<?= e_attr(base_url('contact.php')) ?>">Contact &amp; location</a>
+          <a href="<?= e_attr(base_url('about.php')) ?>"><?= t('About the school','विद्यालयको बारेमा') ?></a>
+          <a href="<?= e_attr(base_url('management.php')) ?>"><?= t('School management','विद्यालय व्यवस्थापन') ?></a>
+          <a href="<?= e_attr(base_url('about.php#staff')) ?>"><?= t('Staff directory','शिक्षक तथा कर्मचारी') ?></a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">Academics <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <button class="nav-drop-btn <?= $__page==='academics' || $__page==='results' || $__page==='academic-calendar' ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
+          <?= t('Academics','शैक्षिक') ?> <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
         <div class="nav-drop-menu">
-          <a href="<?= e_attr(base_url('academics.php')) ?>">Programs &amp; classes</a>
-          <a href="<?= e_attr(base_url('academic-calendar.php')) ?>">Academic calendar</a>
-          <a href="<?= e_attr(base_url('results.php')) ?>">Results</a>
+          <a href="<?= e_attr(base_url('academics.php')) ?>"><?= t('Programs and classes','कार्यक्रम तथा कक्षा') ?></a>
+          <a href="<?= e_attr(base_url('academic-calendar.php')) ?>"><?= t('Academic calendar','शैक्षिक पात्रो') ?></a>
+          <a href="<?= e_attr(base_url('results.php')) ?>"><?= t('Results','नतिजा') ?></a>
         </div>
       </div>
-      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="<?= $__page==='admissions'?'active':'' ?>">Admissions</a>
-      <a href="<?= e_attr(base_url('notices.php')) ?>" class="<?= $__page==='notices'?'active':'' ?>">Notices</a>
-      <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>">Gallery</a>
+      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="<?= $__page==='admissions'?'active':'' ?>"><?= t('Admissions','भर्ना') ?></a>
+      <a href="<?= e_attr(base_url('notices.php')) ?>" class="<?= $__page==='notices' || $__page==='notice' ? 'active' : '' ?>"><?= t('Notices','सूचना') ?></a>
+      <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>"><?= t('Gallery','ग्यालरी') ?></a>
       <div class="nav-dropdown nav-more">
-        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-haspopup="true">More <svg class="ic"><use href="#i-chevron"/></svg></button>
+        <button class="nav-drop-btn <?= in_array($__page, ['events','downloads','publications','scholarships','faq','links','citizen-charter'], true) ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
+          <?= t('More','थप') ?> <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
         <div class="nav-drop-menu">
-          <a href="<?= e_attr(base_url('events.php')) ?>">Events</a>
-          <a href="<?= e_attr(base_url('downloads.php')) ?>">Downloads</a>
-          <a href="<?= e_attr(base_url('publications.php')) ?>">Publications</a>
-          <a href="<?= e_attr(base_url('scholarships.php')) ?>">Scholarships</a>
+          <a href="<?= e_attr(base_url('events.php')) ?>"><?= t('Events','कार्यक्रम') ?></a>
+          <a href="<?= e_attr(base_url('downloads.php')) ?>"><?= t('Downloads','डाउनलोड') ?></a>
+          <a href="<?= e_attr(base_url('publications.php')) ?>"><?= t('Publications','प्रकाशन') ?></a>
+          <a href="<?= e_attr(base_url('scholarships.php')) ?>"><?= t('Scholarships','छात्रवृत्ति') ?></a>
           <a href="<?= e_attr(base_url('faq.php')) ?>">FAQ</a>
-          <a href="<?= e_attr(base_url('links.php')) ?>">Useful links</a>
+          <a href="<?= e_attr(base_url('links.php')) ?>"><?= t('Useful links','उपयोगी लिङ्क') ?></a>
         </div>
       </div>
     </nav>
-    <a class="nav-login" href="<?= e_attr(base_url('contact.php')) ?>">Contact</a>
+    <a href="<?= e_attr(base_url('contact.php')) ?>" class="nav-login <?= $__page==='contact'?'active':'' ?>"><?= t('Contact','सम्पर्क') ?></a>
   </div>
 </nav>
 

@@ -151,7 +151,13 @@ function get_downloads(int $limit = 6, ?string $category = null): array {
             foreach ($params as $k=>$v) $stmt->bindValue($k,$v);
             $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll();
+            return array_values(array_filter($rows, static function (array $row): bool {
+                $path = trim((string)($row['file_path'] ?? ''));
+                if ($path === '') return false;
+                if (preg_match('#^https?://#i', $path)) return true;
+                return is_file(__DIR__ . '/../' . ltrim($path, '/'));
+            }));
         } catch (Throwable $e) {
             error_log('Downloads read failed: ' . $e->getMessage());
             return [];
@@ -314,6 +320,10 @@ function get_staff_directory(): array {
     }
 
     foreach ($rows as $person) {
+        if (in_array(trim((string)($person['name_en'] ?? '')), ['', '—', '-'], true)
+            || in_array(trim((string)($person['name_np'] ?? '')), ['', '—', '-'], true)) {
+            continue;
+        }
         $slug = (string)($person['category_slug'] ?? '');
         $designation = strtolower(trim((string)($person['designation_en'] ?? '')));
         $isCommittee = $slug === 'committee' || ($slug === 'administration' && preg_match('/committee|smc|chairperson|chairman|member/', $designation));

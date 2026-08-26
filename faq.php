@@ -1,5 +1,6 @@
 <?php $page='faq'; $title='FAQ — Frequently Asked Questions | Shree Public Secondary School'; $description='Frequently asked questions about Shree Public Secondary School, Malangwa-2 — location, levels, +2 programs, notices, downloads, admission, results and directions.'; require_once __DIR__.'/includes/helpers.php'; require_once __DIR__.'/includes/header.php';
 $blocks = get_blocks('faq');
+$faqPage = get_page_content('faq');
 $sec = function(string $k) use ($blocks): array { return array_values(array_filter($blocks, fn($b)=>$b['section_key']===$k)); };
 $faqs = $sec('faq_item');
 ?>
@@ -12,7 +13,11 @@ $faqs = $sec('faq_item');
       <p style="font-size:.88rem;color:var(--muted);line-height:1.7"><strong style="color:var(--text)"><?= e(t('Note:','नोट:')) ?></strong> <?= e(t('Answers below use only verified school identity (name, location, IEMIS, levels, +2 streams). For dates, fees, procedures and personal matters, the Notice Board and school office are authoritative. No policy is invented to fill space.','तलका उत्तरहरूले केवल प्रमाणित विद्यालय पहिचान (नाम, स्थान, IEMIS, तह, +२ स्ट्रिम) प्रयोग गर्दछन्। मिति, शुल्क, प्रक्रिया र व्यक्तिगत मामिलाका लागि सूचना पाटी र विद्यालय कार्यालय आधिकारिक छन्।')) ?> <a href="<?= e_attr(base_url('notices.php')) ?>" style="color:var(--primary);font-weight:700"><?= e(t('Notice Board','सूचना पाटी')) ?></a> <?= e(t('and','र')) ?> <a href="<?= e_attr(base_url('contact.php')) ?>" style="color:var(--primary);font-weight:700"><?= e(t('school office','विद्यालय कार्यालय')) ?></a> <?= e(t('are authoritative.','आधिकारिक हुन्।')) ?></p>
     </div>
 
-    <?php if (empty($faqs)): ?>
+    <?php if ($faqPage && trim(page_val($faqPage, 'content')) !== ''): ?>
+      <article class="page-content" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:22px;color:var(--muted);line-height:1.75;font-size:.92rem">
+        <?= page_val($faqPage, 'content') ?>
+      </article>
+    <?php elseif (empty($faqs)): ?>
       <div class="empty"><svg class="ic"><use href="#i-info"/></svg><h4><?= e(t('No FAQs published yet','अहिलेसम्म कुनै जिज्ञासा प्रकाशित छैन')) ?></h4><p><?= e(t('FAQs will be published soon.','जिज्ञासाहरू छिट्टै प्रकाशित हुनेछन्।')) ?></p></div>
     <?php else: foreach ($faqs as $i=>$f): ?>
     <details style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px" <?= $i===0?'open':'' ?>>

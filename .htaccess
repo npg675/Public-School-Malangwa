@@ -24,6 +24,13 @@ RewriteRule ^scholarships/?$ scholarships.php [L]
 RewriteRule ^gallery/?$ gallery.php [L]
 RewriteRule ^contact/?$ contact.php [L]
 RewriteRule ^search/?$ search.php [L]
+RewriteRule ^faq/?$ faq.php [L]
+RewriteRule ^academic-calendar/?$ academic-calendar.php [L]
+RewriteRule ^links/?$ links.php [L]
+RewriteRule ^science/?$ science.php [L]
+RewriteRule ^management/?$ management.php [L]
+RewriteRule ^page/([A-Za-z0-9-]+)/?$ page.php?slug=$1 [L]
+RewriteRule ^sitemap/?$ sitemap.php [L]
 
 # Security headers
 <IfModule mod_headers.c>

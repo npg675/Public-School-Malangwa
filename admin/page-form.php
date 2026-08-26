@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
 <div class="breadcrumbs"><a href="<?= e_attr(base_url('admin/pages.php')) ?>">Pages</a> <span>/</span> <span><?= $editing?'Edit':'New' ?></span></div>
 <div class="top">
   <h1><?= $editing?'Edit Page':'New Page' ?></h1>
-  <?php if ($editing): ?><a class="btn" href="<?= e_attr(base_url('page.php?slug=' . urlencode($row['slug']))) ?>" target="_blank"><span class="material-symbols-outlined">visibility</span>Preview on website</a><?php endif; ?>
+<?php if ($editing): ?><a class="btn" href="<?= e_attr(base_url('page/' . rawurlencode($row['slug']))) ?>" target="_blank"><span class="material-symbols-outlined">visibility</span>Preview on website</a><?php endif; ?>
 </div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>
 

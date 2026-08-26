@@ -2,295 +2,198 @@
 $page = 'home';
 $title = 'Shree Public Secondary School — Malangwa-2, Sarlahi | श्री पब्लिक माध्यमिक विद्यालय';
 $description = 'Shree Public Secondary School — government community school in Malangwa-2, Sarlahi, Madhesh Province. ECD to Grade 12 with +2 Science & Management (NEB). IEMIS 190640003.';
-$useTailwind = true;
+$useTailwind = false;
 require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/header.php';
 
-$homeNotices = get_notices(5);
-$homeEvents  = get_events(3);
-$homeDownloads = get_downloads(6);
-
-$blocks   = get_blocks('home');
-$sec      = function(string $k) use ($blocks): array { return array_values(array_filter($blocks, fn($b) => $b['section_key'] === $k)); };
-$first    = function(string $k) use ($sec): ?array { return $sec($k)[0] ?? null; };
-$hero     = $first('hero'); $intro = $first('intro'); $cta = $first('cta_banner');
-$programs = get_programs();
-$galleryAlbums = get_gallery_albums(4);
-$showQuote = setting('show_principal','1') === '1' && setting('principal_name') !== '';
-$principalPhoto = setting('principal_photo','uploads/gallery/staff/leadership-team-photo.jpg');
-$principalMsg = setting('principal_message_' . current_lang(), '');
-if ($principalMsg === '') $principalMsg = setting('principal_message_en','');
-$catChip = function (?string $slug): string {
-    return match ($slug) {
-        'admission'   => 'bg-secondary-container text-on-secondary-container',
-        'examination' => 'bg-[#ffdad6] text-[#93000a]',
-        'vacancy'     => 'bg-primary-fixed text-on-primary-fixed',
-        'scholarship' => 'bg-secondary-fixed text-on-secondary-fixed',
-        'holiday'     => 'bg-tertiary-fixed text-tertiary-container',
-        default       => 'bg-surface-variant text-on-surface-variant',
-    };
+$homeNotices = get_notices(4);
+$blocks = get_blocks('home');
+$sections = function (string $key) use ($blocks): array {
+    return array_values(array_filter($blocks, static fn(array $block): bool => ($block['section_key'] ?? '') === $key));
 };
-$dlIcon = function (?string $type): string {
-    $t = strtoupper($type ?? '');
-    if ($t === 'PDF') return 'picture_as_pdf';
-    if ($t === 'ZIP') return 'folder_zip';
-    if ($t === 'XLSX' || $t === 'XLS') return 'table_chart';
-    if ($t === 'DOCX' || $t === 'DOC') return 'description';
-    return 'draft';
+$first = function (string $key) use ($sections): ?array {
+    return $sections($key)[0] ?? null;
+};
+$hero = $first('hero');
+$intro = $first('intro');
+$commitments = $sections('commitment');
+$galleryAlbums = get_gallery_albums(6);
+$heroImage = (string)($hero['image_url'] ?? '');
+if ($heroImage === '' || $heroImage === 'uploads/hero/hero-main-gate-jubilee.jpg') {
+    $heroImage = 'uploads/hero/hero-courtyard-assembly.jpg';
+}
+$galleryFallbacks = [
+    ['title_en' => 'Campus life', 'title_np' => 'विद्यालय जीवन', 'cover' => base_url('uploads/gallery/campus/front-building-entrance.jpg')],
+    ['title_en' => 'Assembly and events', 'title_np' => 'सभा तथा कार्यक्रम', 'cover' => base_url('uploads/gallery/assembly/teacher-addressing-assembly.jpg')],
+    ['title_en' => 'Student community', 'title_np' => 'विद्यार्थी समुदाय', 'cover' => base_url('uploads/gallery/campus/courtyard-students-formation.jpg')],
+    ['title_en' => 'School grounds', 'title_np' => 'विद्यालय परिसर', 'cover' => base_url('uploads/about/campus-building-aerial.jpg')],
+];
+$galleryTiles = array_values(array_filter($galleryAlbums, static fn(array $album): bool => !empty($album['cover'])));
+foreach ($galleryFallbacks as $fallback) {
+    if (count($galleryTiles) >= 6) break;
+    $galleryTiles[] = $fallback;
+}
+$noticeTitle = static fn(array $notice): string => t((string)($notice['title_en'] ?? ''), (string)($notice['title_np'] ?? $notice['title_en'] ?? ''));
+$noticeSummary = static function (array $notice): string {
+    $key = current_lang() === 'np' ? 'summary_np' : 'summary_en';
+    return trim((string)($notice[$key] ?? $notice['summary_en'] ?? ''));
+};
+$dateLabel = static function (string $date): string {
+    return date('M j', strtotime($date) ?: time());
 };
 ?>
-<div class="bg-bg-surface font-body-md text-on-surface antialiased">
-
-<!-- Hero Section -->
-<section class="relative bg-primary overflow-hidden">
-  <div class="absolute inset-0 opacity-40">
-    <img alt="<?= e_attr(setting('site_name_en', APP_NAME_EN)) ?> campus" class="w-full h-full object-cover" src="<?= e_attr(media_url($hero['image_url'] ?? 'uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
-    <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
-  </div>
-  <div class="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
-    <div class="text-white space-y-6">
-      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full">
-        <span class="w-2 h-2 rounded-full bg-active-gold animate-pulse"></span>
-        <span class="font-label-md text-label-md text-active-gold"><?= e($hero ? block_val($hero,'subtitle') : 'Admissions Open 2082') ?></span>
-      </div>
-      <h1 class="font-display-lg text-display-lg text-white leading-tight max-md:text-4xl"><?= e($hero ? block_val($hero,'title') : 'Shree Public Secondary School — Malangwa-2') ?></h1>
-      <p class="font-body-lg text-body-lg text-surface-container-highest max-w-xl">
-        <?= e($hero ? block_val($hero,'body') : 'Providing public education from Early Childhood Development through Grade 12 in the heart of Malangwa. ECD–12 • +2 Science & Management (NEB).') ?>
-      </p>
-      <div class="flex flex-wrap gap-4 pt-4">
-        <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] shadow-lg shadow-active-gold/20 inline-flex items-center">Apply for Admission</a>
-        <a href="<?= e_attr(base_url('academics.php')) ?>" class="bg-transparent border-2 border-white text-white font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-white/10 transition-all min-h-[44px] inline-flex items-center">Explore Programs</a>
-      </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4 lg:ml-auto">
-      <?php foreach ($sec('stat') as $st): ?>
-      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <span class="font-headline-lg text-headline-lg text-active-gold"><?= e(block_val($st,'title')) ?></span>
-        <span class="font-label-md text-label-md text-white mt-1"><?= e(block_val($st,'body')) ?></span>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
-<!-- About Section -->
-<section class="py-16 md:py-24 bg-surface max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-  <div class="max-w-3xl mx-auto text-center space-y-6">
-    <h2 class="font-headline-lg text-headline-lg text-primary"><?= e($intro ? block_val($intro,'title') : 'About Our School') ?></h2>
-    <p class="font-body-lg text-body-lg text-on-surface-variant">
-      <?= e($intro ? block_val($intro,'body') : 'Shree Public Secondary School is a government-recognised community educational institution situated in the heart of Malangwa Municipality-2, Sarlahi District, Madhesh Province. Registered under IEMIS Code '.APP_IEMIS.', our school plays a central role in providing accessible education to the local community.') ?>
-    </p>
-  </div>
-</section>
-
-<!-- Quick Access Section -->
-<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-8 relative z-10">
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('citizen-charter.php')) ?>">
-      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">description</span></div>
-      <h3 class="font-label-lg text-label-lg text-text-heading">Citizen Charter</h3>
-    </a>
-    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('notices.php')) ?>">
-      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">campaign</span></div>
-      <h3 class="font-label-lg text-label-lg text-text-heading">Notices</h3>
-    </a>
-    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('results.php')) ?>">
-      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">assignment_turned_in</span></div>
-      <h3 class="font-label-lg text-label-lg text-text-heading">Result Search</h3>
-    </a>
-    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform" href="<?= e_attr(base_url('downloads.php')) ?>">
-      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">download</span></div>
-      <h3 class="font-label-lg text-label-lg text-text-heading">Downloads</h3>
-    </a>
-    <a class="bg-surface-lowest p-6 rounded-xl soft-shadow border border-border-base flex flex-col items-center text-center group hover:-translate-y-1 transition-transform col-span-2 md:col-span-1" href="<?= e_attr(base_url('academic-calendar.php')) ?>">
-      <div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:bg-primary-container group-hover:text-active-gold transition-colors text-primary-container"><span class="material-symbols-outlined">calendar_month</span></div>
-      <h3 class="font-label-lg text-label-lg text-text-heading">Calendar</h3>
-    </a>
-  </div>
-</section>
-
-<!-- Notices & Events -->
-<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid lg:grid-cols-12 gap-12">
-  <div class="lg:col-span-7 space-y-6">
-    <div class="flex justify-between items-end border-b-2 border-border-base pb-4">
-      <div>
-        <h2 class="font-headline-lg text-headline-lg text-primary">Notice Board</h2>
-        <p class="font-body-md text-body-md text-on-surface-variant">Latest updates from the administration</p>
-      </div>
-      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('notices.php')) ?>">View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
-    </div>
-    <div class="bg-surface-lowest rounded-xl soft-shadow border border-border-base overflow-hidden">
-      <ul class="divide-y divide-border-base">
-        <?php if (empty($homeNotices)): ?>
-        <li class="p-8 text-center text-on-surface-variant font-body-md">No notices published yet. Check back soon.</li>
-        <?php else: foreach ($homeNotices as $n):
-          $ts = strtotime($n['published_at'] ?? 'now');
-        ?>
-        <li class="p-5 hover:bg-surface-container-low transition-colors flex gap-4 items-start">
-          <div class="<?= !empty($n['is_pinned']) ? 'bg-primary-container text-white' : 'bg-surface-dim text-primary' ?> rounded-lg p-2 text-center min-w-[70px] shrink-0">
-            <span class="block font-label-sm text-[10px] uppercase"><?= e(date('M', $ts)) ?></span>
-            <span class="block font-headline-md text-headline-md"><?= e(date('j', $ts)) ?></span>
-          </div>
-          <div class="flex-1">
-            <span class="inline-block font-label-sm text-[11px] px-2 py-0.5 rounded-full mb-2 <?= $catChip($n['cat_slug'] ?? null) ?>"><?= e($n['cat_en'] ?? 'General') ?></span>
-            <h3 class="font-label-lg text-label-lg text-text-heading leading-tight mb-1"><a class="hover:text-secondary" href="<?= e_attr(base_url('notice.php?slug=' . urlencode($n['slug']))) ?>"><?= e($n['title_en']) ?></a></h3>
-          </div>
-        </li>
-        <?php endforeach; endif; ?>
-      </ul>
-    </div>
-  </div>
-  <div class="lg:col-span-5 space-y-6">
-    <div class="flex justify-between items-end border-b-2 border-border-base pb-4">
-      <div>
-        <h2 class="font-headline-lg text-headline-lg text-primary">Upcoming Events</h2>
-        <p class="font-body-md text-body-md text-on-surface-variant">Mark your calendar</p>
-      </div>
-      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('events.php')) ?>">All Events <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
-    </div>
-    <div class="grid grid-cols-1 gap-4">
-      <?php if (empty($homeEvents)): ?>
-      <div class="bg-primary-container rounded-xl p-6 text-white soft-shadow font-body-md">No upcoming events right now.</div>
-      <?php else: foreach ($homeEvents as $ev): ?>
-      <a href="<?= e_attr(base_url('events.php')) ?>" class="bg-primary-container rounded-xl p-5 text-white flex flex-col justify-between soft-shadow hover:bg-masthead-navy transition-colors">
-        <div>
-          <span class="material-symbols-outlined text-active-gold mb-2 text-[32px]">event</span>
-          <h4 class="font-label-lg text-label-lg leading-tight"><?= e($ev['title_en'] ?? '') ?></h4>
-          <p class="font-body-sm text-body-sm text-primary-fixed mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_month</span> <?= e(date('M j, Y', strtotime($ev['event_date']))) ?></p>
-          <?php if (!empty($ev['location_en'])): ?><p class="font-body-sm text-body-sm text-primary-fixed mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> <?= e($ev['location_en']) ?></p><?php endif; ?>
+<div class="home-page">
+  <section class="home-hero">
+    <img class="home-hero-image" src="<?= e_attr(media_url($heroImage)) ?>" alt="<?= e_attr(t('Students and staff at Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालयका विद्यार्थी र शिक्षकहरू')) ?>">
+    <div class="home-hero-shade"></div>
+    <div class="home-shell home-hero-content">
+      <div class="home-hero-copy reveal">
+        <p class="home-kicker"><?= e(t('Education · Discipline · Opportunity', 'शिक्षा · अनुशासन · अवसर')) ?></p>
+        <h1><?= e($hero ? block_val($hero, 'title') : t('Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालय')) ?></h1>
+        <p class="home-hero-location"><?= e(t('Malangwa-2, Sarlahi, Nepal', 'मलंगवा-२, सर्लाही, नेपाल')) ?></p>
+        <p class="home-hero-description"><?= e($hero ? block_val($hero, 'body') : t('A supportive public school where students learn with confidence, develop strong values, and prepare for a better future.', 'विद्यार्थीहरूले आत्मविश्वासका साथ सिक्ने, असल मूल्य विकास गर्ने र उज्ज्वल भविष्यका लागि तयार हुने सार्वजनिक विद्यालय।')) ?></p>
+        <div class="home-actions">
+          <a class="home-button home-button-primary" href="<?= e_attr(base_url('notices.php')) ?>"><?= e(t('View latest notices', 'ताजा सूचना हेर्नुहोस्')) ?> <span aria-hidden="true">↗</span></a>
+          <a class="home-button home-button-outline" href="<?= e_attr(base_url('about.php')) ?>"><?= e(t('Explore our school', 'हाम्रो विद्यालय हेर्नुहोस्')) ?> <span aria-hidden="true">→</span></a>
         </div>
-      </a>
-      <?php endforeach; endif; ?>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Academic Programs -->
-<section class="bg-surface py-16 md:py-24 border-y border-border-base">
-  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-    <div class="text-center max-w-2xl mx-auto mb-12">
-      <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Learning Pathways</h2>
-      <p class="font-body-lg text-body-lg text-on-surface-variant">Comprehensive educational pathways designed to nurture potential at every stage of development.</p>
+  <section class="home-quick home-shell" aria-labelledby="quick-access-title">
+    <div class="home-section-intro home-section-intro-left">
+      <p class="home-overline"><?= e(t('Quick access', 'छिटो पहुँच')) ?></p>
+      <h2 id="quick-access-title"><?= e(t('Everything you need, just a click away.', 'आवश्यक जानकारी एकै क्लिकमा।')) ?></h2>
     </div>
-    <div class="grid md:grid-cols-4 gap-6">
+    <div class="home-quick-grid">
       <?php
-      $iconMap = ['ecd'=>'child_care','basic_1_5'=>'menu_book','basic_6_8'=>'menu_book','secondary_9_10'=>'school','higher_secondary'=>'science'];
-      $badgeMap = ['ecd'=>'Early Childhood','basic_1_5'=>'Grades 1-8','basic_6_8'=>'Grades 1-8','secondary_9_10'=>'Grades 9-10'];
-      foreach ($programs as $p):
-        $lvl = $p['level'] ?? '';
-        $icon = $iconMap[$lvl] ?? 'school';
-        if (($lvl==='higher_secondary')) { $badge = $p['stream'] ?? 'NEB'; $link = strtolower($p['stream']??'')==='science' ? base_url('science.php') : (strtolower($p['stream']??'')==='management' ? base_url('management.php') : base_url('academics.php')); }
-        else { $badge = $badgeMap[$lvl] ?? $p['level']; $link = base_url('academics.php'); }
-        $desc = mb_strimwidth(strip_tags((string)($p['description_en'] ?? '')), 0, 90, '…');
-        $title = t($p['title_en'] ?? '', $p['title_np'] ?? $p['title_en'] ?? '');
+      $quickLinks = [
+          ['icon' => 'campaign', 'title' => t('Latest notices', 'ताजा सूचना'), 'body' => t('Stay updated with school announcements, exams, holidays and essential notices.', 'विद्यालयका सूचना, परीक्षा, बिदा र आवश्यक जानकारी हेर्नुहोस्।'), 'href' => 'notices.php', 'label' => t('View all notices', 'सबै सूचना हेर्नुहोस्')],
+          ['icon' => 'menu_book', 'title' => t('Academic information', 'शैक्षिक जानकारी'), 'body' => t('Explore learning, examinations, school activities and academic resources.', 'पठनपाठन, परीक्षा, गतिविधि र शैक्षिक स्रोतबारे जान्नुहोस्।'), 'href' => 'academics.php', 'label' => t('Explore academics', 'शैक्षिक जानकारी')],
+          ['icon' => 'photo_library', 'title' => t('School gallery', 'विद्यालय ग्यालेरी'), 'body' => t('See moments from school programs, classroom activities and community events.', 'विद्यालयका कार्यक्रम, कक्षा गतिविधि र सामुदायिक कार्यक्रमका तस्बिरहरू हेर्नुहोस्।'), 'href' => 'gallery.php', 'label' => t('View gallery', 'ग्यालेरी हेर्नुहोस्')],
+          ['icon' => 'call', 'title' => t('Contact school', 'विद्यालय सम्पर्क'), 'body' => t('Need information about admissions or school administration? Contact us directly.', 'भर्ना वा विद्यालय प्रशासनबारे जानकारी चाहिन्छ? हामीलाई सम्पर्क गर्नुहोस्।'), 'href' => 'contact.php', 'label' => t('Contact us', 'सम्पर्क गर्नुहोस्')],
+      ];
+      foreach ($quickLinks as $quick):
       ?>
-      <a href="<?= e_attr($link) ?>" class="bg-surface-lowest rounded-2xl p-6 soft-shadow border border-border-base hover:border-primary-container transition-colors group block">
-        <div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-4 text-primary-container group-hover:bg-primary-container group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[24px]"><?= e($icon) ?></span></div>
-        <h3 class="font-headline-sm text-headline-sm text-text-heading mb-2"><?= e($title) ?></h3>
-        <div class="bg-surface-variant text-on-surface-variant font-label-sm inline-block px-3 py-1 rounded-full mb-3"><?= e($badge) ?></div>
-        <?php if ($desc): ?><p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2"><?= e($desc) ?></p><?php endif; ?>
+      <a class="home-quick-card reveal" href="<?= e_attr(base_url($quick['href'])) ?>">
+        <span class="home-icon-circle"><span class="material-symbols-outlined" aria-hidden="true"><?= e($quick['icon']) ?></span></span>
+        <span class="home-quick-copy"><strong><?= e($quick['title']) ?></strong><span><?= e($quick['body']) ?></span><em><?= e($quick['label']) ?> <b aria-hidden="true">→</b></em></span>
       </a>
       <?php endforeach; ?>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Why Choose Us -->
-<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-  <div class="text-center max-w-2xl mx-auto mb-12">
-    <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Educational Commitment</h2>
-    <p class="font-body-lg text-body-lg text-on-surface-variant">Verified, not advertised.</p>
-  </div>
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <?php foreach ($sec('commitment') as $c): ?>
-    <div class="flex gap-4 p-4 items-center">
-      <span class="material-symbols-outlined text-active-gold text-[32px]"><?= e($c['icon'] ?? 'verified') ?></span>
-      <h4 class="font-label-lg text-label-lg text-text-heading"><?= e(block_val($c,'title')) ?></h4>
+  <section class="home-about home-shell">
+    <div class="home-about-image reveal"><img src="<?= e_attr(base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>" alt="<?= e_attr(t('School building and students', 'विद्यालय भवन र विद्यार्थीहरू')) ?>" loading="lazy"></div>
+    <div class="home-about-copy reveal">
+      <p class="home-overline"><?= e($intro ? block_val($intro, 'title') : t('About our school', 'हाम्रो विद्यालयको बारेमा')) ?></p>
+      <h2><?= e(t('Learning today. Building tomorrow.', 'आज सिक्दै, भोलि बनाउँदै।')) ?></h2>
+      <p><?= e($intro ? block_val($intro, 'body') : t('Shree Public Secondary School is a public educational institution serving students and families in Malangwa-2, Sarlahi.', 'श्री पब्लिक माध्यमिक विद्यालय मलंगवा-२, सर्लाहीका विद्यार्थी र परिवारलाई सेवा दिने सार्वजनिक शैक्षिक संस्था हो।')) ?></p>
+      <p><?= e(t('Our focus is simple: create an environment where students have access to meaningful education, responsible guidance, discipline and opportunities to grow.', 'हाम्रो लक्ष्य स्पष्ट छ: विद्यार्थीलाई अर्थपूर्ण शिक्षा, जिम्मेवार मार्गदर्शन, अनुशासन र विकासका अवसर दिने वातावरण बनाउनु।')) ?></p>
+      <a class="home-text-link" href="<?= e_attr(base_url('about.php')) ?>"><?= e(t('Learn more about us', 'हाम्रो बारेमा थप जान्नुहोस्')) ?> <span aria-hidden="true">→</span></a>
     </div>
-    <?php endforeach; ?>
-  </div>
-</section>
+  </section>
 
-<!-- Resources/Downloads -->
-<section class="bg-surface-container-low py-16 md:py-24 border-y border-border-base">
-  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-    <div class="flex justify-between items-end border-b-2 border-border-base pb-4 mb-8">
-      <h2 class="font-headline-lg text-headline-lg text-primary">Resources &amp; Downloads</h2>
-      <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('downloads.php')) ?>">View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+  <section class="home-focus" aria-labelledby="focus-title">
+    <div class="home-shell">
+      <div class="home-section-intro home-section-intro-center">
+        <p class="home-overline"><?= e(t('Our focus', 'हाम्रो ध्यान')) ?></p>
+        <h2 id="focus-title"><?= e(t('Education that supports every student', 'हरेक विद्यार्थीलाई साथ दिने शिक्षा')) ?></h2>
+      </div>
+      <div class="home-focus-grid">
+        <?php
+        $focusFallbacks = [
+            ['icon' => 'school', 'title' => t('Quality learning', 'गुणस्तरीय सिकाइ'), 'body' => t('Classroom learning that is clear, practical and meaningful.', 'स्पष्ट, व्यावहारिक र अर्थपूर्ण कक्षा सिकाइ।')],
+            ['icon' => 'verified_user', 'title' => t('Discipline and responsibility', 'अनुशासन र जिम्मेवारी'), 'body' => t('Students learn punctuality, responsibility, respect and good character.', 'समयपालन, जिम्मेवारी, सम्मान र असल चरित्रको विकास।')],
+            ['icon' => 'groups', 'title' => t('Student development', 'विद्यार्थी विकास'), 'body' => t('Academic, cultural, sporting and community activities help students discover their strengths.', 'शैक्षिक, सांस्कृतिक, खेलकुद र सामुदायिक गतिविधिले विद्यार्थीको क्षमता विकास गर्छ।')],
+            ['icon' => 'star', 'title' => t('Equal opportunity', 'समान अवसर'), 'body' => t('Every student should have the opportunity to learn, participate and grow.', 'हरेक विद्यार्थीले सिक्ने, सहभागी हुने र अघि बढ्ने अवसर पाउनुपर्छ।')],
+        ];
+        for ($i = 0; $i < 4; $i++):
+            $focus = $commitments[$i] ?? null;
+            $fallback = $focusFallbacks[$i];
+        ?>
+        <article class="home-focus-item reveal">
+          <span class="material-symbols-outlined home-focus-icon" aria-hidden="true"><?= e($focus['icon'] ?? $fallback['icon']) ?></span>
+          <h3><?= e($focus ? block_val($focus, 'title') : $fallback['title']) ?></h3>
+          <p><?= e($focus ? block_val($focus, 'body') : $fallback['body']) ?></p>
+        </article>
+        <?php endfor; ?>
+      </div>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <?php if (empty($homeDownloads)): ?>
-      <div class="bg-surface-lowest p-5 rounded-xl border border-border-base font-body-md text-on-surface-variant">Documents will be published soon.</div>
-      <?php else: foreach ($homeDownloads as $d): ?>
-      <a href="<?= e_attr(!empty($d['file_path']) ? base_url($d['file_path']) : base_url('downloads.php')) ?>" class="bg-surface-lowest p-5 rounded-xl border border-border-base flex items-start gap-4 hover:border-primary-container transition-colors" <?= !empty($d['file_path']) ? 'download' : '' ?>>
-        <span class="material-symbols-outlined text-secondary text-[32px]"><?= $dlIcon($d['file_type'] ?? null) ?></span>
-        <div>
-          <h4 class="font-label-lg text-label-lg text-text-heading"><?= e($d['title_en'] ?? '') ?></h4>
-          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1"><?= e(format_file_size($d['file_size'] ?? '')) ?><?= !empty($d['file_size']) ? ' • ' : '' ?>Updated <?= e(date('Y-m-d', strtotime($d['published_at'] ?? 'now'))) ?></p>
+  </section>
+
+  <section class="home-academics home-shell">
+    <div class="home-academics-copy reveal">
+      <p class="home-overline"><?= e(t('Academics', 'शैक्षिक कार्यक्रम')) ?></p>
+      <h2><?= e(t('Supporting students through every stage of learning', 'सिकाइका हरेक चरणमा विद्यार्थीलाई साथ')) ?></h2>
+      <p><?= e(t('Our academic environment is built around regular classroom teaching, assessment, examinations, teacher guidance and student participation.', 'हाम्रो शैक्षिक वातावरण नियमित कक्षा शिक्षण, मूल्याङ्कन, परीक्षा, शिक्षकको मार्गदर्शन र विद्यार्थी सहभागितामा आधारित छ।')) ?></p>
+      <div class="home-academic-cards">
+        <article><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><h3><?= e(t('Classroom learning', 'कक्षा सिकाइ')) ?></h3><p><?= e(t('Structured lessons and teacher guidance focused on understanding.', 'बुझाइमा केन्द्रित व्यवस्थित पाठ र शिक्षकको मार्गदर्शन।')) ?></p></article>
+        <article><span class="material-symbols-outlined" aria-hidden="true">description</span><h3><?= e(t('Examination and assessment', 'परीक्षा र मूल्याङ्कन')) ?></h3><p><?= e(t('Regular assessment helps students and teachers plan for improvement.', 'नियमित मूल्याङ्कनले सुधारका लागि योजना बनाउन सहयोग गर्छ।')) ?></p></article>
+        <article><span class="material-symbols-outlined" aria-hidden="true">groups</span><h3><?= e(t('Activities and participation', 'गतिविधि र सहभागिता')) ?></h3><p><?= e(t('Students take part in academic, cultural, sports and community activities.', 'विद्यार्थी शैक्षिक, सांस्कृतिक, खेलकुद र सामुदायिक गतिविधिमा सहभागी हुन्छन्।')) ?></p></article>
+      </div>
+      <a class="home-text-link" href="<?= e_attr(base_url('academics.php')) ?>"><?= e(t('Explore academics', 'शैक्षिक कार्यक्रम हेर्नुहोस्')) ?> <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="home-academics-image reveal"><img src="<?= e_attr(base_url('uploads/gallery/campus/courtyard-students-formation.jpg')) ?>" alt="<?= e_attr(t('Students gathered in the school courtyard', 'विद्यालयको प्राङ्गणमा भेला भएका विद्यार्थीहरू')) ?>" loading="lazy"></div>
+  </section>
+
+  <section class="home-updates">
+    <div class="home-shell home-updates-grid">
+      <div class="home-notices reveal">
+        <div class="home-section-heading"><div><p class="home-overline"><?= e(t('Latest notices and updates', 'ताजा सूचना तथा जानकारी')) ?></p><h2><?= e(t('Stay informed', 'जानकारीमा रहनुहोस्')) ?></h2></div><a class="home-arrow-link" href="<?= e_attr(base_url('notices.php')) ?>"><?= e(t('All notices', 'सबै सूचना')) ?> →</a></div>
+        <p class="home-muted"><?= e(t('Important information from the school administration should always be easy for students and families to find.', 'विद्यालय प्रशासनका महत्वपूर्ण सूचना विद्यार्थी र परिवारले सजिलै भेट्न सक्ने हुनुपर्छ।')) ?></p>
+        <div class="home-notice-list">
+          <?php if (!$homeNotices): ?>
+            <div class="home-empty"><?= e(t('New notices will be published soon.', 'नयाँ सूचना चाँडै प्रकाशित हुनेछ।')) ?></div>
+          <?php else: foreach ($homeNotices as $notice): ?>
+            <a class="home-notice-row" href="<?= e_attr(base_url('notice.php?slug=' . urlencode((string)($notice['slug'] ?? '')))) ?>">
+              <span class="home-notice-date"><?= e($dateLabel((string)($notice['published_at'] ?? ''))) ?></span>
+              <span class="home-notice-content"><strong><?= e($noticeTitle($notice)) ?></strong><small><?= e($noticeSummary($notice)) ?></small></span>
+              <span class="home-notice-arrow" aria-hidden="true">→</span>
+            </a>
+          <?php endforeach; endif; ?>
         </div>
-      </a>
-      <?php endforeach; endif; ?>
-    </div>
-  </div>
-</section>
-
-<!-- Head Teacher Quote -->
-<?php if ($showQuote): ?>
-<section class="bg-primary-container text-white py-16">
-  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-      <div class="w-32 h-32 md:w-48 md:h-48 shrink-0 relative">
-        <div class="absolute inset-0 bg-active-gold rounded-full translate-x-2 translate-y-2"></div>
-        <img alt="Head Teacher" class="w-full h-full object-cover rounded-full relative z-10 border-4 border-primary-container" src="<?= e_attr(base_url($principalPhoto)) ?>">
+        <a class="home-button home-button-small" href="<?= e_attr(base_url('notices.php')) ?>"><?= e(t('View all notices', 'सबै सूचना हेर्नुहोस्')) ?> <span aria-hidden="true">→</span></a>
       </div>
-      <div class="text-center md:text-left flex-1">
-        <span class="material-symbols-outlined text-active-gold text-[48px] opacity-50 mb-4 block">format_quote</span>
-        <p class="font-headline-sm text-headline-sm font-normal italic mb-6 leading-relaxed">
-          "<?= e($principalMsg) ?>"
-        </p>
-        <h4 class="font-label-lg text-label-lg text-white"><?= e(setting('principal_name')) ?></h4>
-        <p class="font-body-sm text-body-sm text-primary-fixed"><?= e(t('Head Teacher','प्रधानाध्यापक')) ?>, Shree Public Secondary School</p>
+      <div class="home-life reveal">
+        <div class="home-section-heading"><div><p class="home-overline"><?= e(t('School life', 'विद्यालय जीवन')) ?></p><h2><?= e(t('More than a classroom', 'कक्षाभन्दा बाहिर पनि')) ?></h2></div><a class="home-arrow-link" href="<?= e_attr(base_url('gallery.php')) ?>"><?= e(t('Gallery', 'ग्यालेरी')) ?> →</a></div>
+        <p class="home-muted"><?= e(t('Our students learn, create, celebrate, collaborate and build lasting experiences.', 'हाम्रा विद्यार्थी सिक्छन्, सिर्जना गर्छन्, उत्सव मनाउँछन्, सहकार्य गर्छन् र अनुभव बटुल्छन्।')) ?></p>
+        <?php if (!$galleryTiles): ?>
+          <div class="home-empty"><?= e(t('Photos will be published soon.', 'तस्बिरहरू चाँडै प्रकाशित हुनेछ।')) ?></div>
+        <?php else: ?>
+          <div class="home-gallery-grid">
+            <?php foreach (array_slice($galleryTiles, 0, 6) as $index => $tile): ?>
+            <a href="<?= e_attr(base_url('gallery.php')) ?>" class="home-gallery-tile <?= $index === 0 ? 'home-gallery-featured' : '' ?>"><img src="<?= e_attr($tile['cover']) ?>" alt="<?= e_attr(t((string)($tile['title_en'] ?? 'School gallery'), (string)($tile['title_np'] ?? 'विद्यालय ग्यालेरी'))) ?>" loading="lazy"></a>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+        <a class="home-button home-button-small" href="<?= e_attr(base_url('gallery.php')) ?>"><?= e(t('Explore gallery', 'ग्यालेरी हेर्नुहोस्')) ?> <span aria-hidden="true">→</span></a>
       </div>
     </div>
-  </div>
-</section>
-<?php endif; ?>
+  </section>
 
-<!-- Gallery (Masonry Grid) -->
-<section class="py-16 md:py-24 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-  <div class="flex justify-between items-end mb-8">
-    <h2 class="font-headline-lg text-headline-lg text-primary">Campus Life</h2>
-    <a class="font-label-md text-label-md text-secondary hover:text-primary-container flex items-center gap-1" href="<?= e_attr(base_url('gallery.php')) ?>">View Gallery <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
-  </div>
-  <?php if (empty($galleryAlbums)): ?>
-    <div class="bg-surface-lowest p-8 rounded-xl border border-border-base text-center font-body-md text-on-surface-variant">Photos coming soon.</div>
-  <?php else: ?>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-    <?php foreach ($galleryAlbums as $i=>$alb): $isFirst = $i===0; ?>
-    <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $isFirst?'col-span-2 row-span-2':'' ?> rounded-xl overflow-hidden soft-shadow relative group">
-      <img alt="<?= e_attr($alb['title_en'] ?? 'Gallery') ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr($alb['cover'] ?? base_url('uploads/gallery/campus/front-building-entrance.jpg')) ?>">
-      <?php if ($isFirst): ?><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span class="text-white font-label-lg border-2 border-white px-4 py-2 rounded-lg"><?= e($alb['title_en'] ?? 'Campus') ?></span></div><?php endif; ?>
+  <section class="home-exam-band">
+    <div class="home-shell home-exam-inner">
+      <span class="home-exam-icon material-symbols-outlined" aria-hidden="true">fact_check</span>
+      <div><p class="home-overline"><?= e(t('Official examination centre', 'आधिकारिक परीक्षा केन्द्र')) ?></p><h2><?= e(t('Supporting educational activities in Sarlahi', 'सर्लाहीमा शैक्षिक गतिविधिलाई साथ')) ?></h2><p><?= e(t('Shree Public Secondary School has also appeared in official examination-centre allocation for Sarlahi, reflecting the school’s role in supporting examinations and educational activities in the district.', 'श्री पब्लिक माध्यमिक विद्यालय सर्लाहीका आधिकारिक परीक्षा केन्द्रको सूचीमा पनि परेको छ।')) ?></p></div>
+      <div class="home-exam-mark"><span class="material-symbols-outlined" aria-hidden="true">account_balance</span><strong>CTEVT</strong><small><?= e(t('Examination Centre', 'परीक्षा केन्द्र')) ?></small></div>
+    </div>
+  </section>
+
+  <section class="home-contact home-shell">
+    <div class="home-contact-copy reveal">
+      <p class="home-overline"><?= e(t('Visit our school', 'हाम्रो विद्यालयमा आउनुहोस्')) ?></p>
+      <h2><?= e(setting('site_name_en', APP_NAME_EN)) ?></h2>
+      <p class="home-contact-np"><?= e(setting('site_name_np', APP_NAME_NP)) ?></p>
+      <p><span class="material-symbols-outlined" aria-hidden="true">location_on</span> <?= e(setting('address_en', APP_ADDRESS)) ?></p>
+      <?php if (setting('phone', APP_PHONE) !== ''): ?><p><span class="material-symbols-outlined" aria-hidden="true">call</span> <?= e(setting('phone', APP_PHONE)) ?></p><?php endif; ?>
+      <div class="home-contact-actions"><a class="home-button home-button-primary" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>" target="_blank" rel="noopener"><?= e(t('Get directions', 'दिशा प्राप्त गर्नुहोस्')) ?> →</a><a class="home-button home-button-green" href="<?= e_attr(base_url('contact.php')) ?>"><?= e(t('Contact school', 'विद्यालय सम्पर्क')) ?></a></div>
+    </div>
+    <a class="home-map-card reveal" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>" target="_blank" rel="noopener" aria-label="<?= e_attr(t('Open school location in Google Maps', 'विद्यालयको स्थान Google Maps मा खोल्नुहोस्')) ?>">
+      <span class="home-map-line home-map-line-one"></span><span class="home-map-line home-map-line-two"></span><span class="home-map-road home-map-road-one"></span><span class="home-map-road home-map-road-two"></span><span class="home-map-pin material-symbols-outlined" aria-hidden="true">location_on</span><strong><?= e(t('Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालय')) ?></strong><small><?= e(t('Malangwa-2, Sarlahi', 'मलंगवा-२, सर्लाही')) ?></small><span class="home-map-label"><?= e(t('View larger map', 'ठूलो नक्सा हेर्नुहोस्')) ?></span>
     </a>
-    <?php endforeach; ?>
-  </div>
-  <?php endif; ?>
-</section>
-
-<!-- CTA Banner -->
-<section class="bg-masthead-navy py-12 md:py-16">
-  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-    <div>
-      <h2 class="font-headline-lg text-headline-lg text-white mb-2"><?= e($cta ? block_val($cta,'title') : 'Admissions Now Open for 2082') ?></h2>
-      <p class="font-body-lg text-body-lg text-primary-fixed"><?= e($cta ? block_val($cta,'body') : 'Secure a bright future. Join Shree Public Secondary School today.') ?></p>
-    </div>
-    <div class="flex flex-col sm:flex-row items-center gap-4">
-      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] whitespace-nowrap inline-flex items-center">Start Admission Inquiry</a>
-      <?php $homePhone = (string)setting('phone', APP_PHONE); if ($homePhone): ?><a href="tel:<?= e_attr($homePhone) ?>" class="text-white flex items-center gap-2 font-label-md hover:text-active-gold transition-colors">
-        <span class="material-symbols-outlined">call</span> <?= e($homePhone) ?>
-      </a><?php endif; ?>
-    </div>
-  </div>
-</section>
+  </section>
 
 </div>
+
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

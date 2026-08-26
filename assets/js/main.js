@@ -15,7 +15,27 @@
   if(navToggle) navToggle.addEventListener('click', openNav);
   if(navClose) navClose.addEventListener('click', closeNav);
   if(mobileNav) mobileNav.querySelectorAll('a, button').forEach(function(a){ if(a.id==='navClose') return; a.addEventListener('click', function(){ closeNav(); }); });
-  window.addEventListener('keydown', function(e){ if(e.key==='Escape') closeNav(); });
+  window.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeNav(); closeDropdowns(null); } });
+
+  var dropButtons = document.querySelectorAll('.nav-drop-btn');
+  function closeDropdowns(except){
+    dropButtons.forEach(function(btn){
+      if(btn !== except){
+        btn.setAttribute('aria-expanded','false');
+        btn.parentElement.classList.remove('open');
+      }
+    });
+  }
+  dropButtons.forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var willOpen = btn.getAttribute('aria-expanded') !== 'true';
+      closeDropdowns(btn);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      btn.parentElement.classList.toggle('open', willOpen);
+    });
+  });
+  document.addEventListener('click', function(){ closeDropdowns(null); });
 
   // language toggle
   var langBtn = document.getElementById('langToggle');

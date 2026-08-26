@@ -9,6 +9,7 @@ $blocks = get_blocks('about');
 $sec = function(string $k) use ($blocks): array { return array_values(array_filter($blocks, fn($b) => $b['section_key'] === $k)); };
 $first = function(string $k) use ($sec): ?array { return $sec($k)[0] ?? null; };
 $staffGroups = get_staff_directory();
+$aboutPage = get_page_content('about');
 $headerBlock = $first('page_header');
 $ctaJoin = $first('cta_join');
 ?>
@@ -35,12 +36,14 @@ $ctaJoin = $first('cta_join');
 <section class="py-16 px-margin-mobile md:px-margin-desktop">
   <div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center">
     <div class="space-y-6">
-      <?php foreach ($sec('intro') as $i=>$ip): ?>
+      <?php if ($aboutPage && trim(page_val($aboutPage, 'content')) !== ''): ?>
+        <div class="font-body-md text-body-md text-on-surface-variant"><?= page_val($aboutPage, 'content') ?></div>
+      <?php else: foreach ($sec('intro') as $i=>$ip): ?>
         <?php if ($i===0): ?><h2 class="font-headline-lg text-headline-lg text-primary"><?= e(block_val($ip,'title') ?: 'A Pillar of Community Education') ?></h2><?php endif; ?>
         <p class="<?= $i===0?'font-body-lg text-body-lg text-on-surface':'font-body-md text-body-md text-on-surface-variant' ?>">
           <?= e(block_val($ip,'body')) ?>
         </p>
-      <?php endforeach; ?>
+      <?php endforeach; endif; ?>
     </div>
     <div class="rounded-xl overflow-hidden shadow-ambient h-96 relative group">
       <img alt="Shree Public Secondary School building" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<?= e_attr(base_url('uploads/about/campus-building-aerial.jpg')) ?>">

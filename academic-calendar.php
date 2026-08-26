@@ -1,4 +1,4 @@
-<?php $page='academic-calendar'; $title='Academic Calendar 2082 — Shree Public Secondary School, Malangwa-2'; $description='Academic calendar for Shree Public Secondary School, Malangwa-2 — Bikram Sambat 2082, terms, holidays, examinations and events.'; require_once __DIR__.'/includes/header.php'; ?>
+<?php $page='academic-calendar'; $title='Academic Calendar 2082 — Shree Public Secondary School, Malangwa-2'; $description='Academic calendar for Shree Public Secondary School, Malangwa-2 — Bikram Sambat 2082, terms, holidays, examinations and events.'; require_once __DIR__.'/includes/header.php'; $calendarDownloads = get_downloads(4, 'academic-calendar'); $calendarDownload = $calendarDownloads[0] ?? null; ?>
 <section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Academic Calendar</span><h1 style="color:#fff;margin:14px 0 10px">Academic Calendar 2082 BS</h1><p class="lead" style="color:#C7D7F0;max-width:680px">Bikram Sambat with AD where helpful. Official calendar with terms, holidays, examinations, admissions and events — set by the school office. Also available as downloadable PDF in Downloads.</p></div></section>
 <nav class="wrap" style="padding:14px 20px"><div class="breadcrumbs"><a href="<?= e_attr(base_url()) ?>">Home</a><span class="sep">/</span><span>Academic Calendar</span></div></nav>
 <section class="section" style="padding-top:28px;background:#fff;border-top:1px solid var(--border)">
@@ -14,8 +14,12 @@
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
-      <a href="#" onclick="event.preventDefault();alert('Calendar PDF will be downloadable here once published (Admin → Academics → Academic Calendar).');" class="btn btn-primary"><svg class="ic"><use href="#i-calendar"/></svg> View Calendar PDF (2082)</a>
-      <a href="#" onclick="event.preventDefault();alert('Download will be available once the official PDF is uploaded.');" class="btn btn-ghost"><svg class="ic"><use href="#i-download"/></svg> Download PDF</a>
+      <?php if ($calendarDownload): ?>
+        <a href="<?= e_attr(media_url($calendarDownload['file_path'])) ?>" target="_blank" rel="noopener" class="btn btn-primary"><svg class="ic"><use href="#i-calendar"/></svg> View Calendar PDF (2082)</a>
+        <a href="<?= e_attr(media_url($calendarDownload['file_path'])) ?>" download class="btn btn-ghost"><svg class="ic"><use href="#i-download"/></svg> Download PDF</a>
+      <?php else: ?>
+        <span class="btn btn-ghost" style="opacity:.55;cursor:not-allowed"><svg class="ic"><use href="#i-calendar"/></svg> Calendar PDF will be published soon</span>
+      <?php endif; ?>
       <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-soft">Downloads → Calendar</a>
     </div>
 
@@ -23,7 +27,7 @@
       <table style="width:100%;border-collapse:collapse;font-size:.88rem;min-width:640px">
         <thead><tr style="background:var(--primary);color:#fff"><th style="padding:10px;text-align:left">Period / Event</th><th style="padding:10px;text-align:left">Approx. Date (BS)</th><th style="padding:10px;text-align:left">Note</th></tr></thead>
         <tbody>
-          <tr style="background:var(--bg)"><td colspan="3" style="padding:20px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px;color:var(--muted-2)"><use href="#i-calendar"/></svg><div style="font-weight:600">Academic calendar will be published soon</div><div style="font-size:.84rem;margin-top:6px">Managed via <strong>Admin → Academics → Academic Calendar</strong>. HTML table supports BS display date + AD, PDF generation and bilingual descriptions. No placeholder dates are shown as official.</div></td></tr>
+          <tr style="background:var(--bg)"><td colspan="3" style="padding:20px;text-align:center;color:var(--muted)"><svg class="ic" style="width:28px;height:28px;margin:0 auto 8px;color:var(--muted-2)"><use href="#i-calendar"/></svg><div style="font-weight:600">Academic calendar will be published soon</div><div style="font-size:.84rem;margin-top:6px">The official calendar PDF is managed in <strong>Admin → Resources → Downloads</strong>. No placeholder dates are shown as official.</div></td></tr>
         </tbody>
       </table>
     </div>
