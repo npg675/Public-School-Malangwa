@@ -10,15 +10,20 @@ $categories = [];
 
 // Load categories
 if ($pdo && db_has_table('notice_categories')) {
-    try { $categories = $pdo->query("SELECT * FROM notice_categories ORDER BY sort_order")->fetchAll(); } catch (Throwable $e) {}
+    try { $categories = $pdo->query("SELECT * FROM notice_categories ORDER BY sort_order")->fetchAll(); } catch (Throwable $e) { error_log('Notice categories load failed: '.$e->getMessage()); }
 }
 
 // Load existing notice
 if ($editing) {
-    $stmt = $pdo->prepare('SELECT * FROM notices WHERE id = ?');
-    $stmt->execute([(int)$_GET['id']]);
-    $row = $stmt->fetch();
-    if (!$row) { header('Location: ' . base_url('admin/notices.php')); exit; }
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM notices WHERE id = ?');
+        $stmt->execute([(int)$_GET['id']]);
+        $row = $stmt->fetch();
+    } catch (Throwable $e) {
+        error_log('Notice load failed: ' . $e->getMessage());
+        $flash = ['err', 'Notice could not be loaded. Check the database connection.'];
+    }
+    if (!$row && !$flash) { header('Location: ' . base_url('admin/notices.php')); exit; }
 }
 
 // Handle form submission
@@ -34,15 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'category_id' => $_POST['category_id'] ?: null,
             'description_en' => $_POST['description_en'] ?? '',
             'description_np' => $_POST['description_np'] ?? '',
-            'summary_en' => trim($_POST['summary_en'] ?? ''),
-            'summary_np' => trim($_POST['summary_np'] ?? ''),
             'attachment' => trim($_POST['attachment'] ?? ''),
             'attachment_type' => $_POST['attachment_type'] ?: null,
             'published_at' => $_POST['published_at'] ?? date('Y-m-d H:i:s'),
             'expires_at' => $_POST['expires_at'] ?: null,
             'is_pinned' => isset($_POST['is_pinned']) ? 1 : 0,
             'is_urgent' => isset($_POST['is_urgent']) ? 1 : 0,
-            'status' => $_POST['status'] ?? 'draft',
+            'status' => in_array($_POST['status'] ?? 'draft', ['draft', 'published', 'archived'], true) ? $_POST['status'] : 'draft',
         ];
 
         if (empty($data['title_en'])) {
@@ -52,20 +55,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $data['slug'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $data['title_en']), '-'));
             }
 
-            if ($editing) {
-                $sets = [];
-                foreach ($data as $k => $v) $sets[] = "`$k`=:$k";
-                $sql = 'UPDATE notices SET ' . implode(', ', $sets) . ' WHERE id=:id';
-                $data[':id'] = (int)$_GET['id'];
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($data);
-                $flash = ['ok', 'Notice updated.'];
-            } else {
-                $data['created_by'] = $_SESSION['user_id'] ?? null;
-                $cols = implode('`, `', array_keys($data));
-                $vals = ':' . implode(', :', array_keys($data));
-                $pdo->prepare("INSERT INTO notices (`$cols`) VALUES ($vals)")->execute($data);
-                $flash = ['ok', 'Notice created.'];
+            try {
+                if ($editing) {
+                    $sets = [];
+                    foreach ($data as $k => $v) $sets[] = "`$k`=:$k";
+                    $sql = 'UPDATE notices SET ' . implode(', ', $sets) . ' WHERE id=:id';
+                    $data[':id'] = (int)$_GET['id'];
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($data);
+                    $flash = ['ok', 'Notice updated.'];
+                } else {
+                    $data['created_by'] = $_SESSION['user_id'] ?? null;
+                    $cols = implode('`, `', array_keys($data));
+                    $vals = ':' . implode(', :', array_keys($data));
+                    $pdo->prepare("INSERT INTO notices (`$cols`) VALUES ($vals)")->execute($data);
+                    $flash = ['ok', 'Notice created.'];
+                }
+            } catch (Throwable $e) {
+                error_log('Notice save failed: ' . $e->getMessage());
+                $flash = ['err', 'Notice could not be saved. Check the slug and database connection.'];
             }
         }
     }
@@ -101,10 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="archived" <?= ($row['status'] ?? '') === 'archived' ? 'selected' : '' ?>>Archived</option>
             </select>
         </div>
-        <div class="form-group"><label>Published At</label><input type="datetime-local" name="published_at" value="<?= e($row['published_at'] ? date('Y-m-d\TH:i', strtotime($row['published_at'])) : date('Y-m-d\TH:i')) ?>"></div>
-        <div class="form-group"><label>Expires At</label><input type="datetime-local" name="expires_at" value="<?= e($row['expires_at'] ? date('Y-m-d\TH:i', strtotime($row['expires_at'])) : '') ?>"></div>
-        <div class="form-group form-full"><label>Summary (English)</label><input type="text" name="summary_en" value="<?= e($row['summary_en'] ?? '') ?>" maxlength="400" placeholder="One-line summary shown in lists"></div>
-        <div class="form-group form-full"><label>Summary (Nepali)</label><input type="text" name="summary_np" value="<?= e($row['summary_np'] ?? '') ?>" maxlength="400"></div>
+        <div class="form-group"><label>Published At</label><input type="datetime-local" name="published_at" value="<?= e(!empty($row['published_at']) ? date('Y-m-d\TH:i', strtotime($row['published_at'])) : date('Y-m-d\TH:i')) ?>"></div>
+        <div class="form-group"><label>Expires At</label><input type="datetime-local" name="expires_at" value="<?= e(!empty($row['expires_at']) ? date('Y-m-d\TH:i', strtotime($row['expires_at'])) : '') ?>"></div>
     </div>
     <div class="form-group form-full" style="margin-bottom:16px">
         <label style="display:block;font-weight:700;font-size:.82rem;margin-bottom:6px">Details (English)</label>

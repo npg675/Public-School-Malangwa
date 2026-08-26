@@ -8,7 +8,7 @@ if ($pdo && db_has_table('staff_categories')) {
         $pdo->exec("INSERT INTO staff_categories (slug,name_en,name_np,sort_order) VALUES ('committee','School Management Committee','विद्यालय व्यवस्थापन समिति',2) ON DUPLICATE KEY UPDATE name_en=VALUES(name_en), name_np=VALUES(name_np), sort_order=VALUES(sort_order)");
         $pdo->exec("UPDATE staff_categories SET sort_order = CASE slug WHEN 'leadership' THEN 1 WHEN 'committee' THEN 2 WHEN 'administration' THEN 3 WHEN 'teaching' THEN 4 WHEN 'non_teaching' THEN 5 ELSE sort_order END WHERE slug IN ('leadership','committee','administration','teaching','non_teaching')");
         $cats = $pdo->query("SELECT * FROM staff_categories ORDER BY sort_order, name_en")->fetchAll();
-    } catch (Throwable $e) {}
+    } catch (Throwable $e) { error_log('Staff categories load failed: '.$e->getMessage()); }
 }
 if ($editing) { $stmt = $pdo->prepare('SELECT * FROM staff WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/staff.php')); exit; } }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {

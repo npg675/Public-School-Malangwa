@@ -11,7 +11,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 $items = [];
 if ($pdo && db_has_table('news')) {
-    try { $items = $pdo->query("SELECT n.*, c.name_en as cat_en FROM news n LEFT JOIN news_categories c ON c.id=n.category_id ORDER BY n.published_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) {}
+    try { $items = $pdo->query("SELECT n.*, c.name_en as cat_en FROM news n LEFT JOIN news_categories c ON c.id=n.category_id ORDER BY n.published_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) { error_log('News list failed: ' . $e->getMessage()); }
 }
 ?>
 <div class="top"><div><h1>News</h1><p>School news, reports, and activity highlights</p></div><a href="<?= e_attr(base_url('admin/news-form.php')) ?>" class="btn btn-primary">+ New News</a></div>

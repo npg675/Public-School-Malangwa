@@ -6,7 +6,7 @@
     <p style="color:var(--muted)">We are working to fix this. Please try again in a moment or contact the school office.</p>
     <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="<?= e_attr(base_url()) ?>" class="btn btn-primary">Homepage</a>
-      <a href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__mapQuery ?? (APP_COORDS_LAT . ',' . APP_COORDS_LNG)) ?>" target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
     </div>
   </div>
 </section>

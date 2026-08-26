@@ -7,7 +7,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     else { $pdo->prepare('DELETE FROM pages WHERE id = ?')->execute([(int)$_GET['delete']]); $flash = ['ok','Page deleted.']; }
 }
 $items = [];
-if ($pdo && db_has_table('pages')) { try { $items = $pdo->query("SELECT * FROM pages ORDER BY slug LIMIT 50")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('pages')) { try { $items = $pdo->query("SELECT * FROM pages ORDER BY slug LIMIT 50")->fetchAll(); } catch (Throwable $e) { error_log('Pages list failed: ' . $e->getMessage()); } }
 ?>
 <div class="top"><div><h1>Pages</h1><p>Edit static page content (About, Admissions, etc.)</p></div><a href="<?= e_attr(base_url('admin/page-form.php')) ?>" class="btn btn-primary">+ New Page</a></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>

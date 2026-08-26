@@ -22,7 +22,7 @@ if ($pdo && db_has_table('notices')) {
     try {
         $stmt = $pdo->query("SELECT n.*, c.name_en as cat_en FROM notices n LEFT JOIN notice_categories c ON c.id = n.category_id ORDER BY n.is_pinned DESC, n.published_at DESC LIMIT 100");
         $notices = $stmt->fetchAll();
-    } catch (Throwable $e) {}
+    } catch (Throwable $e) { error_log('Notices list failed: ' . $e->getMessage()); }
 }
 ?>
 

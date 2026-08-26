@@ -7,7 +7,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     else { $pdo->prepare('DELETE FROM downloads WHERE id = ?')->execute([(int)$_GET['delete']]); $flash = ['ok','Download deleted.']; }
 }
 $items = [];
-if ($pdo && db_has_table('downloads')) { try { $items = $pdo->query("SELECT d.*, c.name_en as cat_en FROM downloads d LEFT JOIN download_categories c ON c.id=d.category_id ORDER BY d.published_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('downloads')) { try { $items = $pdo->query("SELECT d.*, c.name_en as cat_en FROM downloads d LEFT JOIN download_categories c ON c.id=d.category_id ORDER BY d.published_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) { error_log('Downloads list failed: ' . $e->getMessage()); } }
 ?>
 <div class="top"><div><h1>Downloads</h1><p>Forms, routines, calendars, and documents</p></div><a href="<?= e_attr(base_url('admin/download-form.php')) ?>" class="btn btn-primary">+ Upload Document</a></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>

@@ -4,16 +4,26 @@ if (!headers_sent()) send_security_headers();
 $__lang = current_lang();
 $__isNp = $__lang === 'np';
 $__page = $page ?? 'home';
+$__siteNameEn = (string)setting('site_name_en', APP_NAME_EN);
+$__siteNameNp = (string)setting('site_name_np', APP_NAME_NP);
+$__addressEn = (string)setting('address_en', APP_ADDRESS);
+$__phone = (string)setting('phone', APP_PHONE);
+$__iemis = (string)setting('iemis_code', APP_IEMIS);
+$__lat = (string)setting('coords_lat', APP_COORDS_LAT);
+$__lng = (string)setting('coords_lng', APP_COORDS_LNG);
+$__mapQuery = $__lat . ',' . $__lng;
+$__logoPath = (string)setting('logo_path', 'assets/img/logo.png');
+$__logoUrl = stored_file_url($__logoPath);
 ?>
 <!DOCTYPE html>
 <html lang="<?= $__isNp ? 'ne' : 'en' ?>">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= e($title ?? APP_NAME_EN . ' · Malangwa-2, Sarlahi | ' . APP_NAME_NP) ?></title>
+<title><?= e($title ?? $__siteNameEn . ' · Malangwa-2, Sarlahi | ' . $__siteNameNp) ?></title>
 <meta name="description" content="<?= e_attr($description ?? 'Shree Public Secondary School — public community school ECD to Grade 12, +2 Science & Management (NEB). Malangwa-2, Sarlahi, Madhesh Province. IEMIS 190640003.') ?>">
 <link rel="canonical" href="<?= e_attr(base_url(ltrim($_SERVER['REQUEST_URI'] ?? '/', '/'))) ?>">
-<meta property="og:title" content="<?= e_attr($title ?? APP_NAME_EN) ?>">
+<meta property="og:title" content="<?= e_attr($title ?? $__siteNameEn) ?>">
 <meta property="og:description" content="<?= e_attr($description ?? '') ?>">
 <meta property="og:type" content="website">
 <meta property="og:url" content="<?= e_attr(base_url()) ?>">
@@ -29,19 +39,19 @@ $__page = $page ?? 'home';
 {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "Shree Public Secondary School",
-  "alternateName": "श्री पब्लिक माध्यमिक विद्यालय",
+  "name": "<?= e($__siteNameEn) ?>",
+  "alternateName": "<?= e(setting('site_name_np', APP_NAME_NP)) ?>",
   "url": "<?= e(base_url()) ?>",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Malangwa-2, Sarlahi",
+    "streetAddress": "<?= e($__addressEn) ?>",
     "addressLocality": "Malangwa",
     "addressRegion": "Madhesh Province",
     "postalCode": "45800",
     "addressCountry": "NP"
   },
-  "geo": { "@type": "GeoCoordinates", "latitude": "26.8501032", "longitude": "85.555064" },
-  "identifier": "IEMIS 190640003"
+  "geo": { "@type": "GeoCoordinates", "latitude": "<?= e($__lat) ?>", "longitude": "<?= e($__lng) ?>" },
+  "identifier": "IEMIS <?= e($__iemis) ?>"
 }
 </script>
 </head>
@@ -54,10 +64,10 @@ $__page = $page ?? 'home';
     <div class="utility-left">
       <span class="gov-badge"><span class="dot"></span> <?= t('Government / Community School','सरकारी / सामुदायिक विद्यालय') ?></span>
       <span class="utility-sep" aria-hidden="true">|</span>
-      <span class="utility-loc"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> Malangwa-2, Sarlahi · <?= t('Madhesh Province','मधेश प्रदेश') ?> 45800</span>
+      <span class="utility-loc"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> <?= e($__addressEn) ?></span>
     </div>
     <div class="utility-right">
-      <?php if (APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e(APP_PHONE) ?></a><?php endif; ?>
+      <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
       <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
     </div>
   </div>
@@ -67,11 +77,11 @@ $__page = $page ?? 'home';
 <header class="site-header" id="siteHeader">
   <div class="wrap masthead-inner">
     <a class="brand" href="<?= e_attr(base_url()) ?>" aria-label="Shree Public Secondary School home">
-      <span class="brand-mark" aria-hidden="true"><img src="<?= e_attr(base_url('assets/img/logo.png')) ?>" alt="Shree Public Secondary School logo" width="48" height="48" style="width:100%;height:100%;object-fit:contain;border-radius:50%" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'"><span style="display:none;width:48px;height:48px;place-items:center">श्री</span></span>
+      <span class="brand-mark" aria-hidden="true"><img src="<?= e_attr($__logoUrl) ?>" alt="<?= e_attr($__siteNameEn) ?> logo" width="48" height="48" style="width:100%;height:100%;object-fit:contain;border-radius:50%" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'"><span style="display:none;width:48px;height:48px;place-items:center">श्री</span></span>
       <span class="brand-text">
-        <span class="brand-name"><?= t('Shree Public Secondary School','श्री पब्लिक माध्यमिक विद्यालय') ?></span>
-        <span class="brand-name-np"><?= t('श्री पब्लिक माध्यमिक विद्यालय','Shree Public Secondary School') ?></span>
-        <span class="brand-sub">Malangwa-2, Sarlahi • <?= t('Community School','सामुदायिक विद्यालय') ?> • IEMIS <?= e(APP_IEMIS) ?></span>
+        <span class="brand-name"><?= e($__isNp ? $__siteNameNp : $__siteNameEn) ?></span>
+        <span class="brand-name-np"><?= e($__isNp ? $__siteNameEn : $__siteNameNp) ?></span>
+        <span class="brand-sub"><?= e($__addressEn) ?> • <?= t('Community School','सामुदायिक विद्यालय') ?> • IEMIS <?= e($__iemis) ?></span>
       </span>
     </a>
     <nav class="legacy-main-nav" aria-label="Primary">
@@ -144,7 +154,7 @@ $__page = $page ?? 'home';
 
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <div class="mn-head">
-    <span class="brand-text"><span class="brand-name" style="color:#fff">Shree Public<br>Secondary School</span><span class="brand-sub" style="color:#93B4D8">Malangwa-2 • IEMIS 190640003</span></span>
+    <span class="brand-text"><span class="brand-name" style="color:#fff"><?= e($__isNp ? $__siteNameNp : $__siteNameEn) ?></span><span class="brand-sub" style="color:#93B4D8"><?= e($__addressEn) ?> • IEMIS <?= e($__iemis) ?></span></span>
     <button class="mn-close" id="navClose" aria-label="Close menu"><svg class="ic"><use href="#i-close"/></svg></button>
   </div>
   <div class="mn-links">
@@ -159,8 +169,8 @@ $__page = $page ?? 'home';
     <a href="<?= e_attr(base_url('contact.php')) ?>"><?= t('Contact','सम्पर्क') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
   </div>
   <div class="mn-foot">
-    <?php if (APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e(APP_PHONE) ?></a><?php endif; ?>
-    <a href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> VH24+22W, Malangwa 45800</a>
+    <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__mapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= e($__addressEn) ?></a>
     <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-gold" style="justify-content:center"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
     <div class="mn-lang"><button onclick="setLang('en')" class="<?= $__lang==='en'?'active':'' ?>">EN</button><button onclick="setLang('np')" class="<?= $__lang==='np'?'active':'' ?>">नेपाली</button></div>
   </div>

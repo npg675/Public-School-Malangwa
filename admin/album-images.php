@@ -26,11 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
         $dir = __DIR__.'/../uploads/gallery/'.$album['slug'];
         if (!is_dir($dir)) mkdir($dir, 0755, true);
         $count = 0;
+        $maxSize = 8 * 1024 * 1024;
         foreach ($_FILES['images']['tmp_name'] as $i => $tmp) {
             if ($_FILES['images']['error'][$i] !== UPLOAD_ERR_OK) continue;
+            if ((int)$_FILES['images']['size'][$i] > $maxSize) continue;
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $tmp);
-            finfo_close($finfo);
+            $mime = $finfo ? finfo_file($finfo, $tmp) : false;
+            if ($finfo) finfo_close($finfo);
             if (!in_array($mime, $allowed)) continue;
             $ext = $mime === 'image/jpeg' ? 'jpg' : ($mime === 'image/png' ? 'png' : 'webp');
             $name = bin2hex(random_bytes(8)).'.'.$ext;
@@ -39,6 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
                 $cap = trim($_POST['captions'][$i] ?? '');
                 $pdo->prepare('INSERT INTO gallery_images (album_id, image_path, caption_en, sort_order) VALUES (?,?,?,?)')
                     ->execute([$albumId, $rel, $cap, $count]);
+                if (empty($album['cover_image'])) {
+                    $pdo->prepare('UPDATE gallery_albums SET cover_image = ? WHERE id = ?')->execute([$rel, $albumId]);
+                    $album['cover_image'] = $rel;
+                }
                 $count++;
             }
         }
@@ -56,7 +62,7 @@ $images = $images->fetchAll();
 
 <form method="post" enctype="multipart/form-data" class="section-box">
     <?= csrf_field() ?>
-    <div class="form-group"><label>Upload Photos (JPG/PNG/WebP, max 10MB each)</label>
+    <div class="form-group"><label>Upload Photos (JPG/PNG/WebP, max 8MB each)</label>
         <input type="file" name="images[]" accept="image/*" multiple required style="margin-bottom:8px">
         <small style="color:#667085">Select multiple files. Optional: add captions below each after upload.</small>
     </div>

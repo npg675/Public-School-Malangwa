@@ -51,7 +51,8 @@ INSERT INTO site_settings (`key`,`value`) VALUES
 ('principal_name','Devbarat Prasad Patel'),
 ('principal_message_en','Our mission is to provide an inclusive, high-quality education that empowers students from all backgrounds to become responsible citizens and future leaders. We invite you to be a part of our growing community.'),
 ('principal_message_np','हाम्रो लक्ष्य सबै पृष्ठभूमिका विद्यार्थीहरूलाई जिम्मेवार नागरिक र भविष्यका नेता बन्न सशक्त बनाउँदै समावेशी, गुणस्तरीय शिक्षा प्रदान गर्नु हो।'),
-('principal_photo','uploads/gallery/staff/leadership-team-photo.jpg')
+('principal_photo','uploads/gallery/staff/leadership-team-photo.jpg'),
+('logo_path','assets/img/logo.png')
 ON DUPLICATE KEY UPDATE `value`=VALUES(`value`);
 
 -- Pages

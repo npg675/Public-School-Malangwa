@@ -13,10 +13,10 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 $exams = [];
 if ($pdo && db_has_table('exams')) {
-    try { $exams = $pdo->query("SELECT e.*, t.name_en as type_name, (SELECT COUNT(*) FROM student_results WHERE exam_id=e.id) as result_count FROM exams e JOIN exam_types t ON t.id=e.exam_type_id ORDER BY e.academic_year DESC, e.created_at DESC")->fetchAll(); } catch (Throwable $e) {}
+    try { $exams = $pdo->query("SELECT e.*, t.name_en as type_name, (SELECT COUNT(*) FROM student_results WHERE exam_id=e.id) as result_count FROM exams e JOIN exam_types t ON t.id=e.exam_type_id ORDER BY e.academic_year DESC, e.created_at DESC")->fetchAll(); } catch (Throwable $e) { error_log('Exams list failed: '.$e->getMessage()); }
 }
 $examTypes = [];
-if ($pdo && db_has_table('exam_types')) { try { $examTypes = $pdo->query("SELECT * FROM exam_types")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('exam_types')) { try { $examTypes = $pdo->query("SELECT * FROM exam_types")->fetchAll(); } catch (Throwable $e) { error_log('Exam types load failed: '.$e->getMessage()); } }
 
 // Create exam
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '') && isset($_POST['create_exam'])) {
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '') 
                     $pdo->prepare('INSERT INTO student_results (exam_id, symbol_no, student_name, grade, gpa, result_status) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE student_name=VALUES(student_name), grade=VALUES(grade), gpa=VALUES(gpa), result_status=VALUES(result_status)')
                         ->execute([$exam_id, $sym, $name, $grade, $gpa ?: null, $status]);
                     $count++;
-                } catch (Throwable $e) {}
+                } catch (Throwable $e) { error_log('Result import failed: '.$e->getMessage()); }
             }
         }
         $flash = ['ok', "$count result(s) imported."];

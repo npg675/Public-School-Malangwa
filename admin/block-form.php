@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
                 $logId = (string)$pdo->lastInsertId();
                 $flash = ['ok','Block created.'];
             }
-            try { $pdo->prepare('INSERT INTO activity_logs (user_id,action,entity_type,entity_id,detail) VALUES (?,?,?,?,?)')->execute([$_SESSION['user_id']??null, $editing?'block.update':'block.create','content_blocks',$logId,$d['page_slug'].':'.$d['section_key']]); } catch (Throwable $e) {}
+            try { $pdo->prepare('INSERT INTO activity_logs (user_id,action,entity_type,entity_id,detail) VALUES (?,?,?,?,?)')->execute([$_SESSION['user_id']??null, $editing?'block.update':'block.create','content_blocks',$logId,$d['page_slug'].':'.$d['section_key']]); } catch (Throwable $e) { error_log('Content block audit log failed: '.$e->getMessage()); }
             if ($flash[0]==='ok' && !$editing) { header('Location: '.base_url('admin/blocks.php?page='.urlencode($d['page_slug']))); exit; }
             if ($editing) { $stmt=$pdo->prepare('SELECT * FROM content_blocks WHERE id=?'); $stmt->execute([(int)$_GET['id']]); $row=$stmt->fetch(); }
         } catch (Throwable $e) { $flash=['err','Save failed: '.$e->getMessage()]; }
@@ -171,7 +171,7 @@ document.getElementById('pageSlug').addEventListener('change', function(){
 document.getElementById('iconInput')?.addEventListener('input', function(){ document.getElementById('iconPreview').textContent=this.value||'star'; });
 document.getElementById('imageFile')?.addEventListener('change', async function(){
   const f=this.files[0]; if(!f) return;
-  const fd=new FormData(); fd.append('file',f); fd.append('subdir','blocks');
+  const fd=new FormData(); fd.append('file',f); fd.append('_csrf','<?= e_attr(csrf_token()) ?>'); fd.append('subdir','blocks');
   const res=await fetch('<?= e_attr(base_url('admin/upload.php')) ?>',{method:'POST',body:fd});
   const j=await res.json(); if(j.ok){ document.getElementById('imageUrl').value=j.path; const p=document.getElementById('imagePreview'); p.innerHTML='<img src="<?= e_attr(base_url('')) ?>'+j.path+'" class="preview-img"><div class=hint>Uploaded: '+j.path+'</div>'; } else alert(j.error||'Upload failed');
 });

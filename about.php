@@ -26,7 +26,7 @@ $ctaJoin = $first('cta_join');
     <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-text-heading mb-4 md:hidden"><?= e($headerBlock ? block_val($headerBlock,'title') : 'About Our School') ?></h1>
     <div class="flex items-center text-on-surface-variant font-body-md text-body-md">
       <span class="material-symbols-outlined mr-2 text-primary">location_on</span>
-      <?= e(t('Malangwa-2, Sarlahi','मलंगवा-२, सर्लाही')) ?>
+      <?= e(setting('address_'.current_lang(), setting('address_en', APP_ADDRESS))) ?>
     </div>
   </div>
 </section>
@@ -102,7 +102,7 @@ $ctaJoin = $first('cta_join');
       </div>
       <div class="bg-surface p-6 rounded-xl shadow-ambient border border-border-base">
         <div class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider mb-2">IEMIS Code</div>
-        <div class="font-headline-sm text-headline-sm text-primary font-mono bg-surface-container-low px-3 py-1 rounded inline-block mt-1"><?= e(APP_IEMIS) ?></div>
+        <div class="font-headline-sm text-headline-sm text-primary font-mono bg-surface-container-low px-3 py-1 rounded inline-block mt-1"><?= e(setting('iemis_code', APP_IEMIS)) ?></div>
       </div>
     </div>
   </div>

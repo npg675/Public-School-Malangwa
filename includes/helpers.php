@@ -3,7 +3,19 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    session_name((string)env('SESSION_NAME', 'sps_session'));
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 
 // CSRF
 function csrf_token(): string {
@@ -36,20 +48,27 @@ function lang_url(string $lang): string {
     return $uri;
 }
 
-// settings fallback - reads site_settings table if exists else defaults
-function setting(string $key, $fallback = '') {
+function all_settings(): array {
     static $cache = null;
-    if ($cache === null) {
-        $cache = [];
-        $pdo = db();
-        if ($pdo && db_has_table('site_settings')) {
-            try {
-                $rows = $pdo->query('SELECT `key`,`value` FROM site_settings')->fetchAll();
-                foreach ($rows as $r) $cache[$r['key']] = $r['value'];
-            } catch (Throwable $e) {}
+    if ($cache !== null) return $cache;
+
+    $cache = [];
+    $pdo = db();
+    if ($pdo && db_has_table('site_settings')) {
+        try {
+            $rows = $pdo->query('SELECT `key`,`value` FROM site_settings')->fetchAll();
+            foreach ($rows as $r) $cache[$r['key']] = (string)$r['value'];
+        } catch (Throwable $e) {
+            error_log('Site settings read failed: ' . $e->getMessage());
         }
     }
-    return $cache[$key] ?? $fallback;
+    return $cache;
+}
+
+// Shared site settings are the canonical source for editable school identity.
+function setting(string $key, $fallback = '') {
+    $settings = all_settings();
+    return array_key_exists($key, $settings) ? $settings[$key] : $fallback;
 }
 
 // Notices helpers
@@ -66,8 +85,15 @@ function get_notices(int $limit = 6, ?string $category = null): array {
             $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
             $stmt->execute();
             $rows = $stmt->fetchAll();
-            if ($rows) return $rows;
-        } catch (Throwable $e) {}
+            foreach ($rows as &$row) {
+                $row['summary_en'] = mb_strimwidth(trim(strip_tags((string)($row['description_en'] ?? ''))), 0, 220, '…', 'UTF-8');
+                $row['summary_np'] = mb_strimwidth(trim(strip_tags((string)($row['description_np'] ?? ''))), 0, 220, '…', 'UTF-8');
+            }
+            return $rows;
+        } catch (Throwable $e) {
+            error_log('Notices read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     // fallback sample data
     return sample_notices($limit);
@@ -101,9 +127,11 @@ function get_events(int $limit = 3): array {
             $stmt = $pdo->prepare("SELECT * FROM events WHERE status='published' AND event_date >= CURDATE() ORDER BY event_date ASC LIMIT :lim");
             $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
             $stmt->execute();
-            $rows = $stmt->fetchAll();
-            if ($rows) return $rows;
-        } catch (Throwable $e) {}
+            return $stmt->fetchAll();
+        } catch (Throwable $e) {
+            error_log('Events read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     return [
         ['title_en'=>'16-Day Campaign Against Gender-Based Violence','title_np'=>'लैङ्गिक हिंसा विरुद्ध १६ दिने अभियान','event_date'=>'2025-11-25','location_en'=>'Shree Public Secondary School, Malangwa-2','category'=>'Community','summary_en'=>'Inaugurated with Malangwa Municipality, INSEC and local groups.'],
@@ -123,9 +151,11 @@ function get_downloads(int $limit = 6, ?string $category = null): array {
             foreach ($params as $k=>$v) $stmt->bindValue($k,$v);
             $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
             $stmt->execute();
-            $rows = $stmt->fetchAll();
-            if ($rows) return $rows;
-        } catch (Throwable $e) {}
+            return $stmt->fetchAll();
+        } catch (Throwable $e) {
+            error_log('Downloads read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     return [
         ['title_en'=>'Admission Form 2082 (Sample)','title_np'=>'भर्ना फारम २०८२','category'=>'Forms','cat_en'=>'Forms','published_at'=>'2026-04-01','file_size'=>'420 KB','file_type'=>'PDF','is_sample'=>1],
@@ -145,7 +175,10 @@ function get_news(int $limit = 6): array {
             $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll();
-        } catch (Throwable $e) {}
+        } catch (Throwable $e) {
+            error_log('News read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     return [];
 }
@@ -154,17 +187,18 @@ function get_gallery_albums(int $limit = 6): array {
     $pdo = db();
     if ($pdo && db_has_table('gallery_albums')) {
         try {
-            $stmt = $pdo->prepare("SELECT slug, title_en, title_np, cover_image, description_en FROM gallery_albums WHERE status='published' ORDER BY sort_order, title_en LIMIT :lim");
+            $stmt = $pdo->prepare("SELECT a.slug, a.title_en, a.title_np, a.cover_image, a.description_en, (SELECT COUNT(*) FROM gallery_images gi WHERE gi.album_id = a.id) AS count FROM gallery_albums a WHERE a.status='published' ORDER BY a.sort_order, a.title_en LIMIT :lim");
             $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
             $stmt->execute();
             $rows = $stmt->fetchAll();
-            if ($rows) {
-                foreach ($rows as &$r) {
-                    $r['cover'] = $r['cover_image'] ? base_url($r['cover_image']) : '';
-                }
-                return $rows;
+            foreach ($rows as &$r) {
+                $r['cover'] = media_url($r['cover_image'] ?? '');
             }
-        } catch (Throwable $e) {}
+            return $rows;
+        } catch (Throwable $e) {
+            error_log('Gallery albums read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     // Fallback: real school photos
     return [
@@ -188,10 +222,11 @@ function get_blocks(string $page, ?string $section = null): array {
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
             $rows = $stmt->fetchAll();
-            if ($rows || $section !== null) return $section !== null ? $rows : [];
-            // when section is null and table empty, fall through to seed fallback
-            if ($rows) return $rows;
-        } catch (Throwable $e) {}
+            return $rows;
+        } catch (Throwable $e) {
+            error_log('Content blocks read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     $out = [];
     foreach (cms_seed_blocks() as $b) {
@@ -216,7 +251,9 @@ function get_page_content(string $slug): ?array {
             $stmt->execute([$slug]);
             $row = $stmt->fetch();
             if ($row) return $row;
-        } catch (Throwable $e) {}
+        } catch (Throwable $e) {
+            error_log('Page read failed: ' . $e->getMessage());
+        }
     }
     return null;
 }
@@ -234,8 +271,11 @@ function get_programs(): array {
     if ($pdo && db_has_table('academic_programs')) {
         try {
             $rows = $pdo->query('SELECT * FROM academic_programs WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
-            if ($rows) return $rows;
-        } catch (Throwable $e) {}
+            return $rows;
+        } catch (Throwable $e) {
+            error_log('Academic programs read failed: ' . $e->getMessage());
+            return [];
+        }
     }
     return [
         ['slug'=>'ecd','title_en'=>'ECD / Nursery','title_np'=>'ईसीडी / नर्सरी','level'=>'ecd','stream'=>null,'description_en'=>'<p>Play-based start to formal schooling.</p>','description_np'=>'<p>खेलमा आधारित प्रारम्भिक शिक्षा।</p>'],
@@ -269,6 +309,7 @@ function get_staff_directory(): array {
             ORDER BY COALESCE(c.sort_order, 99), s.display_order, s.name_en");
         $rows = $stmt->fetchAll();
     } catch (Throwable $e) {
+        error_log('Staff directory read failed: ' . $e->getMessage());
         return $groups;
     }
 
@@ -294,7 +335,36 @@ function staff_photo_url(?string $photo): string {
     $photo = trim((string)$photo);
     if ($photo === '') return '';
     if (preg_match('#^https?://#i', $photo)) return $photo;
-    return base_url(ltrim($photo, '/'));
+    return media_url($photo);
+}
+
+function media_url(?string $path): string {
+    $path = trim((string)$path);
+    if ($path === '') return '';
+    if (preg_match('#^https?://#i', $path)) return $path;
+    $path = ltrim($path, '/');
+    return base_url(str_starts_with($path, 'uploads/') ? $path : 'uploads/' . $path);
+}
+
+function stored_file_url(?string $path): string {
+    $path = trim((string)$path);
+    if ($path === '') return '';
+    if (preg_match('#^https?://#i', $path)) return $path;
+    return base_url(ltrim($path, '/'));
+}
+
+function format_file_size($bytes): string {
+    if ($bytes === null || $bytes === '') return '';
+    if (!is_numeric($bytes)) return (string)$bytes;
+    $bytes = (float)$bytes;
+    if ($bytes < 1024) return (string)(int)$bytes . ' B';
+    $units = ['KB', 'MB', 'GB'];
+    $value = $bytes;
+    foreach ($units as $unit) {
+        $value /= 1024;
+        if ($value < 1024 || $unit === 'GB') return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.') . ' ' . $unit;
+    }
+    return (string)$bytes . ' B';
 }
 
 function staff_initials(?string $name): string {
@@ -313,16 +383,39 @@ function send_security_headers(): void {
     header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
 }
 
-// Rate limiting (simple file-based)
-function rate_limit(string $key, int $max = 5, int $window = 60): bool {
-    $dir = sys_get_temp_dir();
-    $file = $dir . '/sps_rate_' . md5($key);
+// Shared-file rate limiting with an exclusive lock so concurrent PHP-FPM workers cannot overwrite counts.
+function rate_limit(string $key, int $max = 5, int $window = 60, ?int &$retryAfter = null): bool {
+    $retryAfter = 0;
+    $dir = (string)env('RATE_LIMIT_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sps-rate-limit');
+    if (!is_dir($dir) && !@mkdir($dir, 0700, true) && !is_dir($dir)) {
+        error_log('Rate limit storage unavailable: ' . $dir);
+        return false;
+    }
+
+    $file = $dir . DIRECTORY_SEPARATOR . 'sps_rate_' . hash('sha256', $key) . '.json';
+    $handle = @fopen($file, 'c+');
+    if (!$handle || !@flock($handle, LOCK_EX)) {
+        if (is_resource($handle)) @fclose($handle);
+        error_log('Rate limit lock unavailable: ' . $file);
+        return false;
+    }
+
     $now = time();
-    $data = @json_decode(@file_get_contents($file), true) ?: ['count'=>0,'start'=>$now];
-    if ($now - $data['start'] > $window) { $data = ['count'=>0,'start'=>$now]; }
+    $raw = stream_get_contents($handle);
+    $data = json_decode($raw ?: '', true);
+    if (!is_array($data) || !isset($data['count'], $data['start']) || $now - (int)$data['start'] >= $window) {
+        $data = ['count' => 0, 'start' => $now];
+    }
     $data['count']++;
-    @file_put_contents($file, json_encode($data));
-    return $data['count'] <= $max;
+    $allowed = $data['count'] <= $max;
+    if (!$allowed) $retryAfter = max(1, $window - ($now - (int)$data['start']));
+    rewind($handle);
+    ftruncate($handle, 0);
+    fwrite($handle, json_encode($data, JSON_THROW_ON_ERROR));
+    fflush($handle);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+    return $allowed;
 }
 
 function is_logged_in(): bool { return !empty($_SESSION['user_id']); }

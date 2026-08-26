@@ -14,10 +14,10 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 }
 
 $items = [];
-if ($pdo && db_has_table('contact_messages')) { try { $items = $pdo->query("SELECT * FROM contact_messages ORDER BY is_read ASC, created_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('contact_messages')) { try { $items = $pdo->query("SELECT * FROM contact_messages ORDER BY is_read ASC, created_at DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) { error_log('Messages list failed: '.$e->getMessage()); } }
 
 $unread = 0;
-if ($pdo && db_has_table('contact_messages')) { try { $unread = (int)$pdo->query("SELECT COUNT(*) FROM contact_messages WHERE is_read=0")->fetchColumn(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('contact_messages')) { try { $unread = (int)$pdo->query("SELECT COUNT(*) FROM contact_messages WHERE is_read=0")->fetchColumn(); } catch (Throwable $e) { error_log('Unread messages count failed: '.$e->getMessage()); } }
 ?>
 <div class="top"><div><h1>Contact Messages</h1><p><?= $unread ?> unread message(s)</p></div></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>

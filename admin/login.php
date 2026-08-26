@@ -1,27 +1,41 @@
 <?php
 require_once __DIR__.'/../includes/helpers.php';
+if (!headers_sent()) send_security_headers();
 if (is_logged_in()) { header('Location: '.base_url('admin/index.php')); exit; }
 $error=null;
 if($_SERVER['REQUEST_METHOD']==='POST'){
   if(!csrf_verify($_POST['_csrf']??'')) $error='Invalid session.';
-  elseif(!rate_limit('login_'.($_SERVER['REMOTE_ADDR']??'anon'),5,300)) $error='Too many attempts. Try later.';
+  elseif(!rate_limit('login_ip_'.($_SERVER['REMOTE_ADDR']??'anon'),20,300,$retryIpAfter) || !rate_limit('login_account_'.($_SERVER['REMOTE_ADDR']??'anon').'_'.strtolower(trim($_POST['email']??'')),5,300,$retryAccountAfter)) { $retryAfter=max((int)($retryIpAfter??0),(int)($retryAccountAfter??0)); http_response_code(429); $error='Too many attempts. Try again in '.max(1,(int)$retryAfter).' seconds.'; }
   else {
     $email=trim($_POST['email']??''); $pass=$_POST['password']??'';
     $pdo=db();
     if($pdo && db_has_table('users')){
-      $stmt=$pdo->prepare('SELECT u.*, r.slug as role_slug FROM users u JOIN roles r ON r.id=u.role_id WHERE u.email=:e AND u.is_active=1 LIMIT 1');
-      $stmt->execute([':e'=>$email]);
-      $user=$stmt->fetch();
-      if($user && password_verify($pass, $user['password_hash'])){
-        session_regenerate_id(true);
-        $_SESSION['user_id']=$user['id']; $_SESSION['user_role']=$user['role_slug']; $_SESSION['user_name']=$user['name'];
-        $pdo->prepare('UPDATE users SET last_login_at=NOW() WHERE id=:id')->execute([':id'=>$user['id']]);
-        header('Location: '.base_url('admin/index.php')); exit;
-      } else $error='Invalid email or password.';
+      try {
+        $stmt=$pdo->prepare('SELECT u.*, r.slug as role_slug FROM users u JOIN roles r ON r.id=u.role_id WHERE u.email=:e AND u.is_active=1 LIMIT 1');
+        $stmt->execute([':e'=>$email]);
+        $user=$stmt->fetch();
+        if($user && password_verify($pass, $user['password_hash'])){
+          session_regenerate_id(true);
+          $_SESSION['user_id']=$user['id']; $_SESSION['user_role']=$user['role_slug']; $_SESSION['user_name']=$user['name']; $_SESSION['user_email']=$user['email'];
+          if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
+            $pdo->prepare('UPDATE users SET password_hash=:hash WHERE id=:id')->execute([':hash'=>password_hash($pass, PASSWORD_DEFAULT), ':id'=>$user['id']]);
+          }
+          $pdo->prepare('UPDATE users SET last_login_at=NOW() WHERE id=:id')->execute([':id'=>$user['id']]);
+          header('Location: '.base_url('admin/index.php')); exit;
+        } else $error='Invalid email or password.';
+      } catch (Throwable $e) {
+        error_log('Admin login database failure: '.$e->getMessage());
+        $error='Admin login is temporarily unavailable. Please try again later.';
+      }
     } else {
-      // demo fallback
-      if($email==='admin@shreepublic.edu.np' && $pass==='Admin@123'){ $_SESSION['user_id']=1; $_SESSION['user_role']='super_admin'; $_SESSION['user_name']='Super Admin'; header('Location: '.base_url('admin/index.php')); exit; }
-      else $error='Demo: admin@shreepublic.edu.np / Admin@123 (DB not connected)';
+      $demoEmail = trim((string)env('DEMO_ADMIN_EMAIL', ''));
+      $demoHash = trim((string)env('DEMO_ADMIN_PASSWORD_HASH', ''));
+      if (env('DB_DISABLED', '0') === '1' && $demoEmail !== '' && $demoHash !== '' && hash_equals(strtolower($demoEmail), strtolower($email)) && password_verify($pass, $demoHash)) {
+        session_regenerate_id(true);
+        $_SESSION['user_id']=0; $_SESSION['user_role']='super_admin'; $_SESSION['user_name']='Demo Admin'; $_SESSION['user_email']=$demoEmail;
+        header('Location: '.base_url('admin/index.php')); exit;
+      }
+      $error='Admin login is unavailable until the database is connected.';
     }
   }
 }
@@ -48,13 +62,13 @@ h1{font-size:1.4rem;font-weight:800;color:#123B6D;text-align:center} .sub{color:
 <form method="post" class="card">
   <h1>Website Management</h1>
   <p class="sub">Shree Public Secondary School — Malangwa-2<br>IEMIS 190640003 • Secure sign-in</p>
-  <?php if($error): ?><div class="err"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+  <?php if($error): ?><div class="err"><?= e($error) ?></div><?php endif; ?>
   <?= csrf_field() ?>
-  <div class="field" style="margin-bottom:12px"><label>Email</label><input type="email" name="email" required value="<?= htmlspecialchars($_POST['email']??'admin@shreepublic.edu.np') ?>" autocomplete="username"></div>
+  <div class="field" style="margin-bottom:12px"><label>Email</label><input type="email" name="email" required value="<?= e_attr($_POST['email']??'admin@shreepublic.edu.np') ?>" autocomplete="username"></div>
   <div class="field"><label>Password</label><input type="password" name="password" required autocomplete="current-password" placeholder="••••••••"></div>
   <button class="btn" type="submit">Sign in</button>
-  <p class="note">Default: admin@shreepublic.edu.np / Admin@123 — change immediately after first login. Passwords hashed with password_hash().</p>
-  <p class="note"><a href="<?= htmlspecialchars(base_url()) ?>" style="color:#123B6D;font-weight:700">← Back to website</a></p>
+  <p class="note">Use the admin account created in the database. Change its password after signing in.</p>
+  <p class="note"><a href="<?= e_attr(base_url()) ?>" style="color:#123B6D;font-weight:700">← Back to website</a></p>
 </form>
 </body>
 </html>

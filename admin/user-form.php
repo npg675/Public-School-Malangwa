@@ -2,7 +2,7 @@
 $adminPage = 'users'; $adminTitle = 'User Form';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null; $editing = isset($_GET['id']) && is_numeric($_GET['id']); $row = null; $roles = [];
-if ($pdo && db_has_table('roles')) { try { $roles = $pdo->query("SELECT * FROM roles ORDER BY id")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('roles')) { try { $roles = $pdo->query("SELECT * FROM roles ORDER BY id")->fetchAll(); } catch (Throwable $e) { error_log('Roles load failed: '.$e->getMessage()); } }
 if ($editing) { $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/users.php')); exit; } }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
         $flash = ['err', 'Name, Email, and Role are required.'];
     } elseif (!$editing && empty($password)) {
         $flash = ['err', 'Password is required for new users.'];
+    } elseif ($password !== '' && (strlen($password) < 10 || !preg_match('/[A-Za-z]/', $password) || !preg_match('/\d/', $password))) {
+        $flash = ['err', 'Password must be at least 10 characters and include a letter and a number.'];
     } else {
         if ($editing) {
             $sets = 'name=:name, email=:email, role_id=:role_id, is_active=:is_active';

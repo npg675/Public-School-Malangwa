@@ -44,7 +44,7 @@ $dlIcon = function (?string $type): string {
 <!-- Hero Section -->
 <section class="relative bg-primary overflow-hidden">
   <div class="absolute inset-0 opacity-40">
-    <img alt="Shree Public Secondary School campus" class="w-full h-full object-cover" src="<?= e_attr(base_url($hero['image_url'] ?? 'uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
+    <img alt="<?= e_attr(setting('site_name_en', APP_NAME_EN)) ?> campus" class="w-full h-full object-cover" src="<?= e_attr(media_url($hero['image_url'] ?? 'uploads/hero/hero-main-gate-jubilee.jpg')) ?>">
     <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
   </div>
   <div class="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
@@ -226,7 +226,7 @@ $dlIcon = function (?string $type): string {
         <span class="material-symbols-outlined text-secondary text-[32px]"><?= $dlIcon($d['file_type'] ?? null) ?></span>
         <div>
           <h4 class="font-label-lg text-label-lg text-text-heading"><?= e($d['title_en'] ?? '') ?></h4>
-          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1"><?= e($d['file_size'] ?? '') ?><?= !empty($d['file_size']) ? ' • ' : '' ?>Updated <?= e(date('Y-m-d', strtotime($d['published_at'] ?? 'now'))) ?></p>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1"><?= e(format_file_size($d['file_size'] ?? '')) ?><?= !empty($d['file_size']) ? ' • ' : '' ?>Updated <?= e(date('Y-m-d', strtotime($d['published_at'] ?? 'now'))) ?></p>
         </div>
       </a>
       <?php endforeach; endif; ?>
@@ -285,8 +285,8 @@ $dlIcon = function (?string $type): string {
     </div>
     <div class="flex flex-col sm:flex-row items-center gap-4">
       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="bg-active-gold text-primary font-label-lg text-label-lg px-8 py-4 rounded-lg hover:bg-tertiary-fixed-dim transition-all min-h-[44px] whitespace-nowrap inline-flex items-center">Start Admission Inquiry</a>
-      <?php if (APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>" class="text-white flex items-center gap-2 font-label-md hover:text-active-gold transition-colors">
-        <span class="material-symbols-outlined">call</span> <?= e(APP_PHONE) ?>
+      <?php $homePhone = (string)setting('phone', APP_PHONE); if ($homePhone): ?><a href="tel:<?= e_attr($homePhone) ?>" class="text-white flex items-center gap-2 font-label-md hover:text-active-gold transition-colors">
+        <span class="material-symbols-outlined">call</span> <?= e($homePhone) ?>
       </a><?php endif; ?>
     </div>
   </div>

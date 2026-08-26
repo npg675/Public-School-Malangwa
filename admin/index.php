@@ -15,11 +15,11 @@ if ($pdo) {
         if (db_has_table('contact_messages')) { $counts['messages'] = (int)$pdo->query("SELECT COUNT(*) FROM contact_messages")->fetchColumn(); $counts['unread'] = (int)$pdo->query("SELECT COUNT(*) FROM contact_messages WHERE is_read=0")->fetchColumn(); }
         if (db_has_table('staff')) { $counts['staff'] = (int)$pdo->query("SELECT COUNT(*) FROM staff WHERE is_active=1")->fetchColumn(); }
         if (db_has_table('users')) { $counts['users'] = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE is_active=1")->fetchColumn(); }
-    } catch (Throwable $e) {}
+    } catch (Throwable $e) { error_log('Admin dashboard counts failed: '.$e->getMessage()); }
 }
 
 $recentNotices = [];
-if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELECT title_en, published_at, is_pinned FROM notices ORDER BY published_at DESC LIMIT 5")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELECT title_en, published_at, is_pinned FROM notices ORDER BY published_at DESC LIMIT 5")->fetchAll(); } catch (Throwable $e) { error_log('Recent notices load failed: '.$e->getMessage()); } }
 ?>
 
 <div class="top">

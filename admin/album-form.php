@@ -2,14 +2,13 @@
 $adminPage = 'gallery'; $adminTitle = 'Album Form';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null; $editing = isset($_GET['id']) && is_numeric($_GET['id']); $row = null;
-if ($editing) { $stmt = $pdo->prepare('SELECT * FROM gallery_albums WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/gallery.php')); exit; } }
+if ($editing) { try { $stmt = $pdo->prepare('SELECT * FROM gallery_albums WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); } catch (Throwable $e) { error_log('Album load failed: '.$e->getMessage()); $flash=['err','Album could not be loaded. Check the database connection.']; } if (!$row && !$flash) { header('Location: '.base_url('admin/gallery.php')); exit; } }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
-    $d = ['slug'=>trim($_POST['slug']??''),'title_en'=>trim($_POST['title_en']??''),'title_np'=>trim($_POST['title_np']??''),'description_en'=>trim($_POST['description_en']??''),'cover_image'=>trim($_POST['cover_image']??''),'sort_order'=>(int)($_POST['sort_order']??0),'status'=>$_POST['status']??'draft'];
+    $d = ['slug'=>trim($_POST['slug']??''),'title_en'=>trim($_POST['title_en']??''),'title_np'=>trim($_POST['title_np']??''),'description_en'=>trim($_POST['description_en']??''),'cover_image'=>trim($_POST['cover_image']??''),'sort_order'=>(int)($_POST['sort_order']??0),'status'=>in_array($_POST['status']??'draft',['draft','published'],true) ? $_POST['status'] : 'draft'];
     if (empty($d['title_en'])) { $flash = ['err','Title required.']; }
     else {
         if (empty($d['slug'])) $d['slug'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/','-',$d['title_en']),'-'));
-        if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE gallery_albums SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $flash=['ok','Album updated.']; }
-        else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO gallery_albums (`$c`) VALUES ($v)")->execute($d); $flash=['ok','Album created.']; }
+        try { if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE gallery_albums SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $flash=['ok','Album updated.']; } else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO gallery_albums (`$c`) VALUES ($v)")->execute($d); $flash=['ok','Album created.']; } } catch (Throwable $e) { error_log('Album save failed: '.$e->getMessage()); $flash=['err','Album could not be saved. Check the slug and database connection.']; }
     }
 }
 ?>

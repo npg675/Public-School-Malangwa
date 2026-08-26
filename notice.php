@@ -21,7 +21,7 @@ $related = array_slice($related,0,4);
   <div class="wrap" style="max-width:800px">
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
       <?php if($catSlug): ?><a class="tag <?= !empty($notice['is_urgent'])?'urgent':'' ?>" href="<?= e_attr(base_url('notices.php?category='.e_attr($catSlug))) ?>"><?= e($catLabel) ?></a>
-      <?php else: ?><span class="tag <?= !empty($n['is_urgent'])?'urgent':'' ?>"><?= e($catLabel) ?></span><?php endif; ?>
+  <?php else: ?><span class="tag <?= !empty($notice['is_urgent'])?'urgent':'' ?>"><?= e($catLabel) ?></span><?php endif; ?>
       <?php if(!empty($notice['is_pinned'])): ?><span class="tag pinned">Pinned</span><?php endif; ?>
       <?php if(!empty($notice['is_sample'])): ?><span class="tag" style="background:var(--gold-50);border-color:#FDE68A;color:#6B4F00">Sample</span><?php endif; ?>
       <?php if(!empty($notice['reference_number'])): ?><span style="font-size:.82rem;color:var(--muted)">Ref: <?= e($notice['reference_number']) ?></span><?php endif; ?>
@@ -31,15 +31,15 @@ $related = array_slice($related,0,4);
     <h1 style="font-size:clamp(1.4rem,3vw,2rem)"><?= e($titleTxt) ?></h1>
     <?php if(!empty($notice['title_np']) && current_lang()==='en'): ?><p style="font-family:var(--font-np);color:var(--muted);margin-top:8px"><?= e($notice['title_np']) ?></p><?php endif; ?>
     <div style="margin-top:18px;color:var(--muted);font-size:1rem;line-height:1.75">
-      <p><?= nl2br(e($notice['summary_en'] ?? '')) ?></p>
-      <?php if(!empty($notice['description_en'])): ?><div style="margin-top:12px"><?= $notice['description_en'] ?></div><?php endif; ?>
-      <?php if(empty($notice['summary_en']) && empty($notice['description_en'])): ?><p><em>The full text of this notice is available from the school office. A summary will be published here when supplied.</em></p><?php endif; ?>
+      <?php $noticeBody = current_lang()==='np' && !empty($notice['description_np']) ? $notice['description_np'] : ($notice['description_en'] ?? ''); ?>
+      <?php if($noticeBody !== ''): ?><div><?= $noticeBody ?></div><?php endif; ?>
+      <?php if($noticeBody === ''): ?><p><em><?= t('The full text of this notice is available from the school office.','यस सूचनाको पूर्ण पाठ विद्यालय कार्यालयबाट उपलब्ध हुनेछ।') ?></em></p><?php endif; ?>
     </div>
     <?php if(!empty($notice['attachment_type'])): ?>
     <div style="margin-top:18px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-low);display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <span class="dl-icon" style="width:38px;height:38px"><svg class="ic"><use href="#i-doc"/></svg></span>
-      <div style="flex:1;min-width:200px"><strong style="font-size:.9rem">Official attachment — <?= strtoupper(e($notice['attachment_type'])) ?></strong><div style="font-size:.82rem;color:var(--muted);margin-top:2px">Downloadable file link appears here once the document is uploaded (Admin → Notices → Attachment). Until then, a printed copy is available at the school office.</div></div>
-      <button onclick="window.print()" class="btn btn-ghost" style="padding:8px 14px;font-size:.8rem">Print this page</button>
+       <span class="dl-icon" style="width:38px;height:38px"><svg class="ic"><use href="#i-doc"/></svg></span>
+       <div style="flex:1;min-width:200px"><strong style="font-size:.9rem">Official attachment — <?= strtoupper(e($notice['attachment_type'])) ?></strong><div style="font-size:.82rem;color:var(--muted);margin-top:2px"><?= t('Download the official file supplied with this notice.','यस सूचनासँग सम्बन्धित आधिकारिक फाइल डाउनलोड गर्नुहोस्।') ?></div></div>
+       <?php if (!empty($notice['attachment'])): ?><a href="<?= e_attr(media_url($notice['attachment'])) ?>" class="btn btn-primary" target="_blank" rel="noopener">Download</a><?php else: ?><button onclick="window.print()" class="btn btn-ghost" style="padding:8px 14px;font-size:.8rem">Print this page</button><?php endif; ?>
     </div>
     <?php endif; ?>
 

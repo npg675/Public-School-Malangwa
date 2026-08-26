@@ -16,8 +16,8 @@ document.querySelectorAll('.upload-zone').forEach(function(zone){
   zone.addEventListener('dragleave',function(){zone.classList.remove('dragover')});
   zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('dragover');input.files=e.dataTransfer.files;input.dispatchEvent(new Event('change'))});
 });
-function uploadFile(file,callback){
-  var fd=new FormData();fd.append('file',file);
+function uploadFile(file,callback,subdir){
+  var fd=new FormData();fd.append('file',file);fd.append('_csrf','<?= e_attr(csrf_token()) ?>');if(subdir)fd.append('subdir',subdir);
   fetch('<?= e_attr(base_url("admin/upload.php")) ?>',{method:'POST',body:fd})
     .then(function(r){return r.json()})
     .then(function(r){if(r.ok)callback(null,r);else callback(r.error||'Upload failed')})

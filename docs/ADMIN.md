@@ -2,6 +2,8 @@
 
 URL: `/admin` → login. Roles: **super_admin** (all), **school_admin** (content + settings), **editor** (notices/news/events/gallery), **exam_officer** (results only).
 
+The initial database seed creates an admin account for first-time setup. Change that password immediately from Admin → **Change Password**, and never use the seed password on a public deployment. Login attempts are rate limited per IP and email; a temporary 429 response means the lockout window must expire.
+
 Dashboard cards: Published/Draft Notices, News, Upcoming Events, Downloads, Gallery Images, Contact Messages. Quick buttons: New Notice, New News, Upload Document, Add Event, Add Gallery.
 
 - **Notices:** title_en/title_np, slug, reference number, category, body, attachment (pdf/docx/xlsx/jpg/png, max 8MB), thumbnail, published_at, expires_at, pinned, urgent, draft/published/archived. SEO-friendly `/notice/{slug}`.

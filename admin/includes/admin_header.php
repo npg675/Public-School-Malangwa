@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/helpers.php';
+if (!headers_sent()) send_security_headers();
 require_login();
 $adminRole = current_user_role();
 $adminPage = $adminPage ?? 'dashboard';
@@ -140,6 +141,7 @@ tr:hover td{background:#FAFBFE}
     <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span>Messages</a>
     <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span>Settings</a>
     <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span>Users</a>
+    <a href="<?= e_attr(base_url('admin/change-password.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')==='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">password</span>Change Password</a>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
     <a href="<?= e_attr(base_url()) ?>" class="btn" style="justify-content:center" target="_blank"><span class="material-symbols-outlined">language</span>View Website</a>

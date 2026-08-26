@@ -11,8 +11,8 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 $items = $roles = [];
 if ($pdo) {
-    if (db_has_table('users')) { try { $items = $pdo->query("SELECT u.*, r.name as role_name, r.slug as role_slug FROM users u JOIN roles r ON r.id=u.role_id ORDER BY u.name")->fetchAll(); } catch (Throwable $e) {} }
-    if (db_has_table('roles')) { try { $roles = $pdo->query("SELECT * FROM roles ORDER BY id")->fetchAll(); } catch (Throwable $e) {} }
+    if (db_has_table('users')) { try { $items = $pdo->query("SELECT u.*, r.name as role_name, r.slug as role_slug FROM users u JOIN roles r ON r.id=u.role_id ORDER BY u.name")->fetchAll(); } catch (Throwable $e) { error_log('Users list failed: ' . $e->getMessage()); } }
+    if (db_has_table('roles')) { try { $roles = $pdo->query("SELECT * FROM roles ORDER BY id")->fetchAll(); } catch (Throwable $e) { error_log('Roles list failed: ' . $e->getMessage()); } }
 }
 ?>
 <div class="top"><div><h1>Users</h1><p>Manage admin panel access</p></div><a href="<?= e_attr(base_url('admin/user-form.php')) ?>" class="btn btn-primary">+ Add User</a></div>

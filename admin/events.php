@@ -7,7 +7,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     else { $pdo->prepare('DELETE FROM events WHERE id = ?')->execute([(int)$_GET['delete']]); $flash = ['ok','Event deleted.']; }
 }
 $items = [];
-if ($pdo && db_has_table('events')) { try { $items = $pdo->query("SELECT * FROM events ORDER BY event_date DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('events')) { try { $items = $pdo->query("SELECT * FROM events ORDER BY event_date DESC LIMIT 100")->fetchAll(); } catch (Throwable $e) { error_log('Events list failed: ' . $e->getMessage()); } }
 ?>
 <div class="top"><div><h1>Events</h1><p>School events, programs, and celebrations</p></div><a href="<?= e_attr(base_url('admin/event-form.php')) ?>" class="btn btn-primary">+ New Event</a></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>

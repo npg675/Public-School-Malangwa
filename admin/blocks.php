@@ -19,7 +19,7 @@ if ($pdo && db_has_table('content_blocks')) {
             $stmt = $pdo->query('SELECT * FROM content_blocks ORDER BY page_slug, section_key, sort_order, id LIMIT 200');
         }
         $items = $stmt->fetchAll();
-    } catch (Throwable $e) {}
+    } catch (Throwable $e) { error_log('Content blocks list failed: ' . $e->getMessage()); }
 }
 ?>
 <div class="top"><div><h1>Content Blocks</h1><p>Manage CMS page sections — hero, stats, timelines, FAQs, links, etc.</p></div><a href="<?= e_attr(base_url('admin/block-form.php' . ($filter ? '?page='.urlencode($filter) : ''))) ?>" class="btn btn-primary">+ Add Block</a></div>

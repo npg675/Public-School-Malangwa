@@ -1,40 +1,49 @@
 <?php $page='contact'; $title='Contact — Visit, Call or Message | Shree Public Secondary School'; $description='Contact Shree Public Secondary School, Malangwa-2 — location VH24+22W, map directions, office hours and message form.'; require_once __DIR__.'/includes/header.php';
+$contactName = (string)setting('site_name_en', APP_NAME_EN);
+$contactAddress = (string)setting('address_en', APP_ADDRESS);
+$contactPhone = (string)setting('phone', APP_PHONE);
+$contactEmail = (string)setting('email', APP_EMAIL);
+$contactHours = (string)setting('office_hours', APP_OFFICE_HOURS);
+$contactIemis = (string)setting('iemis_code', APP_IEMIS);
+$contactPlus = (string)setting('plus_code', APP_PLUS_CODE);
+$contactMapQuery = (string)setting('coords_lat', APP_COORDS_LAT) . ',' . (string)setting('coords_lng', APP_COORDS_LNG);
 $success=null; $error=null;
 if($_SERVER['REQUEST_METHOD']==='POST'){
   if(!csrf_verify($_POST['_csrf']??'')) $error='Invalid session.';
-  elseif(!rate_limit('contact_'.($_SERVER['REMOTE_ADDR']??'anon'),5,300)) $error='Too many messages. Try later.';
+  elseif(!rate_limit('contact_'.($_SERVER['REMOTE_ADDR']??'anon'),5,300,$retryAfter)) { $error='Too many messages. Try again in '.max(1,(int)$retryAfter).' seconds.'; }
   else {
     $name=trim($_POST['name']??''); $phone=trim($_POST['phone']??''); $email=trim($_POST['email']??''); $subject=trim($_POST['subject']??''); $msg=trim($_POST['message']??'');
     if(mb_strlen($name)<2 || !preg_match('/^[+]?[0-9][0-9\s\-]{6,14}$/',$phone) || mb_strlen($msg)<5) $error='Please fill name, valid phone and message.';
     else {
-      $pdo=db(); if($pdo && db_has_table('contact_messages')){
-        try{ $stmt=$pdo->prepare('INSERT INTO contact_messages (name,phone,email,subject,message) VALUES (:n,:p,:e,:s,:m)'); $stmt->execute([':n'=>$name,':p'=>$phone,':e'=>$email?:null,':s'=>$subject?:null,':m'=>$msg]); }catch(Throwable $e){}
+      $pdo=db(); $stored = false;
+      if($pdo && db_has_table('contact_messages')){
+        try{ $stmt=$pdo->prepare('INSERT INTO contact_messages (name,phone,email,subject,message) VALUES (:n,:p,:e,:s,:m)'); $stmt->execute([':n'=>$name,':p'=>$phone,':e'=>$email?:null,':s'=>$subject?:null,':m'=>$msg]); $stored = true; }catch(Throwable $e){ error_log('Contact message save failed: '.$e->getMessage()); }
       }
-      @file_put_contents(__DIR__.'/uploads/contact.log', date('Y-m-d H:i:s')." | $name | $phone | $subject | $msg\n", FILE_APPEND);
-      $success='Thank you — your message was sent to the school office. We will reply by phone if needed.';
+      if (!$stored) { $error = 'The message could not be saved. Please try again later.'; }
+      else { $success='Thank you — your message was sent to the school office. We will reply by phone if needed.'; }
     }
   }
 }
 ?>
-<section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Contact</span><h1 style="color:#fff;margin:14px 0 10px">Visit, call or message</h1><p class="lead" style="color:#C7D7F0;max-width:680px">Malangwa-2, Sarlahi — Plus Code VH24+22W (26.8501032 N, 85.555064 E) · Madhesh Province 45800. Map, address, contacts and who to ask for what.</p></div></section>
+<section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Contact</span><h1 style="color:#fff;margin:14px 0 10px">Visit, call or message</h1><p class="lead" style="color:#C7D7F0;max-width:680px"><?= e($contactAddress) ?> · <?= e($contactPlus) ?> (<?= e($contactMapQuery) ?>). Map, address, contacts and who to ask for what.</p></div></section>
 <nav class="wrap" style="padding:14px 20px"><div class="breadcrumbs"><a href="<?= e_attr(base_url()) ?>">Home</a><span class="sep">/</span><span>Contact</span></div></nav>
 
 <section class="section" style="padding-top:28px;background:#fff;border-top:1px solid var(--border)">
   <div class="wrap">
     <div class="contact-grid">
-      <div class="map-wrap"><iframe src="https://www.google.com/maps?q=<?= e_attr(APP_MAP_QUERY) ?>&z=16&output=embed&hl=en" title="Map — Shree Public Secondary School, Malangwa-2 (VH24+22W)" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><a class="map-fab" href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> Get Directions — VH24+22W</a></div>
+      <div class="map-wrap"><iframe src="https://www.google.com/maps?q=<?= e_attr($contactMapQuery) ?>&z=16&output=embed&hl=en" title="Map — <?= e_attr($contactName) ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><a class="map-fab" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($contactMapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> Get Directions — <?= e($contactPlus) ?></a></div>
       <div>
         <h2 style="font-size:1.15rem">School location</h2>
-        <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.6">Use the Plus Code <strong style="color:var(--text)">VH24+22W</strong> in Google Maps, or coordinates 26.8501032 N, 85.555064 E.</p>
+        <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.6">Use the Plus Code <strong style="color:var(--text)"><?= e($contactPlus) ?></strong> in Google Maps, or coordinates <?= e($contactMapQuery) ?>.</p>
         <div class="contact-cards" style="margin-top:14px">
-          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-pin"/></svg></span><div><h4>Address</h4><p>Shree Public Secondary School<br>Malangwa-2, Sarlahi, Madhesh Province 45800, Nepal<br><span style="font-size:.82rem;color:var(--primary)">VH24+22W · 26.8501032 N, 85.555064 E</span></p></div></div>
-          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-phone"/></svg></span><div><h4>Call</h4><?php if(APP_PHONE): ?><a class="tel" href="tel:<?= e_attr(APP_PHONE) ?>"><?= e(APP_PHONE) ?></a><?php else: ?><p><em style="color:var(--muted)">Phone — to be verified by school. Use the message form below.</em></p><?php endif; ?><p style="font-size:.82rem;margin-top:6px;color:var(--muted)">Office hours: <?= APP_OFFICE_HOURS ? e(APP_OFFICE_HOURS) : '<em>to be confirmed — see office hours on this page when verified</em>' ?></p></div></div>
-          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-mail"/></svg></span><div><h4>Email</h4><p><?= APP_EMAIL?e(APP_EMAIL):'<em>to be confirmed — not published until verified</em>' ?></p></div></div>
-          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-clock"/></svg></span><div><h4>IEMIS Code</h4><p><strong>190640003</strong> — Public Educational Institution • Malangwa-2, Sarlahi</p></div></div>
+          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-pin"/></svg></span><div><h4>Address</h4><p><?= e($contactName) ?><br><?= e($contactAddress) ?><br><span style="font-size:.82rem;color:var(--primary)"><?= e($contactPlus) ?> · <?= e($contactMapQuery) ?></span></p></div></div>
+          <div class="c-card"><span class="c-icon"><svg class="ic"><use href="#i-phone"/></svg></span><div><h4>Call</h4><?php if($contactPhone): ?><a class="tel" href="tel:<?= e_attr($contactPhone) ?>"><?= e($contactPhone) ?></a><?php else: ?><p><em style="color:var(--muted)">Phone — to be verified by school. Use the message form below.</em></p><?php endif; ?><p style="font-size:.82rem;margin-top:6px;color:var(--muted)">Office hours: <?= $contactHours ? e($contactHours) : '<em>to be confirmed — see office hours on this page when verified</em>' ?></p></div></div>
+          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-mail"/></svg></span><div><h4>Email</h4><p><?= $contactEmail?e($contactEmail):'<em>to be confirmed — not published until verified</em>' ?></p></div></div>
+          <div class="c-card"><span class="c-icon gold"><svg class="ic"><use href="#i-clock"/></svg></span><div><h4>IEMIS Code</h4><p><strong><?= e($contactIemis) ?></strong> — Public Educational Institution</p></div></div>
         </div>
         <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-          <?php if(APP_PHONE): ?><a href="tel:<?= e_attr(APP_PHONE) ?>" class="btn btn-primary">Call School</a><?php endif; ?>
-          <a href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
+          <?php if($contactPhone): ?><a href="tel:<?= e_attr($contactPhone) ?>" class="btn btn-primary">Call School</a><?php endif; ?>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($contactMapQuery) ?>" target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
           <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-soft">Admission Inquiry</a>
         </div>
       </div>
@@ -68,7 +77,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <div style="max-width:900px;margin:14px auto 0;background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px">
       <h3 style="font-size:1rem">Quick answers</h3>
       <div style="margin-top:12px;display:grid;gap:12px">
-        <details style="background:var(--surface-low);border:1px solid var(--border);border-radius:10px;padding:12px 14px"><summary style="font-weight:700;cursor:pointer">Where is the school located?</summary><p style="color:var(--muted);font-size:.88rem;margin-top:8px;line-height:1.6">Malangwa Municipality-2, Sarlahi, Madhesh Province 45800 — Plus Code VH24+22W (26.8501032 N, 85.555064 E). See map above or <a href="https://www.google.com/maps/search/?api=1&query=<?= e_attr(APP_MAP_QUERY) ?>" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700">get directions</a>.</p></details>
+        <details style="background:var(--surface-low);border:1px solid var(--border);border-radius:10px;padding:12px 14px"><summary style="font-weight:700;cursor:pointer">Where is the school located?</summary><p style="color:var(--muted);font-size:.88rem;margin-top:8px;line-height:1.6"><?= e($contactAddress) ?> — Plus Code <?= e($contactPlus) ?> (<?= e($contactMapQuery) ?>). See map above or <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($contactMapQuery) ?>" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700">get directions</a>.</p></details>
         <details style="background:var(--surface-low);border:1px solid var(--border);border-radius:10px;padding:12px 14px"><summary style="font-weight:700;cursor:pointer">What levels does the school teach?</summary><p style="color:var(--muted);font-size:.88rem;margin-top:8px;line-height:1.6">ECD through Grade 12, with +2 Science and +2 Management under NEB (see <a href="<?= e_attr(base_url('academics.php')) ?>" style="color:var(--primary);font-weight:700">Academics</a>).</p></details>
         <details style="background:var(--surface-low);border:1px solid var(--border);border-radius:10px;padding:12px 14px"><summary style="font-weight:700;cursor:pointer">How do I confirm admission requirements?</summary><p style="color:var(--muted);font-size:.88rem;margin-top:8px;line-height:1.6">Check the <a href="<?= e_attr(base_url('notices.php?category=admission')) ?>" style="color:var(--primary);font-weight:700">latest admission notice</a> or contact the school via this form or an office visit. Do not rely on a previous year's notice.</p></details>
         <details style="background:var(--surface-low);border:1px solid var(--border);border-radius:10px;padding:12px 14px"><summary style="font-weight:700;cursor:pointer">Are examination results available online?</summary><p style="color:var(--muted);font-size:.88rem;margin-top:8px;line-height:1.6">Published online results appear in <a href="<?= e_attr(base_url('results.php')) ?>" style="color:var(--primary);font-weight:700">Results</a> when made available. Official marksheets are verified through the school office.</p></details>

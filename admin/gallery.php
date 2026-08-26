@@ -12,7 +12,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     }
 }
 $albums = [];
-if ($pdo && db_has_table('gallery_albums')) { try { $albums = $pdo->query("SELECT a.*, (SELECT COUNT(*) FROM gallery_images WHERE album_id=a.id) as img_count FROM gallery_albums a ORDER BY a.sort_order, a.title_en")->fetchAll(); } catch (Throwable $e) {} }
+if ($pdo && db_has_table('gallery_albums')) { try { $albums = $pdo->query("SELECT a.*, (SELECT COUNT(*) FROM gallery_images WHERE album_id=a.id) as img_count FROM gallery_albums a ORDER BY a.sort_order, a.title_en")->fetchAll(); } catch (Throwable $e) { error_log('Gallery list failed: ' . $e->getMessage()); } }
 ?>
 <div class="top"><div><h1>Gallery Albums</h1><p>Organize school photos into albums</p></div><a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn btn-primary">+ New Album</a></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>

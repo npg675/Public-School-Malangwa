@@ -2,14 +2,13 @@
 $adminPage = 'events'; $adminTitle = 'Event Form';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null; $editing = isset($_GET['id']) && is_numeric($_GET['id']); $row = null;
-if ($editing) { $stmt = $pdo->prepare('SELECT * FROM events WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/events.php')); exit; } }
+if ($editing) { try { $stmt = $pdo->prepare('SELECT * FROM events WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); } catch (Throwable $e) { error_log('Event load failed: '.$e->getMessage()); $flash=['err','Event could not be loaded. Check the database connection.']; } if (!$row && !$flash) { header('Location: '.base_url('admin/events.php')); exit; } }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
-    $d = ['title_en'=>trim($_POST['title_en']??''),'title_np'=>trim($_POST['title_np']??''),'slug'=>trim($_POST['slug']??''),'description_en'=>$_POST['description_en']??'','description_np'=>$_POST['description_np']??'','location_en'=>trim($_POST['location_en']??''),'location_np'=>trim($_POST['location_np']??''),'event_date'=>$_POST['event_date']??'','event_time'=>trim($_POST['event_time']??''),'cover_image'=>trim($_POST['cover_image']??''),'status'=>$_POST['status']??'draft'];
+    $d = ['title_en'=>trim($_POST['title_en']??''),'title_np'=>trim($_POST['title_np']??''),'slug'=>trim($_POST['slug']??''),'description_en'=>$_POST['description_en']??'','description_np'=>$_POST['description_np']??'','location_en'=>trim($_POST['location_en']??''),'location_np'=>trim($_POST['location_np']??''),'event_date'=>$_POST['event_date']??'','event_time'=>trim($_POST['event_time']??''),'cover_image'=>trim($_POST['cover_image']??''),'status'=>in_array($_POST['status']??'draft',['draft','published'],true) ? $_POST['status'] : 'draft'];
     if (empty($d['title_en']) || empty($d['event_date'])) { $flash = ['err','Title and Date required.']; }
     else {
         if (empty($d['slug'])) $d['slug'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/','-',$d['title_en']),'-'));
-        if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE events SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $flash=['ok','Event updated.']; }
-        else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO events (`$c`) VALUES ($v)")->execute($d); $flash=['ok','Event created.']; }
+        try { if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE events SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $flash=['ok','Event updated.']; } else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO events (`$c`) VALUES ($v)")->execute($d); $flash=['ok','Event created.']; } } catch (Throwable $e) { error_log('Event save failed: '.$e->getMessage()); $flash=['err','Event could not be saved. Check the slug and database connection.']; }
     }
 }
 ?>

@@ -18,7 +18,7 @@
     <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">
       <?php foreach($newsItems as $n): $ttl=(current_lang()==='np'&&!empty($n['title_np']))?$n['title_np']:$n['title_en']; $exc=(current_lang()==='np'&&!empty($n['excerpt_np']))?$n['excerpt_np']:($n['excerpt_en']??''); $d=strtotime($n['published_at']); ?>
       <article class="news-card">
-        <?php if(!empty($n['cover_image'])): ?><div class="news-thumb"><img src="<?= e_attr(base_url('uploads/'.ltrim($n['cover_image'],'/'))) ?>" alt="<?= e_attr($ttl) ?>" loading="lazy" onerror="this.parentElement.style.display='none'"></div><?php endif; ?>
+        <?php if(!empty($n['cover_image'])): ?><div class="news-thumb"><img src="<?= e_attr(media_url($n['cover_image'])) ?>" alt="<?= e_attr($ttl) ?>" loading="lazy" onerror="this.parentElement.style.display='none'"></div><?php endif; ?>
         <div class="news-body">
           <div class="news-meta"><span><?= e($n['cat_en'] ?? 'General') ?></span><span>•</span><span><?= e(date('M j, Y',$d)) ?></span></div>
           <h3><?= e($ttl) ?></h3>
