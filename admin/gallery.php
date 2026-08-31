@@ -16,9 +16,10 @@ if ($pdo && db_has_table('gallery_albums')) { try { $albums = $pdo->query("SELEC
 ?>
 <div class="top"><div><h1>Gallery Albums</h1><p>Organize school photos into albums</p></div><a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn btn-primary">+ New Album</a></div>
 <?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>
-<div class="section-box"><table><thead><tr><th>Album</th><th>Images</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-<?php if (empty($albums)): ?><tr><td colspan="4" class="empty">No albums yet. Create one to start adding photos.</td></tr>
-<?php else: foreach ($albums as $a): ?><tr>
+<div class="section-box"><table id="albumTable"><thead><tr><th style="width:34px"></th><th>Album</th><th>Images</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+<?php if (empty($albums)): ?><tr id="albumEmpty"><td colspan="5" class="empty">No albums yet. Create one to start adding photos.</td></tr>
+<?php else: foreach ($albums as $a): ?><tr class="album-row" draggable="true" data-id="<?= (int)$a['id'] ?>">
+    <td class="drag-handle" title="Drag to reorder"><span class="material-symbols-outlined" style="font-size:18px;color:#94A3B8;cursor:grab;vertical-align:middle">drag_indicator</span></td>
     <td><strong><?= e($a['title_en']) ?></strong><?php if(!empty($a['title_np'])):?><br><small style="color:#667085"><?=e($a['title_np'])?></small><?php endif;?></td>
     <td><span class="tag tag-blue"><?= $a['img_count'] ?> photos</span></td>
     <td><span class="tag <?= $a['status']==='published'?'tag-green':'tag-gold' ?>"><?= e($a['status']) ?></span></td>
@@ -27,6 +28,37 @@ if ($pdo && db_has_table('gallery_albums')) { try { $albums = $pdo->query("SELEC
         <a href="<?= e_attr(base_url('admin/album-form.php?id='.$a['id'])) ?>" class="btn btn-sm">Edit</a>
         <a href="<?= e_attr(base_url('admin/gallery.php?delete='.$a['id'].'&csrf='.csrf_token())) ?>" class="btn btn-sm btn-danger" onclick="return confirmDelete('Delete album and all its photos?')">Delete</a>
     </td>
-</tr><?php endforeach; endif; ?>
+</tr><?php endforeach; if (count($albums) > 1): ?><tr><td colspan="5"><small style="color:#667085">Drag the <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">drag_indicator</span> handle to reorder albums. Order is saved automatically.</small></td></tr><?php endif; endif; ?>
 </tbody></table></div>
+<style>
+#albumTable tbody .album-row td{transition:background .15s}
+#albumTable tbody .album-row.dragging{opacity:.45}
+#albumTable tbody .album-row.drop-target{background:#EFF6FF}
+@media (pointer:coarse){.album-row{cursor:grab}}
+</style>
+<script>
+(function(){
+    var rows=document.querySelectorAll('#albumTable .album-row');
+    if(rows.length<2)return;
+    var dragEl=null;
+    function reorder(){document.querySelectorAll('#albumTable .album-row').forEach(function(r,i){r.classList.remove('drop-target')});}
+    rows.forEach(function(row){
+        row.addEventListener('dragstart',function(e){dragEl=row;row.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',row.getAttribute('data-id'));}catch(_){}});
+        row.addEventListener('dragend',function(){row.classList.remove('dragging');dragEl=null;reorder();persist();});
+        row.addEventListener('dragover',function(e){e.preventDefault();e.dataTransfer.dropEffect='move';if(dragEl&&dragEl!==row){reorder();row.classList.add('drop-target');}});
+        row.addEventListener('dragleave',function(){row.classList.remove('drop-target');});
+        row.addEventListener('drop',function(e){e.preventDefault();if(!dragEl||dragEl===row)return;var tbody=row.parentNode;if(dragEl.compareDocumentPosition(row)&Node.DOCUMENT_POSITION_FOLLOWING){tbody.insertBefore(dragEl,row.nextSibling);}else{tbody.insertBefore(dragEl,row);}reorder();});
+        row.querySelector('.drag-handle').addEventListener('mousedown',function(){});
+    });
+    function persist(){
+        var ids=[].map.call(document.querySelectorAll('#albumTable .album-row'),function(r){return r.getAttribute('data-id')}).join(',');
+        if(!ids)return;
+        var fd=new FormData();fd.append('_csrf','<?= e_attr(csrf_token()) ?>');fd.append('ids',ids);
+        fetch('<?= e_attr(base_url("admin/ajax-reorder.php")) ?>',{method:'POST',body:fd})
+            .then(function(r){return r.json()})
+            .then(function(r){if(!r.ok)alert(r.error||'Reorder failed')})
+            .catch(function(){});
+    }
+})();
+</script>
 <?php require_once __DIR__ . '/includes/admin_footer.php'; ?>
