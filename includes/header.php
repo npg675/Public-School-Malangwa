@@ -140,11 +140,11 @@ $__canonicalUrl = base_url($__canonicalPath);
       <a href="<?= e_attr(base_url('notices.php')) ?>" class="<?= $__page==='notices' || $__page==='notice' ? 'active' : '' ?>"><?= t('Notices','सूचना') ?></a>
       <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>"><?= t('Gallery','ग्यालरी') ?></a>
       <div class="nav-dropdown nav-more">
-        <button class="nav-drop-btn <?= in_array($__page, ['events','downloads','publications','scholarships','faq','links','citizen-charter'], true) ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
+        <button class="nav-drop-btn <?= in_array($__page, ['posts','downloads','publications','scholarships','faq','links','citizen-charter'], true) ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
           <?= t('More','थप') ?> <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <div class="nav-drop-menu">
-          <a href="<?= e_attr(base_url('events.php')) ?>"><?= t('Events','कार्यक्रम') ?></a>
+          <a href="<?= e_attr(base_url('news-events.php')) ?>"><?= t('News &amp; Events','समाचार र कार्यक्रम') ?></a>
           <a href="<?= e_attr(base_url('downloads.php')) ?>"><?= t('Downloads','डाउनलोड') ?></a>
           <a href="<?= e_attr(base_url('publications.php')) ?>"><?= t('Publications','प्रकाशन') ?></a>
           <a href="<?= e_attr(base_url('scholarships.php')) ?>"><?= t('Scholarships','छात्रवृत्ति') ?></a>

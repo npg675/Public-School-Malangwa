@@ -120,24 +120,39 @@ function sample_notices(int $limit): array {
     return $out;
 }
 
-function get_events(int $limit = 3): array {
+function get_posts(string $type = '', int $limit = 12, string $sort = 'recent'): array {
     $pdo = db();
-    if ($pdo && db_has_table('events')) {
+    if ($pdo && db_has_table('posts')) {
         try {
-            $stmt = $pdo->prepare("SELECT * FROM events WHERE status='published' AND event_date >= CURDATE() ORDER BY event_date ASC LIMIT :lim");
-            $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
+            $sql = "SELECT p.*, c.name_en AS cat_en, c.name_np AS cat_np FROM posts p LEFT JOIN news_categories c ON c.id=p.category_id WHERE p.status='published'";
+            $params = [];
+            if ($type === 'news' || $type === 'event') { $sql .= ' AND p.post_type = :type'; $params[':type'] = $type; }
+            $sql .= ($sort === 'upcoming')
+                ? " AND p.event_date >= CURDATE() ORDER BY p.event_date ASC, p.published_at DESC LIMIT :lim"
+                : " ORDER BY p.published_at DESC, p.id DESC LIMIT :lim";
+            $stmt = $pdo->prepare($sql);
+            foreach ($params as $k => $v) $stmt->bindValue($k, $v);
+            $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (Throwable $e) {
-            error_log('Events read failed: ' . $e->getMessage());
+            error_log('Posts read failed: ' . $e->getMessage());
             return [];
         }
     }
-    return [
-        ['title_en'=>'16-Day Campaign Against Gender-Based Violence','title_np'=>'लैङ्गिक हिंसा विरुद्ध १६ दिने अभियान','event_date'=>'2025-11-25','location_en'=>'Shree Public Secondary School, Malangwa-2','category'=>'Community','summary_en'=>'Inaugurated with Malangwa Municipality, INSEC and local groups.'],
-        ['title_en'=>'Annual Sports Meet 2082','title_np'=>'वार्षिक खेलकुद प्रतियोगिता २०८२','event_date'=>'2026-02-15','location_en'=>'School Ground','category'=>'Sports','summary_en'=>'Inter-house competitions — athletics, volleyball, cultural programs. (Sample)'],
-        ['title_en'=>'Science Exhibition','title_np'=>'विज्ञान प्रदर्शनी','event_date'=>'2026-01-20','location_en'=>'School Hall','category'=>'Academic','summary_en'=>'Students present science models and experiments. (Sample)'],
-    ];
+    return [];
+}
+
+function get_events(int $limit = 3): array {
+    return get_posts('event', $limit, 'upcoming');
+}
+
+function get_news(int $limit = 6): array {
+    return array_map(function (array $r): array {
+        $r['excerpt_en'] = $r['excerpt_en'] ?? ($r['content_en'] ?? '');
+        $r['excerpt_np'] = $r['excerpt_np'] ?? ($r['content_np'] ?? '');
+        return $r;
+    }, get_posts('news', $limit));
 }
 
 function get_downloads(int $limit = 6, ?string $category = null): array {
@@ -171,22 +186,6 @@ function get_downloads(int $limit = 6, ?string $category = null): array {
         ['title_en'=>'Book List 2082 (Sample)','title_np'=>'पाठ्यपुस्तक सूची २०८२','category'=>'Curriculum','cat_en'=>'Curriculum','published_at'=>'2026-04-02','file_size'=>'540 KB','file_type'=>'PDF','is_sample'=>1],
         ['title_en'=>'Scholarship Notice 2082 (Sample)','title_np'=>'छात्रवृत्ति सूचना २०८२','category'=>'Scholarships','cat_en'=>'Scholarships','published_at'=>'2026-02-20','file_size'=>'310 KB','file_type'=>'PDF','is_sample'=>1],
     ];
-}
-
-function get_news(int $limit = 6): array {
-    $pdo = db();
-    if ($pdo && db_has_table('news')) {
-        try {
-            $stmt = $pdo->prepare("SELECT n.*, c.name_en AS cat_en, c.name_np AS cat_np FROM news n LEFT JOIN news_categories c ON c.id=n.category_id WHERE n.status='published' ORDER BY n.published_at DESC LIMIT :lim");
-            $stmt->bindValue(':lim',$limit,PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (Throwable $e) {
-            error_log('News read failed: ' . $e->getMessage());
-            return [];
-        }
-    }
-    return [];
 }
 
 function get_gallery_albums(int $limit = 6): array {

@@ -172,6 +172,35 @@ CREATE TABLE IF NOT EXISTS events (
   INDEX idx_events_date (event_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Unified News & Events (posts). Replaces news + events tables.
+-- post_type: 'news' (completed activity report) or 'event' (scheduled / upcoming).
+CREATE TABLE IF NOT EXISTS posts (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  post_type ENUM('news','event') NOT NULL DEFAULT 'news',
+  title_en VARCHAR(255) NOT NULL,
+  title_np VARCHAR(255) NULL,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  category_id INT UNSIGNED NULL,
+  excerpt_en VARCHAR(400) NULL,
+  excerpt_np VARCHAR(400) NULL,
+  content_en MEDIUMTEXT NULL,
+  content_np MEDIUMTEXT NULL,
+  cover_image VARCHAR(255) NULL,
+  location_en VARCHAR(255) NULL,
+  location_np VARCHAR(255) NULL,
+  event_date DATE NULL,
+  event_time VARCHAR(100) NULL,
+  published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('draft','published','archived') DEFAULT 'published',
+  created_by INT UNSIGNED NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES news_categories(id) ON DELETE SET NULL,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_posts_type_status (post_type, status, published_at),
+  INDEX idx_posts_event_date (event_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Academic programs
 CREATE TABLE IF NOT EXISTS academic_programs (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -440,6 +469,14 @@ INSERT IGNORE INTO events (title_en, title_np, slug, description_en, location_en
 INSERT IGNORE INTO news (title_en, title_np, slug, category_id, excerpt_en, content_en, cover_image, published_at, status) VALUES
 ('Students Secure First Position in District Science Fair','जिल्ला विज्ञान महोत्सवमा प्रथम','news-district-science-win',(SELECT id FROM news_categories WHERE slug='academic'),'Our Grade 10 team presented an innovative water filtration model and won first place at the Sarlahi district science fair.','Our Grade 10 students represented the school at the Sarlahi district level science fair and secured the first position with an innovative low-cost water filtration model. The team was felicitated at the school assembly. Congratulations to the students and supervising teachers!','uploads/gallery/campus/staff-room-computer.jpg', NOW() - INTERVAL 7 DAY, 'published'),
 ('Community Tree Plantation Drive Completed','सामुदायिक वृक्षरोपण सम्पन्न','news-tree-plantation',(SELECT id FROM news_categories WHERE slug='community'),'Eco-club members and local volunteers planted 200+ saplings around the school premises with Malangwa Municipality support.','With support from Malangwa Municipality, our eco-club members, teachers and local volunteers completed a tree plantation drive around the school boundary, planting over 200 saplings of local species. The school thanks all community members who participated.','uploads/gallery/community/complaint-box-life-nepal.jpg', NOW() - INTERVAL 18 DAY, 'published');
+
+-- ---- Unified News & Events (posts) ----
+INSERT IGNORE INTO posts (post_type, title_en, title_np, slug, category_id, excerpt_en, excerpt_np, content_en, content_np, cover_image, location_en, event_date, event_time, published_at, status) VALUES
+('event','16 Days of Activism against Gender-Based Violence Campaign','लैंगिक हिंसाविरुद्ध १६ दिने अभियान','16-days-activism',NULL,NULL,NULL,'Inaugurated with Malangwa Municipality, INSEC and local community groups. Awareness rallies and poster competitions by students.',NULL,NULL,'Shree Public Secondary School, Malangwa-2', CURDATE() + INTERVAL 10 DAY, '11:00 AM', NOW(), 'published'),
+('event','Annual Sports Meet 2082','वार्षिक खेलकुद २०८२','annual-sports-meet-2082',NULL,NULL,NULL,'Track and field events for all levels — ECD to Grade 12. Parents and community members are warmly invited.',NULL,NULL,'School Playground, Malangwa-2', CURDATE() + INTERVAL 25 DAY, '9:00 AM', NOW(), 'published'),
+('event','School Level Science Exhibition','विद्यालय स्तरीय विज्ञान प्रदर्शनी','science-exhibition-2082',NULL,NULL,NULL,'Students present working models from Physics, Chemistry and Biology. Best projects advance to the district level competition.',NULL,NULL,'Science Block, Malangwa-2', CURDATE() + INTERVAL 40 DAY, '10:00 AM', NOW(), 'published'),
+('news','Students Secure First Position in District Science Fair','जिल्ला विज्ञान महोत्सवमा प्रथम','news-district-science-win',(SELECT id FROM news_categories WHERE slug='academic'),'Our Grade 10 team presented an innovative water filtration model and won first place at the Sarlahi district science fair.','हाम्रो कक्षा १० को टोलीले अभिनव पानी फिल्टरेशन मोडेल प्रस्तुत गरी सर्लाही जिल्ला विज्ञान महोत्सवमा प्रथम स्थान हासिल गर्‍यो।','Our Grade 10 students represented the school at the Sarlahi district level science fair and secured the first position with an innovative low-cost water filtration model. The team was felicitated at the school assembly. Congratulations to the students and supervising teachers!','हाम्रो कक्षा १० का विद्यार्थीहरूले सर्लाही जिल्ला स्तरीय विज्ञान महोत्सवमा विद्यालयको प्रतिनिधित्व गर्दै कम लागतको नवीन पानी फिल्टरेशन मोडेलसहित प्रथम स्थान हासिल गरे। टोलीलाई विद्यालय सभामा सम्मान गरियो।','uploads/gallery/campus/staff-room-computer.jpg',NULL,NULL, NOW() - INTERVAL 7 DAY, 'published'),
+('news','Community Tree Plantation Drive Completed','सामुदायिक वृक्षरोपण सम्पन्न','news-tree-plantation',(SELECT id FROM news_categories WHERE slug='community'),'Eco-club members and local volunteers planted 200+ saplings around the school premises with Malangwa Municipality support.','मलंगवा नगरपालिकाको सहयोगमा इको-क्लब सदस्यहरू र स्थानीय स्वयंसेवकहरूले विद्यालय परिसर वरिपरि २०० भन्दा बढी बिरुवा रोपे।','With support from Malangwa Municipality, our eco-club members, teachers and local volunteers completed a tree plantation drive around the school boundary, planting over 200 saplings of local species. The school thanks all community members who participated.','मलंगवा नगरपालिकाको सहयोगमा हाम्रा इको-क्लब सदस्यहरू, शिक्षकहरू र स्थानीय स्वयंसेवकहरूले विद्यालयको सिमाना वरिपरि स्थानीय प्रजातिका २०० भन्दा बढी बिरुवा रोपेर वृक्षरोपण अभियान सम्पन्न गरे।','uploads/gallery/community/complaint-box-life-nepal.jpg',NULL,NULL, NOW() - INTERVAL 18 DAY, 'published');
 
 -- ---- Downloads (homepage Resources & Downloads) ----
 -- NOTE: upload the actual PDF files to uploads/downloads/ via Admin > Downloads, or update file_path.

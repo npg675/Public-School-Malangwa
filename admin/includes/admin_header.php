@@ -127,8 +127,7 @@ tr:hover td{background:#FAFBFE}
     <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>"><span class="material-symbols-outlined">space_dashboard</span>Dashboard</a>
     <div class="nav-sep">Content</div>
     <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span>Notices</a>
-    <a href="<?= e_attr(base_url('admin/news.php')) ?>" class="<?= $adminPage==='news'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News</a>
-    <a href="<?= e_attr(base_url('admin/events.php')) ?>" class="<?= $adminPage==='events'?'active':'' ?>"><span class="material-symbols-outlined">event</span>Events</a>
+    <a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="<?= $adminPage==='posts'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News &amp; Events</a>
     <a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span>Content Blocks</a>
     <div class="nav-sep">Media</div>
     <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a>
