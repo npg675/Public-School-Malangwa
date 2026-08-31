@@ -189,9 +189,10 @@ $dateLabel = static function (string $date): string {
       <?php if (setting('phone', APP_PHONE) !== ''): ?><p><span class="material-symbols-outlined" aria-hidden="true">call</span> <?= e(setting('phone', APP_PHONE)) ?></p><?php endif; ?>
       <div class="home-contact-actions"><a class="home-button home-button-primary" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>" target="_blank" rel="noopener"><?= e(t('Get directions', 'दिशा प्राप्त गर्नुहोस्')) ?> →</a><a class="home-button home-button-green" href="<?= e_attr(base_url('contact.php')) ?>"><?= e(t('Contact school', 'विद्यालय सम्पर्क')) ?></a></div>
     </div>
-    <a class="home-map-card reveal" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>" target="_blank" rel="noopener" aria-label="<?= e_attr(t('Open school location in Google Maps', 'विद्यालयको स्थान Google Maps मा खोल्नुहोस्')) ?>">
-      <span class="home-map-line home-map-line-one"></span><span class="home-map-line home-map-line-two"></span><span class="home-map-road home-map-road-one"></span><span class="home-map-road home-map-road-two"></span><span class="home-map-pin material-symbols-outlined" aria-hidden="true">location_on</span><strong><?= e(t('Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालय')) ?></strong><small><?= e(t('Malangwa-2, Sarlahi', 'मलंगवा-२, सर्लाही')) ?></small><span class="home-map-label"><?= e(t('View larger map', 'ठूलो नक्सा हेर्नुहोस्')) ?></span>
-    </a>
+    <div class="map-wrap reveal" style="min-height:340px">
+      <iframe src="https://www.google.com/maps?q=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>&amp;z=16&amp;output=embed&amp;hl=en" title="Map — <?= e_attr(APP_NAME_EN) ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <a class="map-fab" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr(setting('coords_lat', APP_COORDS_LAT) . ',' . setting('coords_lng', APP_COORDS_LNG)) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= e(t('Get Directions','दिशा प्राप्त गर्नुहोस्')) ?></a>
+    </div>
   </section>
 
 </div>

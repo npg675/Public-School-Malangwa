@@ -799,19 +799,6 @@ body { background: #f7f9fc; }
 .home-contact-copy > p:not(.home-overline):not(.home-contact-np) { display: flex; gap: 6px; align-items: center; margin: 7px 0; color: var(--school-muted); font-size: .72rem; }
 .home-contact-copy > p .material-symbols-outlined { color: #0875d1; font-size: 16px; }
 .home-contact-actions { margin-top: 15px; }
-.home-map-card { position: relative; display: block; min-height: 220px; overflow: hidden; padding: 24px; color: var(--school-red); background: #edf4f7; border: 1px solid #c9dce9; border-radius: 4px; }
-.home-map-card::before { content: ''; position: absolute; inset: 0; opacity: .6; background: linear-gradient(145deg, transparent 34%, rgba(255,255,255,.7) 35% 42%, transparent 43%), linear-gradient(28deg, transparent 44%, rgba(170,205,217,.5) 45% 48%, transparent 49%), linear-gradient(120deg, transparent 58%, rgba(170,205,217,.5) 59% 61%, transparent 62%); }
-.home-map-line, .home-map-road { position: absolute; z-index: 1; display: block; height: 2px; background: rgba(90,157,184,.35); transform-origin: left center; }
-.home-map-line-one { width: 80%; top: 30%; left: 8%; transform: rotate(18deg); }
-.home-map-line-two { width: 65%; top: 72%; left: 25%; transform: rotate(-26deg); }
-.home-map-road-one { width: 75%; top: 55%; left: 7%; height: 5px; background: rgba(255,255,255,.8); transform: rotate(-9deg); }
-.home-map-road-two { width: 58%; top: 25%; left: 37%; height: 5px; background: rgba(255,255,255,.8); transform: rotate(70deg); }
-.home-map-pin, .home-map-card strong, .home-map-card small, .home-map-label { position: relative; z-index: 2; display: block; }
-.home-map-pin { margin: 45px auto 0; color: var(--school-red); text-align: center; font-size: 36px; }
-.home-map-card strong { color: var(--school-red); text-align: center; font-size: .76rem; }
-.home-map-card small { color: var(--school-red); text-align: center; font-size: .62rem; }
-.home-map-label { position: absolute; top: 10px; left: 12px; color: #0875d1; font-size: .58rem; font-weight: 800; }
-
 .home-contact-bar { position: relative; z-index: 2; display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center; margin-bottom: 18px; padding: 14px 20px; color: #fff; background: var(--school-blue-deep); border-radius: 5px; box-shadow: 0 12px 25px rgba(8,42,78,.24); }
 .home-contact-bar-icon { display: grid; place-items: center; width: 40px; height: 40px; color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; }
 .home-contact-bar strong { font-size: .8rem; }
