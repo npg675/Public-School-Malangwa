@@ -125,16 +125,7 @@ $__canonicalUrl = base_url($__canonicalPath);
   <div class="wrap nav-inner">
     <nav class="main-nav" aria-label="Primary">
       <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>"><?= t('Home','गृह') ?></a>
-      <div class="nav-dropdown">
-        <button class="nav-drop-btn <?= in_array($__page, ['about','management'], true) ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
-          <?= t('Our school','हाम्रो विद्यालय') ?> <svg class="ic"><use href="#i-chevron"/></svg>
-        </button>
-        <div class="nav-drop-menu">
-          <a href="<?= e_attr(base_url('about.php')) ?>"><?= t('About the school','विद्यालयको बारेमा') ?></a>
-          <a href="<?= e_attr(base_url('management.php')) ?>"><?= t('School management','विद्यालय व्यवस्थापन') ?></a>
-          <a href="<?= e_attr(base_url('about.php#staff')) ?>"><?= t('Staff directory','शिक्षक तथा कर्मचारी') ?></a>
-        </div>
-      </div>
+      <a href="<?= e_attr(base_url('about.php')) ?>" class="<?= $__page==='about'||$__page==='management'?'active':'' ?>"><?= t('Our school','हाम्रो विद्यालय') ?></a>
       <div class="nav-dropdown">
         <button class="nav-drop-btn <?= $__page==='academics' || $__page==='results' || $__page==='academic-calendar' ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
           <?= t('Academics','शैक्षिक') ?> <svg class="ic"><use href="#i-chevron"/></svg>

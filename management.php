@@ -39,14 +39,14 @@ $groups = get_staff_directory();
     <?php if (!empty($groups['committee'])): ?>
     <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px">
       <h3 style="font-size:1.1rem"><?= e(t('School Management Committee','विद्यालय व्यवस्थापन समिति')) ?></h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="margin-top:14px">
+      <div class="stream-committee-grid" style="margin-top:14px">
         <?php foreach ($groups['committee'] as $person): ?>
-        <div class="text-center">
-          <div class="w-20 h-20 rounded-full bg-surface-container-high mx-auto mb-3 overflow-hidden flex items-center justify-center">
-            <?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>" class="w-full h-full object-cover"><?php else: ?><span class="material-symbols-outlined text-outline">person</span><?php endif; ?>
+        <div class="stream-member">
+          <div class="stream-member-avatar">
+            <?php if (!empty($person['photo_url'])): ?><img src="<?= e_attr($person['photo_url']) ?>" alt="<?= e_attr($person['name_en']) ?>"><?php else: ?><span class="material-symbols-outlined">person</span><?php endif; ?>
           </div>
-          <div class="font-label-md text-label-md"><?= e(current_lang()==='np' && !empty($person['name_np']) ? $person['name_np'] : $person['name_en']) ?></div>
-          <div class="text-body-sm text-on-surface-variant"><?= e(current_lang()==='np' && !empty($person['designation_np']) ? $person['designation_np'] : $person['designation_en']) ?></div>
+          <div class="stream-member-name"><?= e(current_lang()==='np' && !empty($person['name_np']) ? $person['name_np'] : $person['name_en']) ?></div>
+          <div class="stream-member-role"><?= e(current_lang()==='np' && !empty($person['designation_np']) ? $person['designation_np'] : $person['designation_en']) ?></div>
         </div>
         <?php endforeach; ?>
       </div>
@@ -54,7 +54,7 @@ $groups = get_staff_directory();
     <?php endif; ?>
 
     <!-- Who / Future -->
-    <div style="display:grid;gap:16px;grid-template-columns:1fr 1fr">
+    <div class="stream-who-grid">
       <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px">
         <h3 style="font-size:1.05rem"><?= e(t('Who may consider Management?','व्यवस्थापन कसले विचार गर्न सक्छ?')) ?></h3>
         <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7"><?= e(t('General guidance — not an entry rule. Discuss with teachers and guardians before choosing.','सामान्य मार्गदर्शन — प्रवेश नियम होइन। छनौट गर्नु अघि शिक्षक र अभिभावकसँग छलफल गर्नुहोस्।')) ?></p>

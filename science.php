@@ -36,7 +36,7 @@ $intro = $first('intro');
     </div>
 
     <!-- Who may consider -->
-    <div style="display:grid;gap:16px;grid-template-columns:1fr 1fr">
+    <div class="stream-who-grid">
       <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px">
         <h3 style="font-size:1.05rem"><?= e(t('Who may consider Science?','विज्ञान कसले विचार गर्न सक्छ?')) ?></h3>
         <p style="color:var(--muted);font-size:.88rem;margin-top:6px;line-height:1.7"><?= e(t('General guidance — not an entry rule. Suitability depends on interest, prior performance and advice from teachers and guardians.','सामान्य मार्गदर्शन — प्रवेश नियम होइन। उपयुक्तता रुचि, अघिल्लो प्रदर्शन र शिक्षक तथा अभिभावकको सल्लाहमा निर्भर गर्दछ।')) ?></p>

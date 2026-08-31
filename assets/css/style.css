@@ -1227,6 +1227,17 @@ body { background: #f7f9fc; }
   .site-footer { padding-top: 44px; }
 }
 
+/* Stream pages (management / science) responsive */
+.stream-who-grid{display:grid;gap:16px;grid-template-columns:1fr 1fr;align-items:stretch}
+.stream-committee-grid{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+@media(max-width:559px){.stream-who-grid{grid-template-columns:1fr}}
+@media(min-width:560px){.stream-committee-grid{grid-template-columns:repeat(4,1fr)}}
+.stream-member{text-align:center}
+.stream-member-avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;color:var(--outline)}
+.stream-member-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.stream-member-name{font-weight:600;font-size:.9rem;line-height:1.3;color:var(--text)}
+.stream-member-role{font-size:.78rem;color:var(--on-surface-variant);margin-top:2px;line-height:1.4}
+
 /* Reference masthead: this shared header is used by every public page. */
 @media (min-width: 761px) {
   .utility-bar { display: none; }
