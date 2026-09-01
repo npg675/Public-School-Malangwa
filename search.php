@@ -8,7 +8,6 @@ $pagesIndex = [
   ['type'=>'Page','title'=>'+2 Management (NEB)','url'=>base_url('management.php'),'meta'=>'Program overview & pathways','kw'=>'management plus2 neb accounting business economics commerce'],
   ['type'=>'Page','title'=>'Admissions','url'=>base_url('admissions.php'),'meta'=>'Levels, process, documents guidance','kw'=>'admission bharna enrollment apply form fees documents'],
   ['type'=>'Page','title'=>'Notice Board','url'=>base_url('notices.php'),'meta'=>'Official notices by category','kw'=>'notice suchana board announcement circular'],
-  ['type'=>'Page','title'=>'Results','url'=>base_url('results.php'),'meta'=>'Result search & categories','kw'=>'result natija see neb marksheet gpa symbol roll'],
   ['type'=>'Page','title'=>'Downloads','url'=>base_url('downloads.php'),'meta'=>'Forms, routines, calendars','kw'=>'download form routine calendar pdf document'],
   ['type'=>'Page','title'=>'Academic Calendar 2082','url'=>base_url('academic-calendar.php'),'meta'=>'Terms, holidays, exams','kw'=>'calendar patro 2082 holiday term exam date'],
   ['type'=>'Page','title'=>'Citizen Charter (नागरिक वडापत्र)','url'=>base_url('citizen-charter.php'),'meta'=>'Services, documents, time, fees','kw'=>'citizen charter nagarik badapatra service fee complaint'],
@@ -50,7 +49,6 @@ if($q!==''){
         <h3 style="font-size:.95rem">Popular destinations</h3>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
           <a href="<?= e_attr(base_url('notices.php')) ?>" class="btn btn-soft">Notice Board</a>
-          <a href="<?= e_attr(base_url('results.php')) ?>" class="btn btn-soft">Results</a>
           <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-soft">Admissions</a>
           <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-ghost">Downloads</a>
           <a href="<?= e_attr(base_url('academic-calendar.php')) ?>" class="btn btn-ghost">Academic Calendar</a>

@@ -58,7 +58,6 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
         <ul>
           <li><a href="<?= e_attr(base_url('academics.php')) ?>"><?= t('Programs','कार्यक्रमहरू') ?></a></li>
           <li><a href="<?= e_attr(base_url('admissions.php')) ?>"><?= t('Admissions','भर्ना') ?></a></li>
-          <li><a href="<?= e_attr(base_url('results.php')) ?>"><?= t('Results','नतिजा') ?></a></li>
           <li><a href="<?= e_attr(base_url('academic-calendar.php')) ?>"><?= t('Calendar','पात्रो') ?></a></li>
           <li><a href="<?= e_attr(base_url('downloads.php')) ?>"><?= t('Downloads','डाउनलोड') ?></a></li>
         </ul>
@@ -110,7 +109,6 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
 <!-- Mobile sticky quick bar -->
 <div class="mobile-quickbar" aria-label="Quick actions">
   <a href="<?= e_attr(base_url('notices.php')) ?>"><svg class="ic"><use href="#i-bell"/></svg> <?= t('Notices','सूचना') ?></a>
-  <a href="<?= e_attr(base_url('results.php')) ?>"><svg class="ic"><use href="#i-doc"/></svg> <?= t('Results','नतिजा') ?></a>
   <?php if ($__footerPhone): ?><a href="tel:<?= e_attr($__footerPhone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= t('Call','कल') ?></a><?php else: ?><a href="<?= e_attr(base_url('contact.php')) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= t('Contact','सम्पर्क') ?></a><?php endif; ?>
   <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__footerMapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= t('Directions','दिशा') ?></a>
 </div>

@@ -1,8 +1,10 @@
 <?php
 $adminPage = 'users'; $adminTitle = 'User Form';
+$adminRequiredPerm = 'system';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null; $editing = isset($_GET['id']) && is_numeric($_GET['id']); $row = null; $roles = [];
 if ($pdo && db_has_table('roles')) { try { $roles = $pdo->query("SELECT * FROM roles ORDER BY id")->fetchAll(); } catch (Throwable $e) { error_log('Roles load failed: '.$e->getMessage()); } }
+$defaultRoleId = 0; foreach($roles as $r){ if(($r['slug'] ?? '')==='editor'){ $defaultRoleId=(int)$r['id']; } }
 if ($editing) { $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/users.php')); exit; } }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
@@ -45,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     <div class="form-group"><label>Name *</label><input type="text" name="name" required value="<?= e($row['name']??'') ?>"></div>
     <div class="form-group"><label>Email *</label><input type="email" name="email" required value="<?= e($row['email']??'') ?>"></div>
     <div class="form-group"><label>Password <?= $editing?'(leave blank to keep current)':'*' ?></label><input type="password" name="password" <?= $editing?'':'required' ?> minlength="6"></div>
-    <div class="form-group"><label>Role *</label><select name="role_id" required><option value="">— Select —</option><?php foreach($roles as $r): ?><option value="<?=$r['id']?>" <?=($row['role_id']??'')==$r['id']?'selected':''?>><?=e($r['name'])?></option><?php endforeach;?></select></div>
+    <div class="form-group"><label>Role *</label><select name="role_id" required><option value="">— Select —</option><?php $chkRole = $row['role_id'] ?? (($editing?0:$defaultRoleId)); foreach($roles as $r): ?><option value="<?=$r['id']?>" <?=(int)$chkRole===(int)$r['id']?'selected':''?>><?=e($r['name'])?></option><?php endforeach;?></select><small style="display:block;margin-top:5px;color:#667085">New users default to Editor — content editing only, no system/settings access.</small></div>
     <div class="form-group form-full"><div class="checkbox-row"><input type="checkbox" name="is_active" id="is_active" <?=($row['is_active']??1)?'checked':''?>><label for="is_active" style="margin:0">Active account</label></div></div>
 </div>
 <div style="display:flex;gap:8px;margin-top:16px"><button type="submit" class="btn btn-primary"><?= $editing?'Update':'Create' ?></button><a href="<?= e_attr(base_url('admin/users.php')) ?>" class="btn">Cancel</a></div>

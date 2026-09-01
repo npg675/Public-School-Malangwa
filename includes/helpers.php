@@ -433,3 +433,18 @@ function require_login(): void {
 }
 function current_user_role(): string { return $_SESSION['user_role'] ?? 'guest'; }
 function has_role(array $roles): bool { return in_array(current_user_role(), $roles, true); }
+
+function can(string $perm): bool {
+    $r = current_user_role();
+    $map = [
+        'super_admin' => ['content', 'staff', 'gallery', 'system', 'users'],
+        'school_admin' => ['content', 'staff', 'gallery', 'system'],
+        'editor' => ['content', 'staff', 'gallery'],
+        'exam_officer' => ['content'],
+    ];
+    $perms = $map[$r] ?? [];
+    return in_array($perm, $perms, true);
+}
+function require_permission(string $perm): void {
+    if (!can($perm)) { http_response_code(403); exit('You do not have permission to access this page.'); }
+}

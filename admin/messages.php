@@ -1,6 +1,8 @@
 <?php
 $adminPage = 'messages'; $adminTitle = 'Contact Messages';
+$adminRequiredPerm = 'system';
 require_once __DIR__ . '/includes/admin_header.php';
+require_permission('system');
 $pdo = db(); $flash = null;
 
 if (isset($_GET['read']) && is_numeric($_GET['read'])) {

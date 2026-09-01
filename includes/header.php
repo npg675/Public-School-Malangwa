@@ -98,7 +98,6 @@ $__canonicalUrl = base_url($__canonicalPath);
       <a href="<?= e_attr(base_url('academics.php')) ?>" class="<?= $__page==='academics'?'active':'' ?>"><?= t('Academics','शैक्षिक') ?></a>
       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="<?= $__page==='admissions'?'active':'' ?>"><?= t('Admissions','भर्ना') ?></a>
       <a href="<?= e_attr(base_url('notices.php')) ?>" class="<?= $__page==='notices'?'active':'' ?>"><?= t('Notice Board','सूचना पाटी') ?></a>
-      <a href="<?= e_attr(base_url('results.php')) ?>" class="<?= $__page==='results'?'active':'' ?>"><?= t('Results','नतिजा') ?></a>
       <div class="nav-dropdown">
         <button class="nav-drop-btn" aria-expanded="false" aria-haspopup="true"><?= t('Resources','स्रोत') ?> <svg class="ic"><use href="#i-chevron"/></svg></button>
         <div class="nav-drop-menu">
@@ -127,13 +126,12 @@ $__canonicalUrl = base_url($__canonicalPath);
       <a href="<?= e_attr(base_url()) ?>" class="<?= $__page==='home'?'active':'' ?>"><?= t('Home','गृह') ?></a>
       <a href="<?= e_attr(base_url('about.php')) ?>" class="<?= $__page==='about'||$__page==='management'?'active':'' ?>"><?= t('Our school','हाम्रो विद्यालय') ?></a>
       <div class="nav-dropdown">
-        <button class="nav-drop-btn <?= $__page==='academics' || $__page==='results' || $__page==='academic-calendar' ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
+        <button class="nav-drop-btn <?= $__page==='academics' || $__page==='academic-calendar' ? 'active' : '' ?>" type="button" aria-expanded="false" aria-haspopup="true">
           <?= t('Academics','शैक्षिक') ?> <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <div class="nav-drop-menu">
           <a href="<?= e_attr(base_url('academics.php')) ?>"><?= t('Programs and classes','कार्यक्रम तथा कक्षा') ?></a>
           <a href="<?= e_attr(base_url('academic-calendar.php')) ?>"><?= t('Academic calendar','शैक्षिक पात्रो') ?></a>
-          <a href="<?= e_attr(base_url('results.php')) ?>"><?= t('Results','नतिजा') ?></a>
         </div>
       </div>
       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="<?= $__page==='admissions'?'active':'' ?>"><?= t('Admissions','भर्ना') ?></a>
@@ -168,7 +166,6 @@ $__canonicalUrl = base_url($__canonicalPath);
     <a href="<?= e_attr(base_url('academics.php')) ?>"><?= t('Academics','शैक्षिक') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
     <a href="<?= e_attr(base_url('admissions.php')) ?>"><?= t('Admissions','भर्ना') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
     <a href="<?= e_attr(base_url('notices.php')) ?>"><?= t('Notice Board','सूचना पाटी') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
-    <a href="<?= e_attr(base_url('results.php')) ?>"><?= t('Results','नतिजा') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
     <a href="<?= e_attr(base_url('downloads.php')) ?>"><?= t('Downloads','डाउनलोड') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
     <a href="<?= e_attr(base_url('gallery.php')) ?>"><?= t('Gallery','ग्यालेरी') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>
     <a href="<?= e_attr(base_url('contact.php')) ?>"><?= t('Contact','सम्पर्क') ?> <svg class="ic"><use href="#i-arrow"/></svg></a>

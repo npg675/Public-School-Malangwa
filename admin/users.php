@@ -1,5 +1,6 @@
 <?php
 $adminPage = 'users'; $adminTitle = 'Manage Users';
+$adminRequiredPerm = 'system';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null;
 

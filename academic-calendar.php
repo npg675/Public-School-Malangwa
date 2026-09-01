@@ -39,7 +39,6 @@
 
     <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
       <a href="<?= e_attr(base_url('notices.php')) ?>" class="btn btn-soft">Notice Board</a>
-      <a href="<?= e_attr(base_url('results.php')) ?>" class="btn btn-ghost">Results</a>
       <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-ghost">Downloads</a>
     </div>
   </div>

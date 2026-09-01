@@ -5,6 +5,9 @@ require_login();
 $adminRole = current_user_role();
 $adminPage = $adminPage ?? 'dashboard';
 $adminTitle = $adminTitle ?? 'Admin';
+if (!empty($adminRequiredPerm)) {
+    require_permission($adminRequiredPerm);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -125,20 +128,19 @@ tr:hover td{background:#FAFBFE}
   <div><h2>श्री पब्लिक</h2><small>Website Management<br><?= e($_SESSION['user_name']??'') ?> • <?= e($adminRole) ?></small></div>
   <nav class="nav">
     <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>"><span class="material-symbols-outlined">space_dashboard</span>Dashboard</a>
-    <div class="nav-sep">Content</div>
-    <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span>Notices</a>
-    <a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="<?= $adminPage==='posts'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News &amp; Events</a>
-    <a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span>Content Blocks</a>
-    <div class="nav-sep">Media</div>
-    <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a>
-    <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span>Downloads</a>
-    <div class="nav-sep">People</div>
-    <a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>"><span class="material-symbols-outlined">groups</span>Staff</a>
-    <div class="nav-sep">System</div>
-    <a href="<?= e_attr(base_url('admin/results.php')) ?>" class="<?= $adminPage==='results'?'active':'' ?>"><span class="material-symbols-outlined">grading</span>Results</a>
-    <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span>Messages</a>
-    <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span>Settings</a>
-    <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span>Users</a>
+    <?php if (can('content')): ?><div class="nav-sep">Content</div><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span>Notices</a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="<?= $adminPage==='posts'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News &amp; Events</a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span>Content Blocks</a><?php endif; ?>
+    <?php if (can('content')): ?><div class="nav-sep">Media</div><?php endif; ?>
+    <?php if (can('gallery')): ?><a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span>Downloads</a><?php endif; ?>
+    <?php if (can('staff')): ?><div class="nav-sep">People</div><?php endif; ?>
+    <?php if (can('staff')): ?><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>"><span class="material-symbols-outlined">groups</span>Staff</a><?php endif; ?>
+    <?php if (can('system')): ?><div class="nav-sep">System</div><?php endif; ?>
+    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span>Messages</a><?php endif; ?>
+    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span>Settings</a><?php endif; ?>
+    <?php if (can('users') || can('system')): ?><a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')!=='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span>Users</a><?php endif; ?>
     <a href="<?= e_attr(base_url('admin/change-password.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')==='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">password</span>Change Password</a>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">

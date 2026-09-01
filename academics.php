@@ -81,7 +81,6 @@ $programs = get_programs();
     <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px">
       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-primary"><?= e(t('Admission Information →','भर्ना जानकारी →')) ?></a>
       <a href="<?= e_attr(base_url('academic-calendar.php')) ?>" class="btn btn-soft"><?= e(t('Academic Calendar','शैक्षिक पात्रो')) ?></a>
-      <a href="<?= e_attr(base_url('results.php')) ?>" class="btn btn-soft"><?= e(t('Results','नतिजा')) ?></a>
       <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-ghost"><?= e(t('Downloads','डाउनलोड')) ?></a>
       <a href="<?= e_attr(base_url('about.php')) ?>" class="btn btn-ghost"><?= e(t('About School','विद्यालयबारे')) ?></a>
     </div>

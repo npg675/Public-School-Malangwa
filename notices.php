@@ -60,7 +60,6 @@ $years = ['all'=>'All years','2026'=>'2026','2025'=>'2025'];
 
     <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
       <a href="<?= e_attr(base_url('downloads.php')) ?>" class="btn btn-soft">Downloads</a>
-      <a href="<?= e_attr(base_url('results.php')) ?>" class="btn btn-ghost">Results</a>
       <a href="<?= e_attr(base_url('academic-calendar.php')) ?>" class="btn btn-ghost">Academic Calendar</a>
     </div>
   </div>

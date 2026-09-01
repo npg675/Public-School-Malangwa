@@ -1,5 +1,6 @@
 <?php
 $adminPage = 'settings'; $adminTitle = 'Site Settings';
+$adminRequiredPerm = 'system';
 require_once __DIR__ . '/includes/admin_header.php';
 $pdo = db(); $flash = null;
 
