@@ -90,18 +90,23 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
       </div>
     </div>
 
-    <div class="foot-bottom">
-      <span class="foot-copy">© <?= date('Y') ?> <?= e($__footerNameEn) ?> · <?= e($__footerAddressEn) ?> · <?= t('All rights reserved','सर्वाधिकार सुरक्षित') ?></span>
-        <nav class="foot-bottom-links" aria-label="Footer legal">
-          <span>IEMIS <?= e($__footerIemis) ?></span>
-          <span class="sep" aria-hidden="true">·</span>
-          <a href="<?= e_attr(base_url('faq.php')) ?>">FAQ</a>
-          <span class="sep" aria-hidden="true">·</span>
-          <a href="<?= e_attr(base_url('sitemap.php')) ?>">Sitemap</a>
-          <span class="sep" aria-hidden="true">·</span>
-          <a href="<?= e_attr(base_url('admin/')) ?>"><?= t('Website Management','वेबसाइट व्यवस्थापन') ?></a>
-        </nav>
-    </div>
+<div class="foot-bottom">
+  <span class="foot-copy">© <?= date('Y') ?> <?= e($__footerNameEn) ?> · <?= e($__footerAddressEn) ?> · <?= t('All rights reserved','सर्वाधिकार सुरक्षित') ?></span>
+    <nav class="foot-bottom-links" aria-label="Footer legal">
+      <span>IEMIS <?= e($__footerIemis) ?></span>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="<?= e_attr(base_url('faq.php')) ?>">FAQ</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="<?= e_attr(base_url('sitemap.php')) ?>">Sitemap</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="<?= e_attr(base_url('admin/')) ?>"><?= t('Website Management','वेबसाइट व्यवस्थापन') ?></a>
+      <span class="sep" aria-hidden="true">·</span>
+      <span class="lang-toggle-footer">
+        <button onclick="setLang('en')" class="<?= $__lang==='en'?'active':'' ?>">EN</button>
+        <button onclick="setLang('np')" class="<?= $__lang==='np'?'active':'' ?>">नेपाली</button>
+      </span>
+    </nav>
+</div>
     <div class="foot-credit"><?= t('Website for community information — not affiliated with any private advertisement. For official notices, contact school office.','समुदायको जानकारीका लागि वेबसाइट — कुनै निजी विज्ञापनसँग सम्बन्धित छैन। आधिकारिक सूचनाका लागि विद्यालय कार्यालयमा सम्पर्क गर्नुहोस्।') ?></div>
   </div>
 </footer>
