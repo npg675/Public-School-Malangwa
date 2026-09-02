@@ -15,6 +15,8 @@ $first = function (string $key) use ($sections): ?array {
     return $sections($key)[0] ?? null;
 };
 $hero = $first('hero');
+$heroTitle = trim((string)($hero ? block_val($hero, 'title') : t('Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालय')));
+$heroTitle = preg_replace('/\s*[—–-]\s*(?:Malangwa[-–—]?2|मलंगवा[-–—]?२)\s*$/u', '', $heroTitle) ?: $heroTitle;
 $intro = $first('intro');
 $commitments = $sections('commitment');
 $galleryAlbums = get_gallery_albums(6);
@@ -49,7 +51,7 @@ $dateLabel = static function (string $date): string {
     <div class="home-shell home-hero-content">
       <div class="home-hero-copy reveal">
         <p class="home-kicker"><?= e(t('Education · Discipline · Opportunity', 'शिक्षा · अनुशासन · अवसर')) ?></p>
-        <h1><?= e($hero ? block_val($hero, 'title') : t('Shree Public Secondary School', 'श्री पब्लिक माध्यमिक विद्यालय')) ?></h1>
+        <h1><?= e($heroTitle) ?></h1>
         <p class="home-hero-location"><?= e(t('Malangwa-2, Sarlahi, Nepal', 'मलंगवा-२, सर्लाही, नेपाल')) ?></p>
         <p class="home-hero-description"><?= e($hero ? block_val($hero, 'body') : t('A supportive public school where students learn with confidence, develop strong values, and prepare for a better future.', 'विद्यार्थीहरूले आत्मविश्वासका साथ सिक्ने, असल मूल्य विकास गर्ने र उज्ज्वल भविष्यका लागि तयार हुने सार्वजनिक विद्यालय।')) ?></p>
         <div class="home-actions">

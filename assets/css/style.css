@@ -1269,3 +1269,43 @@ body { background: #f7f9fc; }
   .header-cta { display: none; }
   .main-nav-bar { display: none; }
 }
+
+.home-hero-copy { width: min(100%, 620px); }
+.home-kicker { font-size: clamp(.85rem, .78rem + .22vw, 1rem); }
+.home-hero h1 { max-width: 640px; font-size: clamp(2.7rem, 4.8vw, 4.6rem); }
+.home-hero-location { font-size: clamp(.98rem, .85rem + .3vw, 1.15rem); }
+.home-hero-description { max-width: 520px; font-size: clamp(.95rem, .82rem + .35vw, 1.08rem); line-height: 1.6; }
+.home-button { min-height: 44px; padding: 11px 18px; font-size: clamp(.82rem, .75rem + .24vw, .95rem); }
+.home-section-intro h2,
+.home-section-heading h2,
+.home-about-copy h2,
+.home-academics-copy h2,
+.home-contact-copy h2,
+.home-section-intro-left h2 { font-size: clamp(1.45rem, 1.1rem + 1vw, 2rem); }
+.home-quick-copy strong { font-size: clamp(.95rem, .85rem + .2vw, 1.05rem); }
+.home-quick-copy > span { font-size: clamp(.84rem, .76rem + .2vw, .95rem); }
+.home-quick-copy em { font-size: clamp(.84rem, .76rem + .2vw, .92rem); }
+.home-about-copy p:not(.home-overline),
+.home-academics-copy > p:not(.home-overline),
+.home-contact-copy > p:not(.home-overline):not(.home-contact-np) { font-size: clamp(.9rem, .8rem + .3vw, 1rem); }
+.home-text-link, .home-arrow-link { font-size: clamp(.84rem, .76rem + .2vw, .95rem); }
+.home-focus-item h3 { font-size: clamp(.92rem, .82rem + .2vw, 1.02rem); }
+.home-focus-item p { font-size: clamp(.84rem, .76rem + .2vw, .94rem); }
+.home-academic-cards h3 { font-size: clamp(.86rem, .78rem + .2vw, .96rem); }
+.home-academic-cards p { font-size: clamp(.8rem, .72rem + .2vw, .9rem); }
+.home-section-heading h2 { font-size: clamp(1.4rem, 1.15rem + .6vw, 1.8rem); }
+.home-muted { font-size: clamp(.84rem, .76rem + .2vw, .94rem); }
+.home-notice-date { font-size: clamp(.76rem, .7rem + .16vw, .86rem); }
+.home-notice-content strong { font-size: clamp(.84rem, .76rem + .2vw, .94rem); }
+.home-notice-content small { font-size: clamp(.76rem, .68rem + .2vw, .86rem); }
+.home-exam-inner h2 { font-size: clamp(1rem, .9rem + .25vw, 1.15rem); }
+.home-exam-inner p:not(.home-overline) { font-size: clamp(.82rem, .74rem + .2vw, .92rem); }
+.home-exam-mark strong { font-size: clamp(.82rem, .74rem + .2vw, .92rem); }
+.home-exam-mark small { font-size: clamp(.72rem, .66rem + .16vw, .82rem); }
+.home-contact-np { font-size: clamp(.86rem, .78rem + .2vw, .96rem); }
+.home-contact-bar strong { font-size: clamp(.9rem, .82rem + .2vw, 1rem); }
+.home-contact-bar p { font-size: clamp(.8rem, .72rem + .2vw, .9rem); }
+
+@media (max-width: 760px) {
+  .home-hero h1 { font-size: clamp(2.35rem, 10vw, 3.3rem); }
+}
