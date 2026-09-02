@@ -115,7 +115,7 @@ img{max-width:100%;display:block}
 .utility-loc{display:flex;align-items:center;gap:6px}
 .utility-right a,.utility-right span{display:inline-flex;align-items:center;gap:6px;color:#C7D7F0;transition:color .15s}
 .utility-right a:hover{color:#fff}
-.lang-toggle{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:5px 10px;border-radius:var(--radius-full);color:var(--inverse-on-surface);font-weight:600;font-size:.78rem}
+.lang-toggle{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:5px 10px;border-radius:var(--radius-full);color:var(--inverse-on-surface);font-weight:600;font-size:.78rem;margin-right:12px;}
 .lang-toggle .active{color:#fff}
 .lang-toggle .sep{opacity:.4}
 
