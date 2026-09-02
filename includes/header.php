@@ -41,7 +41,7 @@ $__canonicalUrl = base_url($__canonicalPath);
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= e_attr(base_url('assets/css/style.css')) ?>">
+<link rel="stylesheet" href="<?= e_attr(base_url('assets/css/style.css') . '?v=' . (string) filemtime(__DIR__ . '/../assets/css/style.css')) ?>">
 <?php if (!empty($useTailwind)) require_once __DIR__ . '/tailwind_head.php'; ?>
 <link rel="icon" href="<?= e_attr(base_url('assets/img/favicon.png')) ?>">
 <script type="application/ld+json">
@@ -113,10 +113,10 @@ $__canonicalUrl = base_url($__canonicalPath);
       <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>"><?= t('Gallery','ग्यालेरी') ?></a>
       <a href="<?= e_attr(base_url('contact.php')) ?>" class="<?= $__page==='contact'?'active':'' ?>"><?= t('Contact','सम्पर्क') ?></a>
     </nav>
-<div class="header-cta">
-       <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
-       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-primary btn-sm"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
-     </div>
+    <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
+    <div class="header-cta">
+      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-primary btn-sm"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
+    </div>
      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
   </div>
 </header>

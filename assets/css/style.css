@@ -194,6 +194,7 @@ img{max-width:100%;display:block}
 .brand-name-np{font-size:.82rem;color:var(--surface-tint);line-height:1.25}
 .brand-sub{display:none}
 .header-cta{display:flex;align-items:center}
+.masthead-inner > .lang-toggle{display:none}
 .header-cta .btn{white-space:nowrap;padding:10px 15px;font-size:.84rem;box-shadow:none}
 .header-cta .btn-primary{background:var(--heritage-gold);color:var(--primary);border-bottom:0}
 .header-cta .btn-primary:hover{background:#E6B800;color:var(--primary);box-shadow:none}
@@ -1232,11 +1233,12 @@ body { background: #f7f9fc; }
   .site-header { border-bottom: 0; }
   .masthead-inner,
   .nav-inner { max-width: 1280px; padding-left: 16px; padding-right: 16px; }
-  .masthead-inner { min-height: 86px; gap: 20px; }
-  .brand { gap: 14px; }
+  .masthead-inner { display: flex; min-height: 86px; gap: 20px; }
+  .brand { gap: 14px; margin-right: auto; }
   .brand-mark { width: 62px; height: 62px; }
   .brand-name { color: #17385f; font-size: 1.12rem; }
   .brand-name-np { color: #c1272d; font-size: .82rem; }
+  .masthead-inner > .lang-toggle { display: inline-flex; margin: 0 20px 0 0; white-space: nowrap; flex: 0 0 auto; }
   .header-cta { display: flex; }
   .header-cta .btn-primary { min-height: 46px; padding: 0 20px; border-radius: 9999px; background: #f6c400; color: #06284c; font-size: .82rem; font-weight: 800; }
   .header-cta .btn-primary:hover { background: #e7b900; color: #06284c; }
