@@ -75,10 +75,9 @@ $__canonicalUrl = base_url($__canonicalPath);
       <span class="utility-sep" aria-hidden="true">|</span>
       <span class="utility-loc"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> <?= e($__isNp ? $__addressNp : $__addressEn) ?></span>
     </div>
-    <div class="utility-right">
-      <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
-      <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
-    </div>
+<div class="utility-right">
+       <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
+     </div>
   </div>
 </aside>
 
@@ -114,10 +113,11 @@ $__canonicalUrl = base_url($__canonicalPath);
       <a href="<?= e_attr(base_url('gallery.php')) ?>" class="<?= $__page==='gallery'?'active':'' ?>"><?= t('Gallery','ग्यालेरी') ?></a>
       <a href="<?= e_attr(base_url('contact.php')) ?>" class="<?= $__page==='contact'?'active':'' ?>"><?= t('Contact','सम्पर्क') ?></a>
     </nav>
-    <div class="header-cta">
-      <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-primary btn-sm"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
-    </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
+<div class="header-cta">
+       <button class="lang-toggle" id="langToggle" aria-label="Toggle language"><span class="<?= $__isNp ? '' : 'active' ?>">EN</span><span class="sep">|</span><span class="<?= $__isNp ? 'active' : '' ?>">नेपाली</span></button>
+       <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-primary btn-sm"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
+     </div>
+     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
   </div>
 </header>
 
