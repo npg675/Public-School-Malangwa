@@ -48,6 +48,16 @@ function lang_url(string $lang): string {
     return $uri;
 }
 
+// Admin-panel language (independent of public site_lang)
+function admin_lang(): string {
+    $lang = $_COOKIE['admin_lang'] ?? $_SESSION['admin_lang'] ?? DEFAULT_LANG;
+    if (!in_array($lang, ['en','np'], true)) $lang = 'en';
+    return $lang;
+}
+function ta(string $en, string $np): string {
+    return admin_lang() === 'np' ? $np : $en;
+}
+
 function all_settings(): array {
     static $cache = null;
     if ($cache !== null) return $cache;

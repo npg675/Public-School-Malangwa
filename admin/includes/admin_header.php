@@ -5,20 +5,49 @@ require_login();
 $adminRole = current_user_role();
 $adminPage = $adminPage ?? 'dashboard';
 $adminTitle = $adminTitle ?? 'Admin';
+$__adminLang = admin_lang();
+$__adminNp = $__adminLang === 'np';
+$__adminTitleMap = [
+    'Dashboard' => 'ड्यासबोर्ड',
+    'Contact Messages' => 'सम्पर्क सन्देशहरू',
+    'Manage Downloads' => 'डाउनलोड व्यवस्थापन',
+    'Download Form' => 'डाउनलोड फारम',
+    'Change Password' => 'पासवर्ड परिवर्तन',
+    'Notice Form' => 'सूचना फारम',
+    'Manage Staff' => 'कर्मचारी व्यवस्थापन',
+    'Manage Notices' => 'सूचना व्यवस्थापन',
+    'Page Form' => 'पृष्ठ फारम',
+    'Manage Users' => 'प्रयोगकर्ता व्यवस्थापन',
+    'Album Form' => 'एल्बम फारम',
+    'Album Images' => 'एल्बम तस्बिरहरू',
+    'Site Settings' => 'साइट सेटिङ',
+    'Gallery Albums' => 'ग्यालरी एल्बमहरू',
+    'Content Blocks' => 'सामग्री ब्लकहरू',
+    'User Form' => 'प्रयोगकर्ता फारम',
+    'Staff Form' => 'कर्मचारी फारम',
+    'Manage News & Events' => 'समाचार र कार्यक्रम व्यवस्थापन',
+    'Content Block Form' => 'सामग्री ब्लक फारम',
+    'Manage Pages' => 'पृष्ठहरू व्यवस्थापन',
+    'Post Form' => 'सामग्री फारम',
+];
+if ($__adminNp && isset($__adminTitleMap[$adminTitle])) $adminTitle = $__adminTitleMap[$adminTitle];
 if (!empty($adminRequiredPerm)) {
     require_permission($adminRequiredPerm);
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $__adminNp ? 'ne' : 'en' ?>">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= e($adminTitle) ?> — Shree Public Secondary School</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:#F7F9FC;color:#172033;display:flex;min-height:100vh}
+body{font-family:'Inter','Noto Sans Devanagari',system-ui,sans-serif;background:#F7F9FC;color:#172033;display:flex;min-height:100vh}
+.sidebar-lang{display:flex;gap:6px;margin-top:8px}
+.sidebar-lang button{flex:1;padding:7px 0;border-radius:8px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#C7D7F0;font-weight:700;font-size:.82rem;cursor:pointer;transition:all .15s}
+.sidebar-lang button.active{background:#FFCC00;color:#092A4D;border-color:#FFCC00}
 .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;font-size:20px;line-height:1;flex:none}
 .sidebar{width:260px;background:#092A4D;color:#C7D7F0;padding:18px;flex:none;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
 .sidebar h2{color:#fff;font-size:1rem;font-weight:800}
@@ -84,6 +113,13 @@ tr:hover td{background:#FAFBFE}
 .checkbox-row{display:flex;align-items:center;gap:8px}
 .checkbox-row input[type=checkbox]{width:18px;height:18px;accent-color:#123B6D}
 
+/* ---- Profile photo zoom editor ---- */
+.photo-editor{margin-top:14px;border:1.5px solid #C3C6D1;border-radius:12px;padding:14px;background:#fff}
+.pe-frame{width:100%;max-width:320px;margin:0 auto;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#0B1B33;box-shadow:0 4px 16px rgba(9,42,77,.18);position:relative;cursor:grab}
+.pe-frame.dragging{cursor:grabbing}
+.pe-frame canvas{display:block;width:100%;height:100%}
+.pe-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+
 /* ---- Friendly content editing (non-technical users) ---- */
 .form-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 4px 12px rgba(9,42,77,.06)}
 .form-card>h3{display:flex;align-items:center;gap:9px;font-size:1rem;margin-bottom:16px;color:#123B6D}
@@ -125,28 +161,45 @@ tr:hover td{background:#FAFBFE}
 </head>
 <body>
 <aside class="sidebar" id="sidebar">
-  <div><h2>श्री पब्लिक</h2><small>Website Management<br><?= e($_SESSION['user_name']??'') ?> • <?= e($adminRole) ?></small></div>
+  <div><h2>श्री पब्लिक</h2><small><?= ta('Website Management','वेबसाइट व्यवस्थापन') ?><br><?= e($_SESSION['user_name']??'') ?> • <?= e($adminRole) ?></small></div>
+  <div class="sidebar-lang">
+    <button class="<?= !$__adminNp ? 'active' : '' ?>" onclick="setAdminLang('en')">EN</button>
+    <button class="<?= $__adminNp ? 'active' : '' ?>" onclick="setAdminLang('np')">नेपाली</button>
+  </div>
   <nav class="nav">
-    <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>"><span class="material-symbols-outlined">space_dashboard</span>Dashboard</a>
-    <?php if (can('content')): ?><div class="nav-sep">Content</div><?php endif; ?>
-    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span>Notices</a><?php endif; ?>
-    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="<?= $adminPage==='posts'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span>News &amp; Events</a><?php endif; ?>
-    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span>Content Blocks</a><?php endif; ?>
-    <?php if (can('content')): ?><div class="nav-sep">Media</div><?php endif; ?>
-    <?php if (can('gallery')): ?><a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span>Gallery</a><?php endif; ?>
-    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span>Downloads</a><?php endif; ?>
-    <?php if (can('staff')): ?><div class="nav-sep">People</div><?php endif; ?>
-    <?php if (can('staff')): ?><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>"><span class="material-symbols-outlined">groups</span>Staff</a><?php endif; ?>
-    <?php if (can('system')): ?><div class="nav-sep">System</div><?php endif; ?>
-    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span>Messages</a><?php endif; ?>
-    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span>Settings</a><?php endif; ?>
-    <?php if (can('users') || can('system')): ?><a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')!=='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span>Users</a><?php endif; ?>
-    <a href="<?= e_attr(base_url('admin/change-password.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')==='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">password</span>Change Password</a>
+    <a href="<?= e_attr(base_url('admin/index.php')) ?>" class="<?= $adminPage==='dashboard'?'active':'' ?>"><span class="material-symbols-outlined">space_dashboard</span><?= ta('Dashboard','ड्यासबोर्ड') ?></a>
+    <?php if (can('content')): ?><div class="nav-sep"><?= ta('Content','सामग्री') ?></div><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="<?= $adminPage==='notices'?'active':'' ?>"><span class="material-symbols-outlined">notifications</span><?= ta('Notices','सूचनाहरू') ?></a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="<?= $adminPage==='posts'?'active':'' ?>"><span class="material-symbols-outlined">newspaper</span><?= ta('News &amp; Events','समाचार र कार्यक्रम') ?></a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/blocks.php')) ?>" class="<?= $adminPage==='blocks'?'active':'' ?>"><span class="material-symbols-outlined">dashboard_customize</span><?= ta('Content Blocks','सामग्री ब्लकहरू') ?></a><?php endif; ?>
+    <?php if (can('content')): ?><div class="nav-sep"><?= ta('Media','मिडिया') ?></div><?php endif; ?>
+    <?php if (can('gallery')): ?><a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="<?= $adminPage==='gallery'?'active':'' ?>"><span class="material-symbols-outlined">photo_library</span><?= ta('Gallery','ग्यालरी') ?></a><?php endif; ?>
+    <?php if (can('content')): ?><a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="<?= $adminPage==='downloads'?'active':'' ?>"><span class="material-symbols-outlined">cloud_download</span><?= ta('Downloads','डाउनलोड') ?></a><?php endif; ?>
+    <?php if (can('staff')): ?><div class="nav-sep"><?= ta('People','जनशक्ति') ?></div><?php endif; ?>
+    <?php if (can('staff')): ?><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="<?= $adminPage==='staff'?'active':'' ?>"><span class="material-symbols-outlined">groups</span><?= ta('Staff','कर्मचारी') ?></a><?php endif; ?>
+    <?php if (can('system')): ?><div class="nav-sep"><?= ta('System','प्रणाली') ?></div><?php endif; ?>
+    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="<?= $adminPage==='messages'?'active':'' ?>"><span class="material-symbols-outlined">mail</span><?= ta('Messages','सन्देशहरू') ?></a><?php endif; ?>
+    <?php if (can('system')): ?><a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="<?= $adminPage==='settings'?'active':'' ?>"><span class="material-symbols-outlined">settings</span><?= ta('Settings','सेटिङ') ?></a><?php endif; ?>
+    <?php if (can('users') || can('system')): ?><a href="<?= e_attr(base_url('admin/users.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')!=='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">manage_accounts</span><?= ta('Users','प्रयोगकर्ताहरू') ?></a><?php endif; ?>
+    <a href="<?= e_attr(base_url('admin/change-password.php')) ?>" class="<?= $adminPage==='users' && basename($_SERVER['SCRIPT_NAME'] ?? '')==='change-password.php'?'active':'' ?>"><span class="material-symbols-outlined">password</span><?= ta('Change Password','पासवर्ड परिवर्तन') ?></a>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
-    <a href="<?= e_attr(base_url()) ?>" class="btn" style="justify-content:center" target="_blank"><span class="material-symbols-outlined">language</span>View Website</a>
-    <a href="<?= e_attr(base_url('admin/logout.php')) ?>" class="btn" style="justify-content:center;background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.18)"><span class="material-symbols-outlined">logout</span>Sign out</a>
+    <a href="<?= e_attr(base_url()) ?>" class="btn" style="justify-content:center" target="_blank"><span class="material-symbols-outlined">language</span><?= ta('View Website','वेबसाइट हेर्नुहोस्') ?></a>
+    <a href="<?= e_attr(base_url('admin/logout.php')) ?>" class="btn" style="justify-content:center;background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.18)"><span class="material-symbols-outlined">logout</span><?= ta('Sign out','साइन आउट') ?></a>
   </div>
 </aside>
 <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
+<script>
+function setAdminLang(lang){
+  document.cookie = 'admin_lang=' + lang + '; path=/; max-age=' + (60*60*24*365);
+  try{ localStorage.setItem('admin_lang', lang);}catch(e){}
+  location.reload();
+}
+(function(){
+  try{
+    var stored = localStorage.getItem('admin_lang');
+    if(stored && !document.cookie.includes('admin_lang')) document.cookie='admin_lang='+stored+'; path=/; max-age='+(60*60*24*365);
+  }catch(e){}
+})();
+</script>
 <main class="main">

@@ -89,7 +89,7 @@
   /* Typography */
   --font-head:'Hanken Grotesk','Inter',system-ui,sans-serif;
   --font-body:'Inter',system-ui,sans-serif;
-  --font-np:'Noto Sans Devanagari','Inter',sans-serif;
+  --font-np:'Tiro Devanagari Sanskrit','Noto Sans Devanagari','Inter',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:110px}
@@ -653,8 +653,9 @@ body{padding-bottom:64px}
   --school-muted: #60738b;
   --school-line: #d9e4ef;
   --school-green: #24764d;
-  --font-head: 'Hanken Grotesk', 'Noto Sans Devanagari', sans-serif;
+  --font-head: 'Hanken Grotesk', 'Tiro Devanagari Sanskrit', 'Noto Sans Devanagari', sans-serif;
   --font-body: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  --font-np: 'Tiro Devanagari Sanskrit', 'Noto Sans Devanagari', 'Inter', sans-serif;
 }
 body { background: #f7f9fc; }
 .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; font-size: 1.25rem; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }

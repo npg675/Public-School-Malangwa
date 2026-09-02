@@ -2,6 +2,9 @@
 require_once __DIR__.'/../includes/helpers.php';
 if (!headers_sent()) send_security_headers();
 if (is_logged_in()) { header('Location: '.base_url('admin/index.php')); exit; }
+$__al = admin_lang();
+$__anp = $__al === 'np';
+function alogin(string $en, string $np): string { return admin_lang() === 'np' ? $np : $en; }
 $error=null;
 if($_SERVER['REQUEST_METHOD']==='POST'){
   if(!csrf_verify($_POST['_csrf']??'')) $error='Invalid session.';
@@ -41,13 +44,16 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $__anp ? 'ne' : 'en' ?>">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Login — Shree Public Secondary School</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title><?= $__anp ? 'व्यवस्थापक लगइन' : 'Admin Login' ?> — Shree Public Secondary School</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,system-ui,sans-serif;background:#F7F9FC;color:#172033;display:grid;place-items:center;min-height:100vh;padding:20px}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter','Noto Sans Devanagari',system-ui,sans-serif;background:#F7F9FC;color:#172033;display:grid;place-items:center;min-height:100vh;padding:20px}
+.lang{display:flex;gap:6px;justify-content:flex-end;margin-bottom:12px}
+.lang button{padding:6px 14px;border-radius:8px;border:1px solid #E2E8F0;background:#fff;color:#123B6D;font-weight:700;font-size:.8rem;cursor:pointer}
+.lang button.active{background:#123B6D;color:#fff;border-color:#123B6D}
 .card{background:#fff;border:1px solid #E2E8F0;border-radius:16px;box-shadow:0 20px 48px rgba(9,42,77,.12);padding:32px;width:100%;max-width:420px}
 h1{font-size:1.4rem;font-weight:800;color:#123B6D;text-align:center} .sub{color:#667085;font-size:.88rem;text-align:center;margin:8px 0 18px}
 .field label{font-weight:700;font-size:.82rem;display:block;margin-bottom:6px} .field input{width:100%;padding:12px 14px;border:1.5px solid #E2E8F0;border-radius:10px;background:#F7F9FC;font-size:.96rem}
@@ -60,15 +66,26 @@ h1{font-size:1.4rem;font-weight:800;color:#123B6D;text-align:center} .sub{color:
 </head>
 <body>
 <form method="post" class="card">
-  <h1>Website Management</h1>
-  <p class="sub">Shree Public Secondary School — Malangwa-2<br>IEMIS 190640003 • Secure sign-in</p>
+  <div class="lang">
+    <button type="button" class="<?= !$__anp ? 'active' : '' ?>" onclick="setAdminLang('en')">EN</button>
+    <button type="button" class="<?= $__anp ? 'active' : '' ?>" onclick="setAdminLang('np')">नेपाली</button>
+  </div>
+  <h1><?= alogin('Website Management','वेबसाइट व्यवस्थापन') ?></h1>
+  <p class="sub">Shree Public Secondary School — Malangwa-2<br>IEMIS 190640003 • <?= alogin('Secure sign-in','सुरक्षित लगइन') ?></p>
   <?php if($error): ?><div class="err"><?= e($error) ?></div><?php endif; ?>
   <?= csrf_field() ?>
-  <div class="field" style="margin-bottom:12px"><label>Email</label><input type="email" name="email" required value="<?= e_attr($_POST['email']??'admin@shreepublic.edu.np') ?>" autocomplete="username"></div>
-  <div class="field"><label>Password</label><input type="password" name="password" required autocomplete="current-password" placeholder="••••••••"></div>
-  <button class="btn" type="submit">Sign in</button>
-  <p class="note">Use the admin account created in the database. Change its password after signing in.</p>
-  <p class="note"><a href="<?= e_attr(base_url()) ?>" style="color:#123B6D;font-weight:700">← Back to website</a></p>
+  <div class="field" style="margin-bottom:12px"><label><?= alogin('Email','इमेल') ?></label><input type="email" name="email" required value="<?= e_attr($_POST['email']??'admin@shreepublic.edu.np') ?>" autocomplete="username"></div>
+  <div class="field"><label><?= alogin('Password','पासवर्ड') ?></label><input type="password" name="password" required autocomplete="current-password" placeholder="••••••••"></div>
+  <button class="btn" type="submit"><?= alogin('Sign in','साइन इन') ?></button>
+  <p class="note"><?= alogin('Use the admin account created in the database. Change its password after signing in.','डाटाबेसमा बनाइएको व्यवस्थापक खाता प्रयोग गर्नुहोस्। लगइनपछि पासवर्ड परिवर्तन गर्नुहोस्।') ?></p>
+  <p class="note"><a href="<?= e_attr(base_url()) ?>" style="color:#123B6D;font-weight:700">← <?= alogin('Back to website','वेबसाइटमा फर्कनुहोस्') ?></a></p>
 </form>
+<script>
+function setAdminLang(lang){
+  document.cookie = 'admin_lang=' + lang + '; path=/; max-age=' + (60*60*24*365);
+  try{ localStorage.setItem('admin_lang', lang);}catch(e){}
+  location.reload();
+}
+</script>
 </body>
 </html>

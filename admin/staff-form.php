@@ -34,7 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     <div class="form-group"><label>Qualification</label><input type="text" name="qualification" value="<?= e($row['qualification']??'') ?>"></div>
     <div class="form-group"><label>Phone</label><input type="text" name="phone" value="<?= e($row['phone']??'') ?>"></div>
     <div class="form-group"><label>Email</label><input type="email" name="email" value="<?= e($row['email']??'') ?>"></div>
-    <div class="form-group form-full"><label>Profile photo</label><input type="text" name="photo" value="<?= e($row['photo']??'') ?>" placeholder="uploads/staff/..." id="staffPhotoPath"><div class="upload-zone" style="margin-top:8px;padding:18px" onclick="this.querySelector('input[type=file]').click()"><input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="var z=this.closest('.upload-zone');uploadFile(this.files[0],function(e,r){if(e){alert(e);return}document.getElementById('staffPhotoPath').value=r.path;document.getElementById('staffPhotoPreview').src='<?= e_attr(base_url('')) ?>'+r.path;document.getElementById('staffPhotoPreview').style.display='block'})"><small>Click or drag to upload a JPG, PNG or WebP portrait</small><img id="staffPhotoPreview" class="preview-img" src="<?= e_attr(!empty($row['photo']) ? staff_photo_url($row['photo']) : '') ?>" alt="Current profile photo" style="<?= !empty($row['photo']) ? '' : 'display:none' ?>"></div><small style="display:block;margin-top:6px;color:#667085">Use a clear, front-facing school-approved photo. The profile appears publicly only when Active is checked.</small></div>
+    <div class="form-group form-full"><label>Profile photo</label><input type="text" name="photo" value="<?= e($row['photo']??'') ?>" placeholder="uploads/staff/..." id="staffPhotoPath"><div class="upload-zone" style="margin-top:8px;padding:18px;position:relative" onclick="staffPhotoZoneClick(event,this)"><input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" id="staffPhotoInput"><small>Click or drag to upload a JPG, PNG or WebP portrait</small><img id="staffPhotoPreview" class="preview-img" src="<?= e_attr(!empty($row['photo']) ? staff_photo_url($row['photo']) : '') ?>" alt="Current profile photo" style="<?= !empty($row['photo']) ? '' : 'display:none' ?>">
+        <div id="staffPhotoEditor" class="photo-editor" style="display:none">
+            <div class="pe-frame"><canvas id="staffPhotoCanvas" width="600" height="600"></canvas></div>
+            <div class="pe-controls">
+                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(-0.15)" title="Zoom out">−</button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoReset()"><?= ta('Reset','रीसेट') ?></button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(0.15)" title="Zoom in">+</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="staffPhotoSave()"><?= ta('Save','सुरक्षित गर्नुहोस्') ?></button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoCancel()"><?= ta('Cancel','रद्द') ?></button>
+            </div>
+            <small style="display:block;margin-top:6px;color:#667085"><?= ta('Use + / − or scroll to zoom, drag to centre the face.','+ / − वा स्क्रोल गरेर जुम गर्नुहोस्, अनुहार केन्द्रित गर्न तस्बिर तान्नुहोस्।') ?></small>
+        </div>
+        </div><small style="display:block;margin-top:6px;color:#667085">Use a clear, front-facing school-approved photo. The profile appears publicly only when Active is checked.</small></div>
     <div class="form-group"><label>Display Order</label><input type="number" name="display_order" value="<?= e($row['display_order']??'0') ?>"></div>
     <div class="form-group form-full">
         <div class="checkbox-row"><input type="checkbox" name="show_phone" id="show_phone" <?=($row['show_phone']??0)?'checked':''?>><label for="show_phone" style="margin:0">Show phone on website</label></div>
@@ -44,4 +56,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
 </div>
 <div style="display:flex;gap:8px;margin-top:16px"><button type="submit" class="btn btn-primary"><?= $editing?'Update':'Add' ?></button><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="btn">Cancel</a></div>
 </form>
+<script>
+(function(){
+  var input=document.getElementById('staffPhotoInput');
+  var editor=document.getElementById('staffPhotoEditor');
+  if(!input||!editor)return;
+  var canvas=document.getElementById('staffPhotoCanvas');
+  var ctx=canvas.getContext('2d');
+  var frame=canvas.parentElement;
+  var SIZE=600;
+  var img=null, scale=1, panX=0, panY=0;
+
+  function draw(){
+    if(!img)return;
+    var cover=Math.max(SIZE/img.naturalWidth, SIZE/img.naturalHeight);
+    var drawW=img.naturalWidth*cover*scale;
+    var drawH=img.naturalHeight*cover*scale;
+    var maxX=(drawW-SIZE)/2, maxY=(drawH-SIZE)/2;
+    if(maxX<=0)panX=0; else panX=Math.max(-maxX,Math.min(maxX,panX));
+    if(maxY<=0)panY=0; else panY=Math.max(-maxY,Math.min(maxY,panY));
+    ctx.fillStyle='#0B1B33'; ctx.fillRect(0,0,SIZE,SIZE);
+    ctx.drawImage(img, SIZE/2+panX-drawW/2, SIZE/2+panY-drawH/2, drawW, drawH);
+    editor.dataset.open='1';
+  }
+
+  function load(file){
+    var url=URL.createObjectURL(file);
+    var im=new Image();
+    im.onload=function(){ URL.revokeObjectURL(url); img=im; scale=1; panX=0; panY=0; draw(); editor.style.display='block'; };
+    im.onerror=function(){ URL.revokeObjectURL(url); alert('<?= ta("Could not open this image.","यो तस्बिर खोल्न सकिएन।") ?>'); };
+    im.src=url;
+  }
+
+  input.addEventListener('change',function(){
+    if(!input.files.length)return;
+    load(input.files[0]);
+    input.value='';
+  });
+
+  window.staffPhotoZoneClick=function(ev,zone){
+    if(ev)ev.stopImmediatePropagation();
+    if(editor.dataset.open)return;
+    zone.querySelector('input[type=file]').click();
+  };
+
+  window.staffPhotoZoom=function(delta){
+    if(!img)return;
+    var ns=Math.min(4,Math.max(1,scale+delta));
+    var f=ns/scale; panX*=f; panY*=f; scale=ns;
+    draw();
+  };
+  window.staffPhotoReset=function(){ if(!img)return; scale=1; panX=0; panY=0; draw(); };
+  window.staffPhotoCancel=function(){
+    editor.style.display='none'; delete editor.dataset.open;
+    img=null; scale=1; panX=0; panY=0;
+  };
+  window.staffPhotoSave=function(){
+    if(!img)return;
+    canvas.toBlob(function(blob){
+      if(!blob){ alert('<?= ta("Could not save the image.","तस्बिर सुरक्षित गर्न सकिएन।") ?>'); return; }
+      uploadFile(blob,function(e,r){
+        if(e){ alert(e); return; }
+        document.getElementById('staffPhotoPath').value=r.path;
+        var pv=document.getElementById('staffPhotoPreview');
+        pv.src='<?= e_attr(base_url('')) ?>'+r.path;
+        pv.style.display='block';
+        staffPhotoCancel();
+      },'staff');
+    },'image/jpeg',0.9);
+  };
+
+  frame.addEventListener('wheel',function(ev){ ev.preventDefault(); staffPhotoZoom(ev.deltaY<0?0.05:-0.05); },{passive:false});
+
+  var dragging=false, sx=0, sy=0, spx=0, spy=0;
+  frame.addEventListener('mousedown',function(ev){ if(!img)return; dragging=true; frame.classList.add('dragging'); sx=ev.clientX; sy=ev.clientY; spx=panX; spy=panY; });
+  window.addEventListener('mousemove',function(ev){ if(!dragging)return; panX=spx+(ev.clientX-sx); panY=spy+(ev.clientY-sy); draw(); });
+  window.addEventListener('mouseup',function(){ dragging=false; frame.classList.remove('dragging'); });
+
+  var tx=null;
+  frame.addEventListener('touchstart',function(ev){ if(!img||ev.touches.length!==1)return; tx=ev.touches[0]; dragging=true; frame.classList.add('dragging'); sx=tx.clientX; sy=tx.clientY; spx=panX; spy=panY; ev.preventDefault(); },{passive:false});
+  frame.addEventListener('touchmove',function(ev){ if(!dragging||!tx)return; var t=ev.touches[0]; panX=spx+(t.clientX-sx); panY=spy+(t.clientY-sy); draw(); ev.preventDefault(); },{passive:false});
+  frame.addEventListener('touchend',function(){ dragging=false; tx=null; frame.classList.remove('dragging'); });
+})();
+</script>
 <?php require_once __DIR__ . '/includes/admin_footer.php'; ?>

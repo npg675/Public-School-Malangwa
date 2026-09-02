@@ -22,32 +22,31 @@ if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELEC
 ?>
 
 <div class="top">
-    <div><h1 style="font-size:1.4rem">Dashboard</h1><p style="color:#667085;font-size:.88rem">Shree Public Secondary School — Malangwa-2 • IEMIS 190640003</p></div>
+    <div><h1 style="font-size:1.4rem"><?= ta('Dashboard','ड्यासबोर्ड') ?></h1><p style="color:#667085;font-size:.88rem">Shree Public Secondary School — Malangwa-2 • IEMIS 190640003</p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn btn-primary">+ New Notice</a>
-        <a href="<?= e_attr(base_url('admin/post-form.php')) ?>" class="btn">+ New Post</a>
-        <a href="<?= e_attr(base_url('admin/download-form.php')) ?>" class="btn">Upload Document</a>
-        <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn">Add Gallery</a>
-        <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn">Add Gallery</a>
+        <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn btn-primary">+ <?= ta('New Notice','नयाँ सूचना') ?></a>
+        <a href="<?= e_attr(base_url('admin/post-form.php')) ?>" class="btn">+ <?= ta('New Post','नयाँ समाचार') ?></a>
+        <a href="<?= e_attr(base_url('admin/download-form.php')) ?>" class="btn"><?= ta('Upload Document','दस्तावेज अपलोड') ?></a>
+        <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn"><?= ta('Add Gallery','ग्यालरी थप्नुहोस्') ?></a>
     </div>
 </div>
 
 <div class="cards">
-    <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['notices'] ?></div><div class="lbl">Published Notices</div><?php if($counts['draft_notices']):?><div style="font-size:.78rem;color:#667085;margin-top:4px"><?= $counts['draft_notices'] ?> draft(s)</div><?php endif;?></a>
-    <a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['posts'] ?></div><div class="lbl">News &amp; Events</div></a>
-    <a href="<?= e_attr(base_url('admin/posts.php?type=event')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['events'] ?></div><div class="lbl">Upcoming Events</div></a>
-    <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['downloads'] ?></div><div class="lbl">Downloads</div></a>
-    <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['gallery'] ?></div><div class="lbl">Gallery Images</div></a>
-    <a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['staff'] ?></div><div class="lbl">Staff Members</div></a>
-    <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['messages'] ?></div><div class="lbl">Messages</div><?php if($counts['unread']):?><div style="font-size:.78rem;color:#C1272D;margin-top:4px"><?= $counts['unread'] ?> unread</div><?php endif;?></a>
-    <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['users'] ?></div><div class="lbl">Users</div></a>
+    <a href="<?= e_attr(base_url('admin/notices.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['notices'] ?></div><div class="lbl"><?= ta('Published Notices','प्रकाशित सूचनाहरू') ?></div><?php if($counts['draft_notices']):?><div style="font-size:.78rem;color:#667085;margin-top:4px"><?= $counts['draft_notices'] ?> <?= ta('draft(s)','मस्यौदा') ?></div><?php endif;?></a>
+    <a href="<?= e_attr(base_url('admin/posts.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['posts'] ?></div><div class="lbl"><?= ta('News &amp; Events','समाचार र कार्यक्रम') ?></div></a>
+    <a href="<?= e_attr(base_url('admin/posts.php?type=event')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['events'] ?></div><div class="lbl"><?= ta('Upcoming Events','आगामी कार्यक्रम') ?></div></a>
+    <a href="<?= e_attr(base_url('admin/downloads.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['downloads'] ?></div><div class="lbl"><?= ta('Downloads','डाउनलोड') ?></div></a>
+    <a href="<?= e_attr(base_url('admin/gallery.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['gallery'] ?></div><div class="lbl"><?= ta('Gallery Images','ग्यालरी तस्बिरहरू') ?></div></a>
+    <a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['staff'] ?></div><div class="lbl"><?= ta('Staff Members','कर्मचारीहरू') ?></div></a>
+    <a href="<?= e_attr(base_url('admin/messages.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['messages'] ?></div><div class="lbl"><?= ta('Messages','सन्देशहरू') ?></div><?php if($counts['unread']):?><div style="font-size:.78rem;color:#C1272D;margin-top:4px"><?= $counts['unread'] ?> <?= ta('unread','नपढेको') ?></div><?php endif;?></a>
+    <a href="<?= e_attr(base_url('admin/users.php')) ?>" class="card" style="text-decoration:none"><div class="num"><?= $counts['users'] ?></div><div class="lbl"><?= ta('Users','प्रयोगकर्ताहरू') ?></div></a>
 </div>
 
 <div class="grid2">
     <div class="section-box">
-        <h3>Recent Notices</h3>
+        <h3><?= ta('Recent Notices','हालैका सूचनाहरू') ?></h3>
         <?php if (empty($recentNotices)): ?>
-            <p style="color:#667085;font-size:.88rem">No notices yet. <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" style="color:#2364AA">Create one →</a></p>
+            <p style="color:#667085;font-size:.88rem"><?= ta('No notices yet.','अहिलेसम्म कुनै सूचना छैन।') ?> <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" style="color:#2364AA"><?= ta('Create one →','एउटा बनाउनुहोस् →') ?></a></p>
         <?php else: ?>
             <ul style="font-size:.88rem;color:#667085;display:flex;flex-direction:column;gap:8px;list-style:none">
             <?php foreach ($recentNotices as $n): ?>
@@ -57,13 +56,13 @@ if ($pdo && db_has_table('notices')) { try { $recentNotices = $pdo->query("SELEC
         <?php endif; ?>
     </div>
     <div class="section-box">
-        <h3>Quick Actions</h3>
+        <h3><?= ta('Quick Actions','द्रुत कार्यहरू') ?></h3>
         <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">notifications</span>Create Notice</a>
-            <a href="<?= e_attr(base_url('admin/post-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">newspaper</span>Write News / Add Event</a>
-            <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">photo_library</span>New Gallery Album</a>
-            <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">settings</span>Site Settings</a>
-            <a href="<?= e_attr(base_url('admin/staff-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">person_add</span>Add Staff</a>
+            <a href="<?= e_attr(base_url('admin/notice-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">notifications</span><?= ta('Create Notice','सूचना सिर्जना') ?></a>
+            <a href="<?= e_attr(base_url('admin/post-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">newspaper</span><?= ta('Write News / Add Event','समाचार लेख्नुहोस् / कार्यक्रम थप्नुहोस्') ?></a>
+            <a href="<?= e_attr(base_url('admin/album-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">photo_library</span><?= ta('New Gallery Album','नयाँ ग्यालरी एल्बम') ?></a>
+            <a href="<?= e_attr(base_url('admin/settings.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">settings</span><?= ta('Site Settings','साइट सेटिङ') ?></a>
+            <a href="<?= e_attr(base_url('admin/staff-form.php')) ?>" class="btn" style="justify-content:flex-start"><span class="material-symbols-outlined">person_add</span><?= ta('Add Staff','कर्मचारी थप्नुहोस्') ?></a>
         </div>
     </div>
 </div>

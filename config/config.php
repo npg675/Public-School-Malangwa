@@ -31,7 +31,7 @@ define('APP_STUDENTS_EXACT', 1085); // IEMIS 2081/82 exact, internal
 
 // Site
 define('BASE_URL', ''); // auto-detect
-define('DEFAULT_LANG', 'en'); // en | np
+define('DEFAULT_LANG', 'np'); // en | np
 define('TIMEZONE', 'Asia/Kathmandu');
 
 date_default_timezone_set(TIMEZONE);

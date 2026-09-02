@@ -7,6 +7,7 @@ $__page = $page ?? 'home';
 $__siteNameEn = (string)setting('site_name_en', APP_NAME_EN);
 $__siteNameNp = (string)setting('site_name_np', APP_NAME_NP);
 $__addressEn = (string)setting('address_en', APP_ADDRESS);
+$__addressNp = (string)setting('address_np', APP_ADDRESS_NP);
 $__phone = (string)setting('phone', APP_PHONE);
 $__iemis = (string)setting('iemis_code', APP_IEMIS);
 $__lat = (string)setting('coords_lat', APP_COORDS_LAT);
@@ -39,7 +40,7 @@ $__canonicalUrl = base_url($__canonicalPath);
 <meta name="theme-color" content="#001e40">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e_attr(base_url('assets/css/style.css')) ?>">
 <?php if (!empty($useTailwind)) require_once __DIR__ . '/tailwind_head.php'; ?>
 <link rel="icon" href="<?= e_attr(base_url('assets/img/favicon.png')) ?>">
@@ -72,7 +73,7 @@ $__canonicalUrl = base_url($__canonicalPath);
     <div class="utility-left">
       <span class="gov-badge"><span class="dot"></span> <?= t('Government / Community School','सरकारी / सामुदायिक विद्यालय') ?></span>
       <span class="utility-sep" aria-hidden="true">|</span>
-      <span class="utility-loc"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> <?= e($__addressEn) ?></span>
+      <span class="utility-loc"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> <?= e($__isNp ? $__addressNp : $__addressEn) ?></span>
     </div>
     <div class="utility-right">
       <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
@@ -89,7 +90,7 @@ $__canonicalUrl = base_url($__canonicalPath);
       <span class="brand-text">
         <span class="brand-name"><?= e($__isNp ? $__siteNameNp : $__siteNameEn) ?></span>
         <span class="brand-name-np"><?= e($__isNp ? $__siteNameEn : $__siteNameNp) ?></span>
-        <span class="brand-sub"><?= e($__addressEn) ?> • <?= t('Community School','सामुदायिक विद्यालय') ?> • IEMIS <?= e($__iemis) ?></span>
+        <span class="brand-sub"><?= e($__isNp ? $__addressNp : $__addressEn) ?> • <?= t('Community School','सामुदायिक विद्यालय') ?> • IEMIS <?= e($__iemis) ?></span>
       </span>
     </a>
     <nav class="legacy-main-nav" aria-label="Primary">
@@ -157,7 +158,7 @@ $__canonicalUrl = base_url($__canonicalPath);
 
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <div class="mn-head">
-    <span class="brand-text"><span class="brand-name" style="color:#fff"><?= e($__isNp ? $__siteNameNp : $__siteNameEn) ?></span><span class="brand-sub" style="color:#93B4D8"><?= e($__addressEn) ?> • IEMIS <?= e($__iemis) ?></span></span>
+    <span class="brand-text"><span class="brand-name" style="color:#fff"><?= e($__isNp ? $__siteNameNp : $__siteNameEn) ?></span><span class="brand-sub" style="color:#93B4D8"><?= e($__isNp ? $__addressNp : $__addressEn) ?> • IEMIS <?= e($__iemis) ?></span></span>
     <button class="mn-close" id="navClose" aria-label="Close menu"><svg class="ic"><use href="#i-close"/></svg></button>
   </div>
   <div class="mn-links">
@@ -172,7 +173,7 @@ $__canonicalUrl = base_url($__canonicalPath);
   </div>
   <div class="mn-foot">
     <?php if ($__phone): ?><a href="tel:<?= e_attr($__phone) ?>"><svg class="ic"><use href="#i-phone"/></svg> <?= e($__phone) ?></a><?php endif; ?>
-    <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__mapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= e($__addressEn) ?></a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__mapQuery) ?>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg> <?= e($__isNp ? $__addressNp : $__addressEn) ?></a>
     <a href="<?= e_attr(base_url('admissions.php')) ?>" class="btn btn-gold" style="justify-content:center"><?= t('Admission Inquiry','भर्ना सोधपुछ') ?></a>
     <div class="mn-lang"><button onclick="setLang('en')" class="<?= $__lang==='en'?'active':'' ?>">EN</button><button onclick="setLang('np')" class="<?= $__lang==='np'?'active':'' ?>">नेपाली</button></div>
   </div>
