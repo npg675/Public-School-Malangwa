@@ -6,7 +6,6 @@ $__footerAddressNp = (string)setting('address_np', APP_ADDRESS_NP);
 $__footerPhone = (string)setting('phone', APP_PHONE);
 $__footerEmail = (string)setting('email', APP_EMAIL);
 $__footerHours = (string)setting('office_hours', APP_OFFICE_HOURS);
-$__footerIemis = (string)setting('iemis_code', APP_IEMIS);
 $__footerLat = (string)setting('coords_lat', APP_COORDS_LAT);
 $__footerLng = (string)setting('coords_lng', APP_COORDS_LNG);
 $__footerMapQuery = $__footerLat . ',' . $__footerLng;
@@ -32,11 +31,6 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
           </div>
         </div>
         <p class="foot-desc"><?= t('A public, co-educational community school in Malangwa-2, Sarlahi — ECD to Grade 12 with +2 Science & Management (NEB).','मलंगवा-२, सर्लाहीको एक सार्वजनिक सहशिक्षा सामुदायिक विद्यालय — ईसीडी देखि कक्षा १२, +२ विज्ञान र व्यवस्थापन (NEB)।') ?></p>
-        <div class="foot-badges">
-          <span class="chip chip-gold">IEMIS <?= e($__footerIemis) ?></span>
-          <span class="chip chip-outline-light"><?= e(setting('plus_code', APP_PLUS_CODE)) ?></span>
-          <span class="chip chip-navy-light"><?= e(setting('students_display', APP_STUDENTS_DISPLAY)) ?> <?= t('Students','विद्यार्थीहरू') ?></span>
-        </div>
         <p class="foot-address-np"><?= e($__footerAddressNp) ?></p>
       </div>
 
@@ -69,7 +63,7 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
         <ul class="foot-contact-list">
           <li class="foot-contact-item">
             <svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>
-            <span><?= e($__footerNameEn) ?><br><?= e($__footerAddressEn) ?><br><a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__footerMapQuery) ?>" target="_blank" rel="noopener" class="foot-link-inline"><?= e(setting('plus_code', APP_PLUS_CODE)) ?> · <?= e($__footerLat) ?>, <?= e($__footerLng) ?> ↗</a></span>
+            <span><?= e($__footerNameEn) ?><br><?= e($__footerAddressEn) ?><br><a href="https://www.google.com/maps/search/?api=1&amp;query=<?= e_attr($__footerMapQuery) ?>" target="_blank" rel="noopener" class="foot-link-inline"><?= t('View map and directions ↗','नक्सा र दिशा हेर्नुहोस् ↗') ?></a></span>
           </li>
           <li class="foot-contact-item">
             <svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>
@@ -93,8 +87,6 @@ $__footerLogoUrl = stored_file_url((string)setting('logo_path', 'assets/img/logo
 <div class="foot-bottom">
   <span class="foot-copy">© <?= date('Y') ?> <?= e($__footerNameEn) ?> · <?= e($__footerAddressEn) ?> · <?= t('All rights reserved','सर्वाधिकार सुरक्षित') ?></span>
     <nav class="foot-bottom-links" aria-label="Footer legal">
-      <span>IEMIS <?= e($__footerIemis) ?></span>
-      <span class="sep" aria-hidden="true">·</span>
       <a href="<?= e_attr(base_url('faq.php')) ?>">FAQ</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="<?= e_attr(base_url('sitemap.php')) ?>">Sitemap</a>
