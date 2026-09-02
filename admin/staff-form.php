@@ -11,50 +11,77 @@ if ($pdo && db_has_table('staff_categories')) {
     } catch (Throwable $e) { error_log('Staff categories load failed: '.$e->getMessage()); }
 }
 if ($editing) { $stmt = $pdo->prepare('SELECT * FROM staff WHERE id = ?'); $stmt->execute([(int)$_GET['id']]); $row = $stmt->fetch(); if (!$row) { header('Location: '.base_url('admin/staff.php')); exit; } }
+$form = $row ?: [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? '')) {
     $d = ['name_en'=>trim($_POST['name_en']??''),'name_np'=>trim($_POST['name_np']??''),'designation_en'=>trim($_POST['designation_en']??''),'designation_np'=>trim($_POST['designation_np']??''),'department'=>trim($_POST['department']??''),'qualification'=>trim($_POST['qualification']??''),'phone'=>trim($_POST['phone']??''),'email'=>trim($_POST['email']??''),'show_phone'=>isset($_POST['show_phone'])?1:0,'show_email'=>isset($_POST['show_email'])?1:0,'photo'=>trim($_POST['photo']??''),'category_id'=>$_POST['category_id']?:null,'display_order'=>(int)($_POST['display_order']??0),'is_active'=>isset($_POST['is_active'])?1:0];
-    if (empty($d['name_en']) || empty($d['designation_en'])) { $flash = ['err','Name and Designation required.']; }
+    $errors = [];
+    if (empty($d['name_en']) || empty($d['designation_en'])) $errors[] = ta('Name and designation are required.','नाम र पद आवश्यक छन्।');
+    if (empty($d['category_id'])) $errors[] = ta('Please choose a staff category.','कृपया कर्मचारीको श्रेणी छान्नुहोस्।');
+    if ($d['email'] !== '' && !filter_var($d['email'], FILTER_VALIDATE_EMAIL)) $errors[] = ta('Please enter a valid email address.','कृपया मान्य इमेल ठेगाना राख्नुहोस्।');
+    if ($errors) { $form = array_merge($form, $d); $flash = ['err', implode(' ', $errors)]; }
     else {
-        if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE staff SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $flash=['ok','Staff updated.']; }
-        else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO staff (`$c`) VALUES ($v)")->execute($d); $flash=['ok','Staff added.']; }
+        if ($editing) { $s=[]; foreach($d as $k=>$v) $s[]="`$k`=:$k"; $d[':id']=(int)$_GET['id']; $pdo->prepare('UPDATE staff SET '.implode(', ',$s).' WHERE id=:id')->execute($d); $form = array_merge($form, $d); $flash=['ok',ta('Staff updated.','कर्मचारी अद्यावधिक भयो।')]; }
+        else { $c=implode('`, `',array_keys($d)); $v=':'.implode(', :',array_keys($d)); $pdo->prepare("INSERT INTO staff (`$c`) VALUES ($v)")->execute($d); $form = []; $flash=['ok',ta('Staff added.','कर्मचारी थपियो।')]; }
     }
 }
 ?>
-<div class="breadcrumbs"><a href="<?= e_attr(base_url('admin/staff.php')) ?>">Staff</a> <span>/</span> <span><?= $editing?'Edit':'Add' ?></span></div>
-<div class="top"><h1><?= $editing?'Edit Staff':'Add Staff Member' ?></h1></div>
-<?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>"><?= e($flash[1]) ?></div><?php endif; ?>
-<form method="post" class="section-box"><?= csrf_field() ?>
-<div class="form-grid">
-    <div class="form-group"><label>Name (English) *</label><input type="text" name="name_en" required value="<?= e($row['name_en']??'') ?>"></div>
-    <div class="form-group"><label>Name (Nepali)</label><input type="text" name="name_np" value="<?= e($row['name_np']??'') ?>"></div>
-    <div class="form-group"><label>Designation (English) *</label><input type="text" name="designation_en" required value="<?= e($row['designation_en']??'') ?>"></div>
-    <div class="form-group"><label>Designation (Nepali)</label><input type="text" name="designation_np" value="<?= e($row['designation_np']??'') ?>"></div>
-    <div class="form-group"><label>Category</label><select name="category_id"><option value="">— Select —</option><?php foreach($cats as $c): ?><option value="<?=$c['id']?>" <?=($row['category_id']??'')==$c['id']?'selected':''?>><?=e($c['name_en'])?></option><?php endforeach;?></select></div>
-    <div class="form-group"><label>Department</label><input type="text" name="department" value="<?= e($row['department']??'') ?>"></div>
-    <div class="form-group"><label>Qualification</label><input type="text" name="qualification" value="<?= e($row['qualification']??'') ?>"></div>
-    <div class="form-group"><label>Phone</label><input type="text" name="phone" value="<?= e($row['phone']??'') ?>"></div>
-    <div class="form-group"><label>Email</label><input type="email" name="email" value="<?= e($row['email']??'') ?>"></div>
-    <div class="form-group form-full"><label>Profile photo</label><input type="text" name="photo" value="<?= e($row['photo']??'') ?>" placeholder="uploads/staff/..." id="staffPhotoPath"><div class="upload-zone" style="margin-top:8px;padding:18px;position:relative" onclick="staffPhotoZoneClick(event,this)"><input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" id="staffPhotoInput"><small>Click or drag to upload a JPG, PNG or WebP portrait</small><img id="staffPhotoPreview" class="preview-img" src="<?= e_attr(!empty($row['photo']) ? staff_photo_url($row['photo']) : '') ?>" alt="Current profile photo" style="<?= !empty($row['photo']) ? '' : 'display:none' ?>">
+<div class="breadcrumbs"><a href="<?= e_attr(base_url('admin/staff.php')) ?>"><?= ta('Staff','कर्मचारी') ?></a> <span aria-hidden="true">/</span> <span><?= $editing ? ta('Edit','सम्पादन') : ta('Add','थप्नुहोस्') ?></span></div>
+<div class="top"><h1><?= $editing ? ta('Edit Staff','कर्मचारी सम्पादन गर्नुहोस्') : ta('Add Staff Member','कर्मचारी थप्नुहोस्') ?></h1></div>
+<?php if ($flash): ?><div class="flash flash-<?= $flash[0] ?>" role="<?= $flash[0] === 'err' ? 'alert' : 'status' ?>" aria-live="polite"><?= e($flash[1]) ?></div><?php endif; ?>
+<form method="post" class="section-box staff-form" id="staffForm">
+<?= csrf_field() ?>
+<div id="staffFormErrors" class="form-errors" role="alert" aria-live="assertive" hidden></div>
+<fieldset class="form-section">
+    <legend><?= ta('Basic information','आधारभूत जानकारी') ?></legend>
+    <div class="form-grid">
+        <div class="form-group"><label for="staffNameEn"><?= ta('Name (English)','नाम (अंग्रेजी)') ?> <span class="req" aria-hidden="true">*</span></label><input id="staffNameEn" type="text" name="name_en" required aria-required="true" autocomplete="name" value="<?= e($form['name_en']??'') ?>"></div>
+        <div class="form-group"><label for="staffNameNp"><?= ta('Name (Nepali)','नाम (नेपाली)') ?></label><input id="staffNameNp" type="text" name="name_np" lang="ne" autocomplete="off" aria-describedby="nameNpHint" value="<?= e($form['name_np']??'') ?>"><small class="hint" id="nameNpHint"><?= ta('Add the official Nepali spelling when available.','उपलब्ध भएमा आधिकारिक नेपाली हिज्जे राख्नुहोस्।') ?></small></div>
+        <div class="form-group"><label for="staffDesignationEn"><?= ta('Designation (English)','पद (अंग्रेजी)') ?> <span class="req" aria-hidden="true">*</span></label><input id="staffDesignationEn" type="text" name="designation_en" required aria-required="true" value="<?= e($form['designation_en']??'') ?>"></div>
+        <div class="form-group"><label for="staffDesignationNp"><?= ta('Designation (Nepali)','पद (नेपाली)') ?></label><input id="staffDesignationNp" type="text" name="designation_np" lang="ne" autocomplete="off" value="<?= e($form['designation_np']??'') ?>"></div>
+    </div>
+</fieldset>
+<fieldset class="form-section">
+    <legend><?= ta('Role and contact','पद र सम्पर्क') ?></legend>
+    <div class="form-grid">
+        <div class="form-group"><label for="staffCategory"><?= ta('Category','श्रेणी') ?> <span class="req" aria-hidden="true">*</span></label><select id="staffCategory" name="category_id" required aria-required="true" aria-describedby="categoryHint"><option value=""><?= ta('Select a category','श्रेणी छान्नुहोस्') ?></option><?php foreach($cats as $c): ?><option value="<?= (int)$c['id'] ?>" <?=($form['category_id']??'')==$c['id']?'selected':''?>><?= e(ta((string)$c['name_en'], (string)$c['name_np'])) ?></option><?php endforeach;?></select><small class="hint" id="categoryHint"><?= ta('Choose Teaching Staff for teachers.','शिक्षकका लागि Teaching Staff छान्नुहोस्।') ?></small></div>
+        <div class="form-group"><label for="staffDepartment"><?= ta('Department','विभाग') ?></label><input id="staffDepartment" type="text" name="department" autocomplete="organization" value="<?= e($form['department']??'') ?>"></div>
+        <div class="form-group"><label for="staffQualification"><?= ta('Qualification','शैक्षिक योग्यता') ?></label><input id="staffQualification" type="text" name="qualification" value="<?= e($form['qualification']??'') ?>"></div>
+        <div class="form-group"><label for="staffPhone"><?= ta('Phone','फोन') ?></label><input id="staffPhone" type="tel" name="phone" inputmode="tel" autocomplete="tel" value="<?= e($form['phone']??'') ?>"></div>
+        <div class="form-group"><label for="staffEmail"><?= ta('Email','इमेल') ?></label><input id="staffEmail" type="email" name="email" inputmode="email" autocomplete="email" value="<?= e($form['email']??'') ?>"></div>
+    </div>
+</fieldset>
+<fieldset class="form-section">
+    <legend><?= ta('Profile photo','प्रोफाइल फोटो') ?></legend>
+    <div class="form-group form-full">
+        <div class="upload-zone" role="button" tabindex="0" aria-describedby="photoUploadLabel photoHelp" onclick="staffPhotoZoneClick(event,this)"><input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" id="staffPhotoInput"><span id="photoUploadLabel"><?= ta('Click or drag to upload a JPG, PNG or WebP portrait','JPG, PNG वा WebP फोटो अपलोड गर्न क्लिक वा तान्नुहोस्') ?></span><img id="staffPhotoPreview" class="preview-img" src="<?= e_attr(!empty($form['photo']) ? staff_photo_url($form['photo']) : '') ?>" alt="<?= ta('Current profile photo','हालको प्रोफाइल फोटो') ?>" style="<?= !empty($form['photo']) ? '' : 'display:none' ?>">
         <div id="staffPhotoEditor" class="photo-editor" style="display:none">
             <div class="pe-frame"><canvas id="staffPhotoCanvas" width="600" height="600"></canvas></div>
             <div class="pe-controls">
-                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(-0.15)" title="Zoom out">−</button>
-                <button type="button" class="btn btn-sm" onclick="staffPhotoReset()"><?= ta('Reset','रीसेट') ?></button>
-                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(0.15)" title="Zoom in">+</button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="staffPhotoSave()"><?= ta('Save','सुरक्षित गर्नुहोस्') ?></button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(-0.15)" title="<?= ta('Zoom out','जुम घटाउनुहोस्') ?>" aria-label="<?= ta('Zoom out','जुम घटाउनुहोस्') ?>">−</button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoReset()"><?= ta('Reset','रिसेट') ?></button>
+                <button type="button" class="btn btn-sm" onclick="staffPhotoZoom(0.15)" title="<?= ta('Zoom in','जुम बढाउनुहोस्') ?>" aria-label="<?= ta('Zoom in','जुम बढाउनुहोस्') ?>">+</button>
+                <button type="button" class="btn btn-primary btn-sm" data-photo-save="1" onclick="staffPhotoSave()"><?= ta('Save photo','फोटो सुरक्षित गर्नुहोस्') ?></button>
                 <button type="button" class="btn btn-sm" onclick="staffPhotoCancel()"><?= ta('Cancel','रद्द') ?></button>
             </div>
             <small style="display:block;margin-top:6px;color:#667085"><?= ta('Use + / − or scroll to zoom, drag to centre the face.','+ / − वा स्क्रोल गरेर जुम गर्नुहोस्, अनुहार केन्द्रित गर्न तस्बिर तान्नुहोस्।') ?></small>
         </div>
-        </div><small style="display:block;margin-top:6px;color:#667085">Use a clear, front-facing school-approved photo. The profile appears publicly only when Active is checked.</small></div>
-    <div class="form-group"><label>Display Order</label><input type="number" name="display_order" value="<?= e($row['display_order']??'0') ?>"></div>
-    <div class="form-group form-full">
-        <div class="checkbox-row"><input type="checkbox" name="show_phone" id="show_phone" <?=($row['show_phone']??0)?'checked':''?>><label for="show_phone" style="margin:0">Show phone on website</label></div>
-        <div class="checkbox-row"><input type="checkbox" name="show_email" id="show_email" <?=($row['show_email']??0)?'checked':''?>><label for="show_email" style="margin:0">Show email on website</label></div>
-        <div class="checkbox-row"><input type="checkbox" name="is_active" id="is_active" <?=($row['is_active']??1)?'checked':''?>><label for="is_active" style="margin:0">Active (visible on site)</label></div>
+        </div>
+        <small class="hint" id="photoHelp"><?= ta('Use a clear, front-facing school-approved photo. The profile appears publicly only when Active is checked.','विद्यालयले स्वीकृत गरेको स्पष्ट अगाडिबाट खिचिएको फोटो प्रयोग गर्नुहोस्। Active छान्दा मात्र प्रोफाइल वेबसाइटमा देखिन्छ।') ?></small>
+        <details class="advanced-photo"><summary><?= ta('Use an existing photo path or URL','पहिलेको फोटो path वा URL प्रयोग गर्नुहोस्') ?></summary><label for="staffPhotoPath"><?= ta('Photo path or URL','फोटो path वा URL') ?></label><input type="text" name="photo" id="staffPhotoPath" value="<?= e($form['photo']??'') ?>" placeholder="uploads/staff/..." autocomplete="off"></details>
     </div>
-</div>
-<div style="display:flex;gap:8px;margin-top:16px"><button type="submit" class="btn btn-primary"><?= $editing?'Update':'Add' ?></button><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="btn">Cancel</a></div>
+</fieldset>
+<fieldset class="form-section">
+    <legend><?= ta('Website visibility','वेबसाइटमा देखिने') ?></legend>
+    <div class="form-grid">
+        <div class="form-group"><label for="staffDisplayOrder"><?= ta('Display order','देखाउने क्रम') ?></label><input id="staffDisplayOrder" type="number" name="display_order" min="0" step="1" aria-describedby="displayOrderHint" value="<?= e($form['display_order']??'0') ?>"><small class="hint" id="displayOrderHint"><?= ta('Lower numbers appear first.','कम अंक भएका कर्मचारी पहिले देखिन्छन्।') ?></small></div>
+        <div class="visibility-options" aria-label="<?= ta('Website visibility options','वेबसाइट दृश्यता विकल्पहरू') ?>">
+            <label class="checkbox-row" for="show_phone"><input type="checkbox" name="show_phone" id="show_phone" <?=($form['show_phone']??0)?'checked':''?>><span><?= ta('Show phone on website','वेबसाइटमा फोन देखाउनुहोस्') ?></span></label>
+            <label class="checkbox-row" for="show_email"><input type="checkbox" name="show_email" id="show_email" <?=($form['show_email']??0)?'checked':''?>><span><?= ta('Show email on website','वेबसाइटमा इमेल देखाउनुहोस्') ?></span></label>
+            <label class="checkbox-row" for="is_active"><input type="checkbox" name="is_active" id="is_active" <?=($form['is_active']??1)?'checked':''?>><span><?= ta('Active (visible on site)','Active (वेबसाइटमा देखिने)') ?></span></label>
+        </div>
+    </div>
+</fieldset>
+<div class="form-actions"><button type="submit" class="btn btn-primary"><?= $editing ? ta('Save changes','परिवर्तन सुरक्षित गर्नुहोस्') : ta('Add staff member','कर्मचारी थप्नुहोस्') ?></button><a href="<?= e_attr(base_url('admin/staff.php')) ?>" class="btn"><?= ta('Cancel','रद्द') ?></a><span class="form-actions-note"><?= ta('Required fields are marked with *','* भएका फाँटहरू आवश्यक छन्') ?></span></div>
 </form>
 <script>
 (function(){
@@ -66,6 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
   var frame=canvas.parentElement;
   var SIZE=600;
   var img=null, scale=1, panX=0, panY=0;
+  var zone=input.closest('.upload-zone');
+  var photoSaveButton=editor.querySelector('[data-photo-save]');
 
   function draw(){
     if(!img)return;
@@ -94,6 +123,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
     input.value='';
   });
 
+  if(zone) zone.addEventListener('keydown',function(ev){
+    if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();staffPhotoZoneClick(ev,zone);}
+  });
+
   window.staffPhotoZoneClick=function(ev,zone){
     if(ev)ev.stopImmediatePropagation();
     if(editor.dataset.open)return;
@@ -113,15 +146,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
   };
   window.staffPhotoSave=function(){
     if(!img)return;
+    if(photoSaveButton){photoSaveButton.disabled=true;photoSaveButton.setAttribute('aria-busy','true');}
     canvas.toBlob(function(blob){
-      if(!blob){ alert('<?= ta("Could not save the image.","तस्बिर सुरक्षित गर्न सकिएन।") ?>'); return; }
+      if(!blob){ alert('<?= ta("Could not save the image.","तस्बिर सुरक्षित गर्न सकिएन।") ?>'); if(photoSaveButton){photoSaveButton.disabled=false;photoSaveButton.removeAttribute('aria-busy');} return; }
       uploadFile(blob,function(e,r){
-        if(e){ alert(e); return; }
+        if(e){ alert(e); if(photoSaveButton){photoSaveButton.disabled=false;photoSaveButton.removeAttribute('aria-busy');} return; }
         document.getElementById('staffPhotoPath').value=r.path;
         var pv=document.getElementById('staffPhotoPreview');
         pv.src='<?= e_attr(base_url('')) ?>'+r.path;
         pv.style.display='block';
         staffPhotoCancel();
+        if(photoSaveButton){photoSaveButton.disabled=false;photoSaveButton.removeAttribute('aria-busy');}
       },'staff');
     },'image/jpeg',0.9);
   };
@@ -137,6 +172,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['_csrf'] ?? ''))
   frame.addEventListener('touchstart',function(ev){ if(!img||ev.touches.length!==1)return; tx=ev.touches[0]; dragging=true; frame.classList.add('dragging'); sx=tx.clientX; sy=tx.clientY; spx=panX; spy=panY; ev.preventDefault(); },{passive:false});
   frame.addEventListener('touchmove',function(ev){ if(!dragging||!tx)return; var t=ev.touches[0]; panX=spx+(t.clientX-sx); panY=spy+(t.clientY-sy); draw(); ev.preventDefault(); },{passive:false});
   frame.addEventListener('touchend',function(){ dragging=false; tx=null; frame.classList.remove('dragging'); });
+})();
+
+(function(){
+  var form=document.getElementById('staffForm');
+  var errorBox=document.getElementById('staffFormErrors');
+  if(!form)return;
+  var dirty=false,submitting=false;
+  function clearValidState(field){if(field.checkValidity()){field.removeAttribute('aria-invalid');}}
+  function showErrors(){
+    var invalid=[].slice.call(form.querySelectorAll('input,select,textarea')).filter(function(field){return field.willValidate&&!field.checkValidity();});
+    invalid.forEach(function(field){field.setAttribute('aria-invalid','true');});
+    if(errorBox&&invalid.length){errorBox.hidden=false;errorBox.textContent='<?= e_attr(ta("Please complete the required fields before saving.","सुरक्षित गर्नुअघि आवश्यक फाँटहरू भर्नुहोस्।")) ?>';}
+  }
+  form.addEventListener('input',function(ev){dirty=true;clearValidState(ev.target);if(errorBox&&!form.querySelector(':invalid')){errorBox.hidden=true;errorBox.textContent='';}});
+  form.addEventListener('change',function(){dirty=true;});
+  form.addEventListener('invalid',showErrors,true);
+  form.addEventListener('submit',function(){submitting=true;});
+  window.addEventListener('beforeunload',function(ev){if(dirty&&!submitting){ev.preventDefault();ev.returnValue='';}});
 })();
 </script>
 <?php require_once __DIR__ . '/includes/admin_footer.php'; ?>

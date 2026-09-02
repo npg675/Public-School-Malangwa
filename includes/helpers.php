@@ -299,6 +299,14 @@ function get_programs(): array {
     ];
 }
 
+function staff_record_has_public_name(array $person): bool {
+    foreach (['name_en', 'name_np'] as $field) {
+        $value = trim((string)($person[$field] ?? ''));
+        if ($value !== '' && !in_array($value, ['—', '-'], true)) return true;
+    }
+    return false;
+}
+
 /**
  * Return active people for the public About page, grouped by the CMS hierarchy.
  * The committee fallback also supports older installations that still classify
@@ -329,10 +337,7 @@ function get_staff_directory(): array {
     }
 
     foreach ($rows as $person) {
-        if (in_array(trim((string)($person['name_en'] ?? '')), ['', '—', '-'], true)
-            || in_array(trim((string)($person['name_np'] ?? '')), ['', '—', '-'], true)) {
-            continue;
-        }
+        if (!staff_record_has_public_name($person)) continue;
         $slug = (string)($person['category_slug'] ?? '');
         $designation = strtolower(trim((string)($person['designation_en'] ?? '')));
         $isCommittee = $slug === 'committee' || ($slug === 'administration' && preg_match('/committee|smc|chairperson|chairman|member/', $designation));
