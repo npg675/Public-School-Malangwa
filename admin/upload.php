@@ -67,7 +67,7 @@ if ($subdir) {
     $targetDir = $dir;
 }
 
-if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
+if (!is_dir($targetDir) && !mkdir($targetDir, 0777, true) && !is_dir($targetDir)) {
     echo json_encode(['ok' => false, 'error' => 'Upload folder is not writable']);
     exit;
 }
