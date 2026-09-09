@@ -82,13 +82,20 @@ function setting(string $key, $fallback = '') {
 }
 
 // Notices helpers
-function get_notices(int $limit = 6, ?string $category = null): array {
+function get_notices(int $limit = 6, ?string $category = null, string $q = '', string $year = ''): array {
     $pdo = db();
     if ($pdo && db_has_table('notices')) {
         try {
             $sql = "SELECT n.*, c.name_en as cat_en, c.name_np as cat_np, c.slug as cat_slug FROM notices n LEFT JOIN notice_categories c ON c.id=n.category_id WHERE n.status='published' AND (n.expires_at IS NULL OR n.expires_at > NOW()) ";
             $params = [];
             if ($category) { $sql .= " AND c.slug=:cat "; $params[':cat']=$category; }
+            if ($q !== '') {
+                $like = '%' . str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $q) . '%';
+                $sql .= " AND (n.title_en LIKE :q1 ESCAPE '\\\\' OR n.title_np LIKE :q2 ESCAPE '\\\\' OR n.reference_number LIKE :q3 ESCAPE '\\\\' OR n.description_en LIKE :q4 ESCAPE '\\\\' OR n.description_np LIKE :q5 ESCAPE '\\\\') ";
+                $params[':q1'] = $like; $params[':q2'] = $like; $params[':q3'] = $like;
+                $params[':q4'] = $like; $params[':q5'] = $like;
+            }
+            if ($year !== '' && $year !== 'all') { $sql .= " AND YEAR(n.published_at)=:yr "; $params[':yr'] = (int)$year; }
             $sql .= " ORDER BY n.is_pinned DESC, n.published_at DESC LIMIT :lim";
             $stmt = $pdo->prepare($sql);
             foreach($params as $k=>$v) $stmt->bindValue($k,$v);

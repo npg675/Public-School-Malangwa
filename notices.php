@@ -2,9 +2,7 @@
 $cat = $_GET['category'] ?? null;
 $q = trim($_GET['q'] ?? '');
 $year = trim($_GET['year'] ?? '');
-$all = get_notices(80, $cat && $cat!=='all' ? $cat : null);
-if ($q!=='') { $all = array_filter($all, function($n) use($q){ $hay=strtolower(($n['title_en']??'').' '.($n['title_np']??'').' '.($n['reference_number']??'').' '.($n['summary_en']??'')); return str_contains($hay, strtolower($q)); }); }
-if ($year!=='' && $year!=='all') { $all = array_filter($all, function($n) use($year){ return date('Y', strtotime($n['published_at']))===$year; }); }
+$all = get_notices(80, $cat && $cat!=='all' ? $cat : null, $q, $year);
 $cats = ['all'=>'All','general'=>'General','examination'=>'Examination','admission'=>'Admission','results'=>'Results','scholarship'=>'Scholarship','holiday'=>'Holiday','vacancy'=>'Vacancy','procurement'=>'Procurement','event'=>'Event','urgent'=>'Urgent'];
 $years = ['all'=>'All years','2026'=>'2026','2025'=>'2025'];
 ?>
