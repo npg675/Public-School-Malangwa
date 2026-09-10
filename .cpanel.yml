@@ -1,0 +1,21 @@
+---
+# cPanel Git Version Control — deployment config for Public-School-Malangwa
+# cPanel → Git Version Control → Manage → Pull or Deploy uses this file.
+# Webhook (GitHub → webhook.php → deploy.sh) is the preferred auto-deploy;
+# this file is the fallback when you click Deploy in cPanel UI.
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/USERNAME/public_html/
+    - /bin/cp -f .htaccess $DEPLOYPATH/.htaccess
+    - /bin/cp -f .user.ini $DEPLOYPATH/.user.ini
+    - /bin/cp -f robots.txt $DEPLOYPATH/robots.txt
+    - /bin/cp *.php $DEPLOYPATH/
+    - /bin/cp -r admin $DEPLOYPATH/
+    - /bin/cp -r assets $DEPLOYPATH/
+    - /bin/cp -r config $DEPLOYPATH/
+    - /bin/cp -r includes $DEPLOYPATH/
+    - /bin/cp webhook.php $DEPLOYPATH/webhook.php
+    # Preserve .env — do not overwrite
+    # Ensure uploads writable
+    - /bin/mkdir -p $DEPLOYPATH/uploads $DEPLOYPATH/uploads/staff $DEPLOYPATH/uploads/blocks $DEPLOYPATH/uploads/gallery
+    - /bin/chmod -R 775 $DEPLOYPATH/uploads

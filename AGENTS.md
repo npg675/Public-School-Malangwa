@@ -2,19 +2,25 @@
 
 Guidance for AI agents in this repo — live at `https://demo.isoftro.com` (IEMIS 190640003).
 
-## Deploy — Docker at demo.isoftro.com (not cPanel)
+## Deploy
 
-- Live is Docker Compose at `/opt/public-school-deploy/` (not in git): `docker-compose.yml` + `nginx.conf` + `php/Dockerfile` bind-mount `./code` (= this repo) into `public-school-php` (rw) and `public-school-web` (ro). PHP/nginx edits take effect immediately, no rebuild.
-- Containers: `public-school-php` (PHP 8.4), `public-school-web` (nginx), `public-school-mysql` (MySQL 8, DB `sps_malangwa`, pw in `/opt/public-school-deploy/.env`). Served via Traefik (Coolify) at `demo.isoftro.com`.
-- README/`docs/INSTALL.md`/`docs/CPANEL.md` describe cPanel — ignore for live. Trust `docker-compose.yml`/`nginx.conf` over prose.
-- `nginx` routes `/news`, `/events`, `/event` → `news-events.php` (single `posts` table, `post_type` news|event). `.htaccess` still rewrites to deleted `news.php`/`events.php`/`results.php` — stale, do not trust.
+### Production — cPanel shared hosting (authoritative)
 
-### How to deploy to demo.isoftro.com
+- Host: cPanel shared hosting, domain `shreepublic.edu.np` (`APP_URL` in `.env`). Repo `https://github.com/npg675/Public-School-Malangwa.git`, production branch `main` (change `BRANCH` in `deploy.sh` to `feat/cms-content-blocks` if you ship that branch).
+- Pipeline: `GitHub push → webhook → https://shreepublic.edu.np/webhook.php → ~/repositories/Public-School-Malangwa/ (git pull) → cp to ~/public_html/` (no SSH port / GH Actions runner). No rebuild. Files in repo: `deploy.sh`, `webhook.php`, `.cpanel.yml`.
+- Web server routing: single `posts` table (`post_type` news|event) via `news-events.php`; `nginx` on demo routed `/news|/events|/event` there — on cPanel `.htaccess` still has stale `news.php`/`events.php`/`results.php` rewrites, do not trust (see Gotchas).
 
-1. Local: commit on `feat/cms-content-blocks`, push to `origin/feat/cms-content-blocks` (if `git push` fails with `could not read Username`, push from a machine with credentials — this host has none).
-2. Server (Coolify SSH → `srv1184665`): `cd /opt/public-school-deploy/code && git fetch origin && git diff --stat origin/feat/cms-content-blocks` — verify only `*.php`/`css`/`js`/config; then `git merge --ff-only origin/feat/cms-content-blocks` (untracked `uploads/*` + `.audit/` survive; never `git clean`).
-3. Perms if needed: `chmod 644 code/.env` (600 root breaks `www-data` read), and inside php container `chmod -R 777 uploads/<subdir> && chown -R www-data:www-data uploads/<subdir>` on upload failures.
-4. Verify: `docker exec public-school-php php -l /var/www/html/<file>` for each touched file, then `curl -k https://demo.isoftro.com/<page>` (retry once on `000` Traefik timeout) and check `?lang=en` + `?lang=np`.
+### How to deploy to cPanel
+
+1. **One-time — cPanel SSH Access:** generate `~/.ssh/github_repo` (or reuse), add to GitHub `Settings → Deploy keys` (`gh repo deploy-key add ~/.ssh/github_repo.pub --title "cPanel Deploy" -R npg675/Public-School-Malangwa`).
+2. **One-time — clone:** `cd ~/repositories && GIT_SSH_COMMAND="ssh -i ~/.ssh/github_repo -o StrictHostKeyChecking=no" git clone git@github.com:npg675/Public-School-Malangwa.git`
+3. **One-time — secret:** edit `~/repositories/Public-School-Malangwa/webhook.php` (or `~/public_html/webhook.php`) and set `$secret`; create GitHub webhook `Settings → Webhooks → https://shreepublic.edu.np/webhook.php` (push, `application/json`, same secret) or `gh api repos/npg675/Public-School-Malangwa/hooks -f name=web -f active=true -f events[]=push -f config[url]="https://shreepublic.edu.np/webhook.php" -f config[content_type]=json -f config[secret]="..."`.
+4. **Each push:** `git push origin main` (or `feat/cms-content-blocks` if `BRANCH` changed). GitHub POSTs to `webhook.php`; script does `export HOME=/home/USERNAME && cd ~/repositories/Public-School-Malangwa && bash deploy.sh` (`HOME` must be exported — PHP `shell_exec` has none). Manual fallback: SSH and `bash ~/repositories/Public-School-Malangwa/deploy.sh`.
+5. **Verify:** in cPanel File Manager check `public_html/.env` still `644` and not overwritten, `uploads/` `775`, then `curl -k https://shreepublic.edu.np/` and `?lang=en`/`?lang=np`.
+
+### Demo — Docker at demo.isoftro.com (still live, legacy for staging)
+
+- Docker Compose at `/opt/public-school-deploy/` (not in git): bind-mount `./code` into `public-school-php` (PHP 8.4) + `public-school-web` + `public-school-mysql` (`sps_malangwa`), Traefik at `demo.isoftro.com` (`srv1184665`). Same steps as above but `cd /opt/public-school-deploy/code && git fetch origin && git diff --stat origin/... && git merge --ff-only origin/...`; perms `chmod 644 code/.env` + `chmod -R 777 uploads/<subdir> && chown -R www-data:www-data` inside container; `docker exec public-school-php php -l /var/www/html/<file>`; retry once on Traefik `000`.
 
 ## Stack
 
@@ -51,8 +57,8 @@ Guidance for AI agents in this repo — live at `https://demo.isoftro.com` (IEMI
 ## Gotchas — hard-earned, will bite you
 
 - **`database.sql` DO NOT re-import**: seed rows contain garbled Devanagari and unsupported `NULL`-in-derived-table/`INTERSECT` syntax that fails on MySQL 8. Live DB is source of truth. Seed new data with `INSERT IGNORE ... SELECT` (as `posts` was seeded from `news`+`events`), not the dump's `INSERT` rows.
-- **`.env` permissions**: `/opt/public-school-deploy/.env` is `600 root` → PHP-FPM `www-data` cannot read. Repo `code/.env` must stay `644`. On edit, keep a readable copy or site breaks.
-- **Uploads owner**: PHP-FPM runs as `www-data` uid 33, not root. `is_writable()` from CLI lies. On `move_uploaded_file(): Unable to move` / `Failed to save file`, run `chmod -R 777 uploads/<subdir>` + `chown -R www-data:www-data uploads/<subdir>` inside `public-school-php`.
+- **`.env` permissions**: `/opt/public-school-deploy/.env` is `600 root` → PHP-FPM `www-data` cannot read; cPanel `~/public_html/.env` must stay `644` and never be overwritten by `deploy.sh`. On edit, keep a readable copy or site breaks.
+- **Uploads owner**: PHP-FPM runs as `www-data` uid 33 (Docker) / `nobody` on cPanel, not root. `is_writable()` from CLI lies. On `move_uploaded_file(): Unable to move` / `Failed to save file`, run `chmod -R 777 uploads/<subdir>` + `chown -R www-data:www-data uploads/<subdir>` inside `public-school-php` (or `chmod -R 775 uploads/` on cPanel).
 - **`get_blocks()` (`includes/helpers.php:263`) must return `[]` not `false` even when `$section===null` or no rows, else frontend CMS edits silently vanish.
 - **`rate_limit()` (`includes/helpers.php:445`)** uses `RATE_LIMIT_DIR` (default `sys_get_temp_dir()/sps-rate-limit`) + `LOCK_EX` on `sps_rate_<sha256>.json`. Guard `stream_get_contents` returning `false` before `json_decode` (PHP 8 TypeError otherwise).
 - **Legacy `*.html`** (`about.html`, `index.html`, etc.) are stale design refs — never edit. Results module removed (`adc441e`), `/results` 404s. News/events unified to `news-events.php`.
