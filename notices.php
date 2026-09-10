@@ -2,9 +2,16 @@
 $cat = $_GET['category'] ?? null;
 $q = trim($_GET['q'] ?? '');
 $year = trim($_GET['year'] ?? '');
-$all = get_notices(80, $cat && $cat!=='all' ? $cat : null, $q, $year);
+$catF = $cat && $cat!=='all' ? $cat : null;
+$perPage = 10;
+$curPage = max(1, (int)($_GET['page'] ?? 1));
+$all = get_notices($perPage, $catF, $q, $year, $curPage);
+$total = count_notices($catF, $q, $year);
+$totalPages = max(1, (int)ceil($total / $perPage));
+if ($curPage > $totalPages) { $curPage = $totalPages; $all = get_notices($perPage, $catF, $q, $year, $curPage); }
 $cats = ['all'=>'All','general'=>'General','examination'=>'Examination','admission'=>'Admission','results'=>'Results','scholarship'=>'Scholarship','holiday'=>'Holiday','vacancy'=>'Vacancy','procurement'=>'Procurement','event'=>'Event','urgent'=>'Urgent'];
 $years = ['all'=>'All years','2026'=>'2026','2025'=>'2025'];
+function notice_pag_url($cat,$q,$year,$p){ return base_url('notices.php?'.http_build_query(array_filter(['category'=>$cat&&$cat!=='all'?$cat:null,'q'=>$q?$q:null,'year'=>$year&&$year!=='all'?$year:null,'page'=>$p>1?$p:null]))); }
 ?>
 <section class="hero" style="padding:40px 0 32px"><div class="hero-grid" aria-hidden="true"></div><div class="wrap" style="position:relative"><span class="hero-badge"><span class="dot"></span> Notice Board</span><h1 style="color:#fff;margin:14px 0 10px">Official Notices</h1><p class="lead" style="color:#C7D7F0;max-width:680px">Official announcements, exam information, holiday notices, admission updates, scholarships, vacancies and procurement — published by the school office. Nepali titles supported; pinned &amp; urgent notices appear first.</p></div></section>
 <nav class="wrap" style="padding:14px 20px"><div class="breadcrumbs"><a href="<?= e_attr(base_url()) ?>">Home</a><span class="sep">/</span><span>Notice Board</span></div></nav>
@@ -27,7 +34,7 @@ $years = ['all'=>'All years','2026'=>'2026','2025'=>'2025'];
       <?php foreach($cats as $k=>$label): ?><a href="<?= e_attr(base_url('notices.php?category='.$k.($year&&$year!=='all'?'&year='.$year:''))) ?>" class="tag <?= $cat===$k?'urgent':'' ?>" style="<?= $cat===$k?'background:var(--primary);color:#fff':'' ?>"><?= e($label) ?></a><?php endforeach; ?>
     </div>
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;font-size:.84rem;color:var(--muted);flex-wrap:wrap">
-      <span style="background:var(--surface-low);border:1px solid var(--border);padding:6px 10px;border-radius:999px"><?= count($all) ?> notice(s)<?= $q?' for "'.e($q).'"':'' ?><?= $cat&&$cat!=='all'?' in '.e($cats[$cat]??$cat):'' ?></span>
+      <span style="background:var(--surface-low);border:1px solid var(--border);padding:6px 10px;border-radius:999px"><?= count($all) ?> <?= $totalPages>1?'of '.$total:'' ?> notice(s)<?= $q?' for "'.e($q).'"':'' ?><?= $cat&&$cat!=='all'?' in '.e($cats[$cat]??$cat):'' ?></span>
       <?php if($q||$cat||$year): ?><span>• Filtered view — <a href="<?= e_attr(base_url('notices.php')) ?>" style="color:var(--primary);font-weight:700">clear filters</a></span><?php endif; ?>
     </div>
     <?php if(empty($all)): ?><div class="empty"><svg class="ic"><use href="#i-info"/></svg><h4>No notices in this view</h4><p>Try another category, year or keyword. Official notices will appear here as soon as the school office publishes them. Not all categories have content yet — empty states are intentional.</p><div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a href="<?= e_attr(base_url('notices.php')) ?>" class="btn btn-soft">View all notices</a><a href="<?= e_attr(base_url('contact.php')) ?>" class="btn btn-ghost">Contact office</a></div></div>
@@ -49,6 +56,19 @@ $years = ['all'=>'All years','2026'=>'2026','2025'=>'2025'];
         </div>
       </article>
     <?php endforeach; endif; ?>
+
+    <?php if($totalPages > 1): ?>
+    <nav style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:22px;flex-wrap:wrap">
+      <?php if($curPage>1): ?><a href="<?= e_attr(notice_pag_url($cat,$q,$year,$curPage-1)) ?>" class="btn btn-soft">← Prev</a><?php endif; ?>
+      <?php if($totalPages<=7): for($p=1;$p<=$totalPages;$p++): ?>
+        <?php if($p===$curPage): ?><span style="min-width:38px;text-align:center;background:var(--primary);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700"><?= $p ?></span>
+        <?php else: ?><a href="<?= e_attr(notice_pag_url($cat,$q,$year,$p)) ?>" style="min-width:38px;text-align:center;padding:8px 12px;border:1px solid var(--border);border-radius:8px"><?= $p ?></a><?php endif; ?>
+      <?php endfor; else: ?>
+        <span>Page <?= $curPage ?> of <?= $totalPages ?></span>
+      <?php endif; ?>
+      <?php if($curPage<$totalPages): ?><a href="<?= e_attr(notice_pag_url($cat,$q,$year,$curPage+1)) ?>" class="btn btn-soft">Next →</a><?php endif; ?>
+    </nav>
+    <?php endif; ?>
 
     <!-- Archive helper -->
     <div style="margin-top:20px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px">

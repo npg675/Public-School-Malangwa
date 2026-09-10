@@ -82,7 +82,7 @@ function setting(string $key, $fallback = '') {
 }
 
 // Notices helpers
-function get_notices(int $limit = 6, ?string $category = null, string $q = '', string $year = ''): array {
+function get_notices(int $limit = 6, ?string $category = null, string $q = '', string $year = '', int $page = 1): array {
     $pdo = db();
     if ($pdo && db_has_table('notices')) {
         try {
@@ -96,10 +96,11 @@ function get_notices(int $limit = 6, ?string $category = null, string $q = '', s
                 $params[':q4'] = $like; $params[':q5'] = $like;
             }
             if ($year !== '' && $year !== 'all') { $sql .= " AND YEAR(n.published_at)=:yr "; $params[':yr'] = (int)$year; }
-            $sql .= " ORDER BY n.is_pinned DESC, n.published_at DESC LIMIT :lim";
+            $sql .= " ORDER BY n.is_pinned DESC, n.published_at DESC LIMIT :lim OFFSET :off";
             $stmt = $pdo->prepare($sql);
             foreach($params as $k=>$v) $stmt->bindValue($k,$v);
             $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':off', max(0, ($page - 1) * $limit), PDO::PARAM_INT);
             $stmt->execute();
             $rows = $stmt->fetchAll();
             foreach ($rows as &$row) {
@@ -114,6 +115,32 @@ function get_notices(int $limit = 6, ?string $category = null, string $q = '', s
     }
     // fallback sample data
     return sample_notices($limit);
+}
+
+function count_notices(?string $category = null, string $q = '', string $year = ''): int {
+    $pdo = db();
+    if ($pdo && db_has_table('notices')) {
+        try {
+            $sql = "SELECT COUNT(*) FROM notices n WHERE n.status='published' AND (n.expires_at IS NULL OR n.expires_at > NOW()) ";
+            $params = [];
+            if ($category) { $sql .= " AND n.id IN (SELECT n2.id FROM notices n2 LEFT JOIN notice_categories c ON c.id=n2.category_id WHERE c.slug=:cat) "; $params[':cat']=$category; }
+            if ($q !== '') {
+                $like = '%' . str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $q) . '%';
+                $sql .= " AND (n.title_en LIKE :q1 ESCAPE '\\\\' OR n.title_np LIKE :q2 ESCAPE '\\\\' OR n.reference_number LIKE :q3 ESCAPE '\\\\' OR n.description_en LIKE :q4 ESCAPE '\\\\' OR n.description_np LIKE :q5 ESCAPE '\\\\') ";
+                $params[':q1'] = $like; $params[':q2'] = $like; $params[':q3'] = $like;
+                $params[':q4'] = $like; $params[':q5'] = $like;
+            }
+            if ($year !== '' && $year !== 'all') { $sql .= " AND YEAR(n.published_at)=:yr "; $params[':yr'] = (int)$year; }
+            $stmt = $pdo->prepare($sql);
+            foreach($params as $k=>$v) $stmt->bindValue($k,$v);
+            $stmt->execute();
+            return (int)$stmt->fetchColumn();
+        } catch (Throwable $e) {
+            error_log('Notices count failed: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    return count(sample_notices(0));
 }
 
 function get_pinned_notice(): ?array {
