@@ -1,74 +1,68 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in this repository (source of `https://demo.isoftro.com`).
+Guidance for AI agents in this repo — live at `https://demo.isoftro.com` (IEMIS 190640003).
 
-## Context: this is a Docker deploy, not cPanel
+## Deploy — Docker at demo.isoftro.com (not cPanel)
 
-Despite the README's cPanel language, this repo is deployed on this server as a **Docker Compose stack** at `/opt/public-school-deploy/`:
+- Live is Docker Compose at `/opt/public-school-deploy/` (not in git): `docker-compose.yml` + `nginx.conf` + `php/Dockerfile` bind-mount `./code` (= this repo) into `public-school-php` (rw) and `public-school-web` (ro). PHP/nginx edits take effect immediately, no rebuild.
+- Containers: `public-school-php` (PHP 8.4), `public-school-web` (nginx), `public-school-mysql` (MySQL 8, DB `sps_malangwa`, pw in `/opt/public-school-deploy/.env`). Served via Traefik (Coolify) at `demo.isoftro.com`.
+- README/`docs/INSTALL.md`/`docs/CPANEL.md` describe cPanel — ignore for live. Trust `docker-compose.yml`/`nginx.conf` over prose.
+- `nginx` routes `/news`, `/events`, `/event` → `news-events.php` (single `posts` table, `post_type` news|event). `.htaccess` still rewrites to deleted `news.php`/`events.php`/`results.php` — stale, do not trust.
 
-- `docker-compose.yml` + `nginx.conf` + `php/Dockerfile`/`fpm-custom.conf` live in `/opt/public-school-deploy/` (NOT in git).
-- `./code` (this repo) is bind-mounted into `public-school-php` (writable) and `public-school-web` (read-only). **PHP/nginx changes take effect immediately on file save — no rebuild/restart needed.**
-- Served at `demo.isoftro.com` via Traefik (Coolify). Public IP `72.61.237.41`, hostname `srv1184665`.
-- Containers: `public-school-php`, `public-school-web`, `public-school-mysql`. DB `sps_malangwa`, root pw in `/opt/public-school-deploy/.env`.
+### How to deploy to demo.isoftro.com
 
-To run repo-local tooling: `docker exec public-school-php php -l /var/www/html/<file>` (syntax check) or `docker exec public-school-php php ...` to execute against the live DB.
+1. Local: commit on `feat/cms-content-blocks`, push to `origin/feat/cms-content-blocks` (if `git push` fails with `could not read Username`, push from a machine with credentials — this host has none).
+2. Server (Coolify SSH → `srv1184665`): `cd /opt/public-school-deploy/code && git fetch origin && git diff --stat origin/feat/cms-content-blocks` — verify only `*.php`/`css`/`js`/config; then `git merge --ff-only origin/feat/cms-content-blocks` (untracked `uploads/*` + `.audit/` survive; never `git clean`).
+3. Perms if needed: `chmod 644 code/.env` (600 root breaks `www-data` read), and inside php container `chmod -R 777 uploads/<subdir> && chown -R www-data:www-data uploads/<subdir>` on upload failures.
+4. Verify: `docker exec public-school-php php -l /var/www/html/<file>` for each touched file, then `curl -k https://demo.isoftro.com/<page>` (retry once on `000` Traefik timeout) and check `?lang=en` + `?lang=np`.
 
-## Project overview
+## Stack
 
-Public website + CMS for **Shree Public Secondary School**, Malangwa-2, Sarlahi, Madhesh Province, Nepal (IEMIS 190640003). Bilingual (Nepali + English). No build step, no Composer/npm dependencies. PHP 8.2+ (live: 8.4), MySQL 8 (`utf8mb4_unicode_ci` — required for Devanagari), vanilla JS.
+- PHP 8.2+ (live 8.4), MySQL 8 `utf8mb4_unicode_ci` (required for Devanagari), vanilla JS, no Composer/npm/build step. No `composer.json`/`package.json`/`opencode.json`.
+- Default admin `admin@shreepublic.edu.np` / `Admin@123`.
+- Entrypoints: `index.php`, `about.php`, `notices.php`/`notice.php`, `news-events.php`, `downloads.php`, `gallery.php`, plus `admin/*.php`. Shared wiring: `config/config.php` (constants, `.env` loader, `base_url()`/`asset()`, `DEFAULT_LANG='np'`), `config/database.php` (`db()` with `DB_DISABLED=1` demo fallback, `PDO::ATTR_TIMEOUT=>3`), `includes/helpers.php` (CSRF, `e()`/`e_attr()`, i18n `t()`/`ta()`, `setting()`/`all_settings()`, `get_blocks()`, `rate_limit()`, RBAC `can()`).
+- Tokens in `assets/css/style.css` (`:root --primary:#001e40`, etc.) and `includes/tailwind_head.php` (CDN Tailwind for Stitch pages); admin shell in `admin/includes/admin_header.php` (Tailwind CDN + Material Symbols, `#092A4D`/`#123B6D`).
 
-**Default admin login:** `admin@shreepublic.edu.np` / `Admin@123`.
+## Commands
 
-## Setup (local/from scratch — for reference only)
+- Always syntax-check touched PHP: `docker exec public-school-php php -l /var/www/html/<file>` or locally `php -l D:\www\sps\<file>`.
+- Manual helpers (gitignored in `tests/`): `php tests/staff-helpers-test.php`, `php tests/staff-image-responsive-test.php`, `powershell -File tests/mobile-layout.ps1`.
+- No lint/typecheck/test framework. No `npm`/`composer` scripts. `DB_DISABLED=1` runs without DB (sample notices/downloads + `includes/content-seeds.php` fallback).
 
-1. Import `database.sql` (full schema; see **database.sql warning** below).
-2. Copy `.env.example` → `.env`, fill DB credentials. `DB_DISABLED=1` = demo mode without DB.
-3. `uploads/` must be writable.
+## Architecture
 
-## database.sql is NOT safe to import as-is — DO NOT re-import
+- **DB** (`database.sql` is source of truth schema, not seed): `notices`+`notice_categories`, `posts`+`news_categories`, `downloads`+`download_categories`, `gallery_albums`/`gallery_images`, `staff`/`staff_categories`, `content_blocks` (`page_slug`, `section_key`, `sort_order`, bilingual `title/subtitle/body`, `image_url`, `icon`, `link_url`, `is_active`), `pages` (long prose), `site_settings` (`key`/`value`), `users`, `activity_logs`. Collation `utf8mb4_unicode_ci`.
+- **CMS split**: `pages` holds long-form prose (admissions, academics, science, management…); `content_blocks` holds cards/tiles/hero/stats/timeline/FAQ/links. `includes/content-seeds.php` (`cms_seed_blocks()`) mirrors DB seeds for demo/empty-DB fallback. `includes/header.php` reads `site_settings` for logo/address/phone/IEMIS via `setting()`.
+- **Uploads** (gitignored): `uploads/` + `uploads/staff/` + `uploads/blocks/` + `uploads/gallery/`. Helpers `media_url()`/`stored_file_url()`/`staff_photo_url()` normalize to `uploads/...`. `admin/upload.php` validates MIME allowlist (`jpg/png/webp/pdf/docx/xlsx`), `max 8MB`, `subdir` regex `^[A-Za-z0-9_-]+`, random hex name, `0777` mkdir, `0644` file.
+- **i18n**: every content column has `_en`/`_np`. Public lang cookie `site_lang`, admin separate `admin_lang` cookie; helpers `current_lang()`/`admin_lang()` default `np`. Never auto-translate; use `t()`/`ta()` and `block_val()`/`page_val()` helpers.
 
-- Multiple seed rows contain **garbled/mojibake Devanagari** (news/events/downloads/posts) — importing corrupts Nepali text.
-- Content blocks use unsupported MySQL 8 `NULL`-in-derived-table constructs (43 `INTERSECT`/derived-table errors) unless converted to `INSERT IGNORE ... VALUES`.
-- The live site's DB is the source of truth. To move data into the live DB, use `INSERT IGNORE ... SELECT` from old tables (this is how `posts` was seeded from `news`+`events`), **not** the seed rows.
+## Admin pattern
 
-## Removed/renamed modules (stale doc claims)
+- Shell: `admin/includes/admin_header.php` + `admin_footer.php`. Each entity: list page + `-form.php` (e.g. `notices.php`/`notice-form.php`, `posts.php`/`post-form.php`, `staff.php`/`staff-form.php`, `blocks.php`/`block-form.php`). All POSTs use `csrf_field()`/`csrf_verify()`.
+- RBAC in `includes/helpers.php:486`: `super_admin` [content,staff,gallery,system,users], `school_admin` [content,staff,gallery,system], `editor` [content,staff,gallery], `exam_officer` [content]. Gate with `can()`/`require_permission()`.
+- **Content Blocks** (`admin/blocks.php`): filter by `page_slug` in `['home','about','academics','admissions','faq','links','publications','management','science']`, grouped by `section_key`/`sort_order`. Sections: `home: hero(1), stat(4), intro(1), commitment(4), cta_banner(1)`; `about: page_header(1), intro(2), value(3), timeline(4), facility(4), cta_join(1)`; `science`/`management: intro+highlight(4)`; `faq: faq_item(9)` as `<details>`; `links: link(8)`. Requires `title_en` or `title_np`. Staff photo editor: 600×600 canvas, JPEG 0.9, subdir `staff`, drag/zoom.
 
-- `news.php`, `events.php` → **unified `news-events.php`** (driven by `posts` table). nginx routes `/news`, `/events`, `/event` → `news-events.php`.
-- `results.php` + `admin/results.php` + results module were **removed** (commit adc441e); `/results` now 404s. There is no results admin anymore.
-- Legacy `*.html` files (`about.html`, `index.html`, etc.) are stale design references — never edit them.
+## Git
 
-## Git workflow (critical)
+- Current branch `feat/cms-content-blocks` tracks `origin/feat/cms-content-blocks` (`origin/HEAD -> origin/main`). Also `main` exists. Use small conventional commits (`feat:`, `fix:`).
+- `git push` fails on this host (`fatal: could not read Username`, no credentials) — pushes happen elsewhere. Do not attempt.
+- Working tree always has untracked `uploads/*` + `.audit/` and sometimes `admin/upload.php` 0777 fix. Never `git clean` (deletes live uploads). Incoming changes only touch `*.php`/`css`/`js`/config, so fast-forward is safe, but verify `git diff --stat origin/...` first.
 
-- Local working branch is `main`. Upstream development/push target is **`origin/feat/cms-content-blocks`**. After upstream pushes, sync with:
-  `git fetch origin && git merge --ff-only origin/feat/cms-content-blocks` (fast-forward; local `main` is always a direct ancestor of the pushed branch).
-- **`git push` to GitHub fails** — no credentials configured on this host (`fatal: could not read Username`). Pushes are done from elsewhere. Don't attempt/promise pushes.
-- The working tree almost always has **intentional uncommitted changes**: `admin/upload.php` (mkdir 0777 fix), and `uploads/*` binaries (photos, teacher images) which are gitignored/untracked. Before any `git pull`/merge, verify the incoming commits don't touch these files (they don't — only `*.php`/css/js/config), then fast-forward; the untracked files survive untouched. Never `git clean` — it would delete live uploads.
-- Small focused commits, conventional style (`feat:`, `fix:`, ...). Do not commit secrets or large binaries.
+## Gotchas — hard-earned, will bite you
 
-## Operational gotchas (learned the hard way)
-
-- **`.env` permissions:** the live `/opt/public-school-deploy/.env` is `600 root`; PHP-FPM (www-data) cannot read it → site breaks. The repo copy `code/.env` MUST stay `644` and readable. If you edit `.env`, preserve a readable copy.
-- **Timeouts/intermittent `000`:** first request after a change occasionally times out at the Traefik proxy — always retry before diagnosing; the app itself is fine (200 in <200ms on retry, no hung MySQL queries).
-- **`get_blocks()`** (`includes/helpers.php`) must return `$rows ?: []` even when `$section === null`, or admin CMS edits won't propagate to the frontend.
-- **`rate_limit()`** does `json_decode(file_get_contents())` — must check the read returned `!== false` before decoding, to avoid a PHP 8 TypeError.
-- **`admin/upload.php`** uses `mkdir(..., 0777, ...)` (0755 breaks web write) and `uploads/` needs `chmod -R 777` for PHP-FPM writes. **PHP-FPM workers run as uid 33 (www-data), NOT root** — even though `docker exec php ...` and CLI run as root. If uploads fail with "Failed to save file" / `move_uploaded_file(): Unable to move`, the target dir (`uploads/staff/`, `uploads/`, etc.) is likely not writable by www-data: apply `chmod -R 777 <dir>` + `chown -R www-data:www-data <dir>`. `is_writable()` from CLI will lie (root); test as www-data or check the actual dir mode.
-- **Staff photos** live in `uploads/staff/` (untracked). Staff records are in the `staff` table, `category_id`: 1=leadership, 2=administration, 3=teaching, 4=non_teaching, 5=committee. Photo path stored relative e.g. `uploads/staff/m1.jpg`.
-- **Pexels API key** for generating placeholder images is maintained in this session's context; fetch portrait URLs, download to `uploads/staff/`, `chmod -R 777` + `chown www-data`.
-
-## Conventions
-
-- **Bilingual:** every content field has `_en`/`_np` suffixes (`title_en`/`title_np`). Never auto-translate; enter both manually. Language persists via cookie/`?lang=np|en`; default is now Nepali.
-- **Escaping/security:** output via helpers (`e()`/`e_attr()`); PDO prepared statements only (no string-concatenated SQL); password_hash, CSRF on all forms, RBAC roles (`super_admin`, `school_admin`, `editor`, `exam_officer`), upload allowlist with MIME validation.
-- **Admin panel:** plain-PHP CRUD modules following the existing pattern: list page + `-form.php` per entity in `admin/`, using `admin/includes/header.php`/`footer.php`. Tailwind via CDN + Material Symbols icons.
-- **CMS-driven content:** page content from DB (`pages`, `site_settings`, `content_blocks`). No hardcoded copy where an admin-editable value exists. Empty states show friendly placeholders, never broken cards.
-- **Design:** Deep Institutional Blue `#123B6D`, Government Red `#C1272D`, Gold `#D29A32`, bg `#F7F9FC`. Inter + Noto Sans Devanagari. WCAG 2.2 AA. Mobile-first.
-- **No comments unless asked; no emojis unless asked.**
+- **`database.sql` DO NOT re-import**: seed rows contain garbled Devanagari and unsupported `NULL`-in-derived-table/`INTERSECT` syntax that fails on MySQL 8. Live DB is source of truth. Seed new data with `INSERT IGNORE ... SELECT` (as `posts` was seeded from `news`+`events`), not the dump's `INSERT` rows.
+- **`.env` permissions**: `/opt/public-school-deploy/.env` is `600 root` → PHP-FPM `www-data` cannot read. Repo `code/.env` must stay `644`. On edit, keep a readable copy or site breaks.
+- **Uploads owner**: PHP-FPM runs as `www-data` uid 33, not root. `is_writable()` from CLI lies. On `move_uploaded_file(): Unable to move` / `Failed to save file`, run `chmod -R 777 uploads/<subdir>` + `chown -R www-data:www-data uploads/<subdir>` inside `public-school-php`.
+- **`get_blocks()` (`includes/helpers.php:263`) must return `[]` not `false` even when `$section===null` or no rows, else frontend CMS edits silently vanish.
+- **`rate_limit()` (`includes/helpers.php:445`)** uses `RATE_LIMIT_DIR` (default `sys_get_temp_dir()/sps-rate-limit`) + `LOCK_EX` on `sps_rate_<sha256>.json`. Guard `stream_get_contents` returning `false` before `json_decode` (PHP 8 TypeError otherwise).
+- **Legacy `*.html`** (`about.html`, `index.html`, etc.) are stale design refs — never edit. Results module removed (`adc441e`), `/results` 404s. News/events unified to `news-events.php`.
+- **Staff visibility**: `get_staff_directory()` groups by `staff_categories.slug` but falls back — `administration` with `designation_en` matching `/committee|smc|chairperson|chairman|member/` → `committee`. Hide records where `name_en`/`name_np` empty or `—`/`-`. Only `is_active=1` shown; order by `c.sort_order, display_order, name_en`.
+- **Downloads filtering**: `get_downloads()` drops rows where local `file_path` missing on disk (unless `https://`), so broken uploads show empty state not 404.
+- **First-request `000` timeout**: Traefik occasionally times out first request after a change — retry once before debugging; app responds <200ms on retry.
 
 ## Verification
 
-No test framework or lint config. Verify with:
-- `docker exec public-school-php php -l /var/www/html/<file>` on every touched PHP file.
-- Check the affected page over HTTPS (`https://demo.isoftro.com/...`) — and its admin form still saves.
-- Check **both** EN and NP variants of any page you change.
+- No test/lint config. For each touched PHP: `php -l` (or `docker exec public-school-php php -l /var/www/html/<file>`).
+- Hit the page over HTTPS (`https://demo.isoftro.com/...`) and retry once on `000`. Check both `?lang=en` and `?lang=np` variants and the corresponding admin form still saves.
+- `docs/` (`ADMIN.md`, `SECURITY.md`, `BACKUP.md`, `TEST_REPORT.md`) is cPanel-oriented — prefer this file + executable config on live.
 
-See `docs/` for ADMIN, INSTALL, CPANEL, SECURITY, BACKUP (mostly cPanel-oriented; for this live host trust the Docker context above over CPANEL.md).
