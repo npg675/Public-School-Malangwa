@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-// Public-School-Malangwa — GitHub webhook → cPanel deploy
-// Deploy to: ~/repositories/Public-School-Malangwa → ~/public_html via deploy.sh
+// sps_school — GitHub webhook → cPanel deploy
+// Deploy to: ~/repositories/sps_school → ~/public_html via deploy.sh
 // Set secret in cPanel File Manager (edit this file) to match GitHub webhook secret.
 
 $secret = getenv('WEBHOOK_SECRET') ?: 'change_me_in_cpanel_file_manager';
@@ -54,7 +54,7 @@ if (!is_dir($home)) {
     $home = '/home/' . basename($home);
 }
 
-$repo = $home . '/repositories/Public-School-Malangwa';
+$repo = $home . '/repositories/sps_school';
 $cmd = sprintf(
     'export HOME=%s && cd %s && bash deploy.sh 2>&1',
     escapeshellarg($home),

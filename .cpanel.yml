@@ -1,5 +1,5 @@
 ---
-# cPanel Git Version Control — deployment config for Public-School-Malangwa
+# cPanel Git Version Control — deployment config for sps_school
 # cPanel → Git Version Control → Manage → Pull or Deploy uses this file.
 # Webhook (GitHub → webhook.php → deploy.sh) is the preferred auto-deploy;
 # this file is the fallback when you click Deploy in cPanel UI.

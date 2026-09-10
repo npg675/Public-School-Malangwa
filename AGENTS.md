@@ -6,16 +6,16 @@ Guidance for AI agents in this repo — live at `https://demo.isoftro.com` (IEMI
 
 ### Production — cPanel shared hosting (authoritative)
 
-- Host: cPanel shared hosting, domain `shreepublic.edu.np` (`APP_URL` in `.env`). Repo `https://github.com/npg675/Public-School-Malangwa.git`, production branch `main` (change `BRANCH` in `deploy.sh` to `feat/cms-content-blocks` if you ship that branch).
-- Pipeline: `GitHub push → webhook → https://shreepublic.edu.np/webhook.php → ~/repositories/Public-School-Malangwa/ (git pull) → cp to ~/public_html/` (no SSH port / GH Actions runner). No rebuild. Files in repo: `deploy.sh`, `webhook.php`, `.cpanel.yml`.
+- Host: cPanel shared hosting, domain `shreepublic.edu.np` (`APP_URL` in `.env`). Repo `https://github.com/devbaratnp/sps_school.git` (migrated from `npg675/Public-School-Malangwa`), production branch `main`.
+- Pipeline: `GitHub push → webhook → https://shreepublic.edu.np/webhook.php → ~/repositories/sps_school/ (git pull) → cp to ~/public_html/` (no SSH port / GH Actions runner). No rebuild. Files in repo: `deploy.sh`, `webhook.php`, `.cpanel.yml`.
 - Web server routing: single `posts` table (`post_type` news|event) via `news-events.php`; `nginx` on demo routed `/news|/events|/event` there — on cPanel `.htaccess` still has stale `news.php`/`events.php`/`results.php` rewrites, do not trust (see Gotchas).
 
 ### How to deploy to cPanel
 
-1. **One-time — cPanel SSH Access:** generate `~/.ssh/github_repo` (or reuse), add to GitHub `Settings → Deploy keys` (`gh repo deploy-key add ~/.ssh/github_repo.pub --title "cPanel Deploy" -R npg675/Public-School-Malangwa`).
-2. **One-time — clone:** `cd ~/repositories && GIT_SSH_COMMAND="ssh -i ~/.ssh/github_repo -o StrictHostKeyChecking=no" git clone git@github.com:npg675/Public-School-Malangwa.git`
-3. **One-time — secret:** edit `~/repositories/Public-School-Malangwa/webhook.php` (or `~/public_html/webhook.php`) and set `$secret`; create GitHub webhook `Settings → Webhooks → https://shreepublic.edu.np/webhook.php` (push, `application/json`, same secret) or `gh api repos/npg675/Public-School-Malangwa/hooks -f name=web -f active=true -f events[]=push -f config[url]="https://shreepublic.edu.np/webhook.php" -f config[content_type]=json -f config[secret]="..."`.
-4. **Each push:** `git push origin main` (or `feat/cms-content-blocks` if `BRANCH` changed). GitHub POSTs to `webhook.php`; script does `export HOME=/home/USERNAME && cd ~/repositories/Public-School-Malangwa && bash deploy.sh` (`HOME` must be exported — PHP `shell_exec` has none). Manual fallback: SSH and `bash ~/repositories/Public-School-Malangwa/deploy.sh`.
+1. **One-time — cPanel SSH Access:** generate `~/.ssh/github_repo` (or reuse), add to GitHub `Settings → Deploy keys` (`gh repo deploy-key add ~/.ssh/github_repo.pub --title "cPanel Deploy" -R devbaratnp/sps_school`).
+2. **One-time — clone:** `cd ~/repositories && GIT_SSH_COMMAND="ssh -i ~/.ssh/github_repo -o StrictHostKeyChecking=no" git clone git@github.com:devbaratnp/sps_school.git`
+3. **One-time — secret:** edit `~/repositories/sps_school/webhook.php` (or `~/public_html/webhook.php`) and set `$secret`; create GitHub webhook `Settings → Webhooks → https://shreepublic.edu.np/webhook.php` (push, `application/json`, same secret) or `gh api repos/devbaratnp/sps_school/hooks -f name=web -f active=true -f events[]=push -f config[url]="https://shreepublic.edu.np/webhook.php" -f config[content_type]=json -f config[secret]="..."`.
+4. **Each push:** `git push origin main` (or `feat/cms-content-blocks` if `BRANCH` changed). GitHub POSTs to `webhook.php`; script does `export HOME=/home/USERNAME && cd ~/repositories/sps_school && bash deploy.sh` (`HOME` must be exported — PHP `shell_exec` has none). Manual fallback: SSH and `bash ~/repositories/sps_school/deploy.sh`.
 5. **Verify:** in cPanel File Manager check `public_html/.env` still `644` and not overwritten, `uploads/` `775`, then `curl -k https://shreepublic.edu.np/` and `?lang=en`/`?lang=np`.
 
 ### Demo — Docker at demo.isoftro.com (still live, legacy for staging)

@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Public-School-Malangwa — cPanel shared hosting deploy
-# Repo: https://github.com/npg675/Public-School-Malangwa.git
+# sps_school — cPanel shared hosting deploy
+# Repo: https://github.com/devbaratnp/sps_school.git
 # Place this file in repo root. Webhook and cPanel Git both use it.
 #
 # One-time server setup:
 #   cd ~/repositories
 #   GIT_SSH_COMMAND="ssh -i ~/.ssh/github_repo -o StrictHostKeyChecking=no" \
-#     git clone git@github.com:npg675/Public-School-Malangwa.git
-# Then create webhook secret in ~/repositories/Public-School-Malangwa/webhook.php
+#     git clone git@github.com:devbaratnp/sps_school.git
+# Then create webhook secret in ~/repositories/sps_school/webhook.php
 
-REPO_NAME="Public-School-Malangwa"
+REPO_NAME="sps_school"
 REPO_DIR="$HOME/repositories/$REPO_NAME"
 HTML_DIR="$HOME/public_html"
 BACKUP_DIR="$HOME/deploy-backups"
